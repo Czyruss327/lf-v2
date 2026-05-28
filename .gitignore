@@ -1,5 +1,6 @@
 ### Java template
 *.class
+javafx-sdk-26.0.1/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

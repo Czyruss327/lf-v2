@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<!--
+  Navbar.fxml – just the top bar strip.
+  The drawer is injected into the ROOT StackPane by NavbarController at runtime,
+  so it can overlay the full window height correctly.
+-->
+<HBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.NavbarController"
+      fx:id="navbarRoot"
+      styleClass="navbar"
+      alignment="CENTER_LEFT"
+      spacing="10">
+
+    <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+
+    <Circle fx:id="logoCircle" radius="18" styleClass="logo-circle"/>
+    <Label text="PUPSRC Lost and Found" styleClass="navbar-title" HBox.hgrow="ALWAYS"/>
+
+    <Button fx:id="addBtn" text="+" styleClass="navbar-icon-btn"
+            onAction="#handleAddItem"/>
+    <Button fx:id="menuBtn" text="≡" styleClass="navbar-icon-btn"
+            onAction="#toggleDrawer"/>
+</HBox>

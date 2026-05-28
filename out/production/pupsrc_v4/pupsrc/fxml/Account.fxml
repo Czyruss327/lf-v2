@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<!--
+  Account.fxml
+  Root is a StackPane so NavbarController can inject the full-height
+  overlay + drawer on top of everything.
+-->
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           fx:id="rootStack"
+           fx:controller="controller.AccountController"
+           stylesheets="@../css/style.css"
+           styleClass="root-pane"
+           minWidth="640" minHeight="440">
+
+    <!-- Page layout sits at the bottom of the stack -->
+    <BorderPane>
+
+        <!-- Navbar bar (drawer is injected into rootStack by AccountController) -->
+        <top>
+            <fx:include fx:id="navbar" source="Navbar.fxml"/>
+        </top>
+
+        <center>
+            <StackPane styleClass="content-bg">
+                <ScrollPane fitToWidth="true" fitToHeight="false"
+                            styleClass="transparent-scroll" hbarPolicy="NEVER">
+                    <StackPane minHeight="420">
+                        <VBox styleClass="card"
+                              prefWidth="320" maxWidth="380"
+                              alignment="TOP_CENTER" spacing="0">
+                            <padding><Insets top="24" right="36" bottom="28" left="36"/></padding>
+
+                            <Label text="ACCOUNT" styleClass="card-title"/>
+                            <Separator styleClass="card-divider"/>
+
+                            <Circle fx:id="avatarCircle" radius="52" styleClass="avatar-circle"/>
+                            <VBox.margin><Insets top="16" bottom="6"/></VBox.margin>
+
+                            <Label text="Admin" styleClass="field-label" alignment="CENTER"/>
+
+                            <TextField fx:id="adminNameField" promptText="Admin name"
+                                       styleClass="name-field" editable="false"
+                                       maxWidth="240"/>
+                            <VBox.margin><Insets bottom="8"/></VBox.margin>
+
+                            <Button text="+ Add Another Admin" styleClass="btn-primary"
+                                    maxWidth="240" onAction="#handleAddAnotherAdmin"/>
+                            <VBox.margin><Insets bottom="5"/></VBox.margin>
+                            <Button text="Change Password" styleClass="btn-primary"
+                                    maxWidth="240" onAction="#handleChangePassword"/>
+                            <VBox.margin><Insets bottom="16"/></VBox.margin>
+
+                            <Separator styleClass="card-divider"/>
+
+                            <VBox spacing="0">
+                                <padding><Insets top="12"/></padding>
+                                <Label text="History" styleClass="history-header"/>
+                                <VBox fx:id="historyContainer" spacing="0"/>
+                            </VBox>
+                        </VBox>
+                    </StackPane>
+                </ScrollPane>
+            </StackPane>
+        </center>
+    </BorderPane>
+
+    <!-- Drawer overlay + panel are injected here by NavbarController -->
+
+</StackPane>

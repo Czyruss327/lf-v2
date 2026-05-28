@@ -1,0 +1,278 @@
+/* ═══════════════════════════════════════════════════════
+   PUPSRC Lost and Found – JavaFX CSS
+   Brand: deep maroon #6B0000
+   Responsive: all sizing via em / % / max-width
+   ═══════════════════════════════════════════════════════ */
+
+/* ══ Root ══ */
+.root-pane {
+    -fx-background-color: #1c1c1c;
+}
+
+.content-bg {
+    -fx-background-color: #2b2b2b;
+    -fx-padding: 36 0 36 0;
+}
+
+/* Transparent scroll pane wrapper */
+.transparent-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.transparent-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ══ Navbar ══ */
+.navbar {
+    -fx-background-color: #6B0000;
+    -fx-min-height: 54px;
+    -fx-pref-height: 54px;
+    -fx-max-height: 54px;
+}
+
+.navbar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+.navbar-icon-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 4;
+    -fx-min-width: 36px;
+    -fx-pref-width: 36px;
+}
+
+.navbar-icon-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.18);
+}
+
+.logo-circle {
+    -fx-fill: #8B0000;
+    -fx-stroke: #FFD700;
+    -fx-stroke-width: 2.5;
+}
+
+/* ══ Drawer overlay (dark bg behind drawer) ══ */
+.drawer-overlay {
+    -fx-background-color: rgba(0,0,0,0.45);
+}
+
+/* ══ Slide-in Drawer Panel ══ */
+.drawer-panel {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.40), 20, 0, -4, 0);
+    -fx-pref-width: 220px;
+    -fx-max-width: 220px;
+    -fx-min-height: 300px;
+}
+
+/* Individual nav item buttons */
+.drawer-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 15px;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-weight: normal;
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: 14 24 14 24;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.drawer-item:hover {
+    -fx-background-color: #f7e8e8;
+    -fx-text-fill: #6B0000;
+    -fx-font-weight: bold;
+}
+
+/* Log out area at the bottom of the drawer */
+.drawer-logout-area {
+    -fx-border-color: #e0e0e0 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* ══ Log Out button (outlined style) ══ */
+.btn-logout {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-border-color: #444444;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-border-width: 1.5;
+    -fx-cursor: hand;
+    -fx-padding: 7 20 7 20;
+}
+
+.btn-logout:hover {
+    -fx-background-color: #6B0000;
+    -fx-text-fill: white;
+    -fx-border-color: #6B0000;
+}
+
+/* ══ Card ══ */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 14, 0, 0, 4);
+}
+
+.card-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-text-fill: #1a1a1a;
+    -fx-padding: 0 0 12 0;
+}
+
+.card-divider {
+    -fx-padding: 0 0 12 0;
+}
+
+/* ══ Avatar ══ */
+.avatar-circle {
+    -fx-fill: #5c0000;
+}
+
+/* ══ Account: admin name display ══ */
+.field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #555555;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-padding: 6 0 4 0;
+}
+
+.name-field {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-border-width: 1;
+    -fx-font-size: 13px;
+    -fx-text-fill: #666666;
+    -fx-prompt-text-fill: #aaaaaa;
+    -fx-padding: 7 12 7 12;
+    -fx-alignment: CENTER;
+}
+
+/* ══ Primary (maroon pill) buttons ══ */
+.btn-primary {
+    -fx-background-color: #6B0000;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+    -fx-padding: 8 20 8 20;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #8B0000;
+}
+
+/* ══ AddAdmin: Cancel / Confirm ══ */
+.btn-cancel {
+    -fx-background-color: #6B0000;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-padding: 9 0 9 0;
+}
+
+.btn-cancel:hover {
+    -fx-background-color: #8B0000;
+}
+
+.btn-confirm {
+    -fx-background-color: #6B0000;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-padding: 9 0 9 0;
+}
+
+.btn-confirm:hover {
+    -fx-background-color: #8B0000;
+}
+
+/* ══ History ══ */
+.history-header {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-padding: 0 0 6 0;
+}
+
+.history-entry {
+    -fx-padding: 7 0 7 0;
+    -fx-border-color: transparent transparent #e8e8e8 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.history-entry-type {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+.history-entry-time {
+    -fx-font-size: 11px;
+    -fx-text-fill: #777777;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+/* ══ Form inputs (AddAdmin) ══ */
+.input-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+.input-field {
+    -fx-background-color: white;
+    -fx-border-color: #bbbbbb;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-border-width: 1;
+    -fx-font-size: 13px;
+    -fx-padding: 7 12 7 12;
+    -fx-prompt-text-fill: #bbbbbb;
+}
+
+.input-field:focused {
+    -fx-border-color: #6B0000;
+    -fx-border-width: 1.5;
+}
+
+/* ══ Status / error ══ */
+.status-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #cc0000;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}

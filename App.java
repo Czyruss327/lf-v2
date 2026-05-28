@@ -12,12 +12,19 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/fxml/Login.fxml"));
+                getClass().getResource("/fxml/Login.fxml"));
         Parent root = loader.load();
 
         primaryStage.setTitle("PUPSRC Lost and Found");
         primaryStage.setScene(new Scene(root));
-        primaryStage.setResizable(false);
+
+        // ✅ Allow maximizing & resizing
+        primaryStage.setResizable(true);
+
+        // ✅ Safe minimum so the UI never breaks
+        primaryStage.setMinWidth(640);
+        primaryStage.setMinHeight(480);
+
         primaryStage.centerOnScreen();
         primaryStage.show();
     }

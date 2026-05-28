@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           fx:id="rootStack"
+           fx:controller="controller.AddAdminController"
+           stylesheets="@../css/style.css"
+           styleClass="root-pane"
+           minWidth="640" minHeight="460">
+
+    <BorderPane>
+        <top>
+            <fx:include fx:id="navbar" source="Navbar.fxml"/>
+        </top>
+
+        <center>
+            <StackPane styleClass="content-bg">
+                <ScrollPane fitToWidth="true" fitToHeight="false"
+                            styleClass="transparent-scroll" hbarPolicy="NEVER">
+                    <StackPane minHeight="440">
+                        <VBox styleClass="card"
+                              prefWidth="320" maxWidth="380"
+                              alignment="TOP_CENTER" spacing="0">
+                            <padding><Insets top="24" right="36" bottom="28" left="36"/></padding>
+
+                            <Label text="ADD ANOTHER ADMIN" styleClass="card-title"/>
+                            <Separator styleClass="card-divider"/>
+
+                            <Circle fx:id="avatarCircle" radius="52" styleClass="avatar-circle"/>
+                            <VBox.margin><Insets top="16" bottom="20"/></VBox.margin>
+
+                            <Label text="Admin Username" styleClass="input-label"/>
+                            <VBox.margin><Insets bottom="3"/></VBox.margin>
+                            <TextField fx:id="usernameField" promptText="Admin name"
+                                       styleClass="input-field" maxWidth="260"/>
+                            <VBox.margin><Insets bottom="14"/></VBox.margin>
+
+                            <Label text="Password" styleClass="input-label"/>
+                            <VBox.margin><Insets bottom="3"/></VBox.margin>
+                            <PasswordField fx:id="passwordField"
+                                           styleClass="input-field" maxWidth="260"/>
+                            <VBox.margin><Insets bottom="28"/></VBox.margin>
+
+                            <HBox spacing="14" alignment="CENTER">
+                                <Button text="CANCEL"  styleClass="btn-cancel"
+                                        prefWidth="110" onAction="#handleCancel"/>
+                                <Button text="CONFIRM" styleClass="btn-confirm"
+                                        prefWidth="110" onAction="#handleConfirm"/>
+                            </HBox>
+
+                            <Label fx:id="statusLabel" styleClass="status-label"
+                                   wrapText="true" maxWidth="260" alignment="CENTER"/>
+                            <VBox.margin><Insets top="8"/></VBox.margin>
+                        </VBox>
+                    </StackPane>
+                </ScrollPane>
+            </StackPane>
+        </center>
+    </BorderPane>
+
+</StackPane>

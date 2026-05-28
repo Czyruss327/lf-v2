@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<!--
+    ReportForm.fxml
+    Report a lost or found item form.
+    Left: Lost Item Details (name, category, description, upload images)
+    Right: Reporter Information (name, student ID, contact, location, dates, status)
+    Buttons: CANCEL | SAVE REPORT
+-->
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.ReportFormController"
+            stylesheets="@../css/styles.css"
+            prefWidth="960" prefHeight="720">
+
+    <!-- NAVBAR -->
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
+            <padding><Insets top="10" bottom="10" left="20" right="20"/></padding>
+            <ImageView fx:id="logoImage" fitWidth="36" fitHeight="36" preserveRatio="true"/>
+            <Label text="PUPSRC Lost and Found" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="+" styleClass="navbar-icon-btn" onAction="#onAddItem"/>
+            <Button text="☰" styleClass="navbar-icon-btn" onAction="#onMenu"/>
+        </HBox>
+    </top>
+
+    <!-- CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="grid-scroll">
+        <VBox alignment="TOP_CENTER" styleClass="main-content">
+            <padding><Insets top="32" bottom="32" left="60" right="60"/></padding>
+
+            <!-- Card -->
+            <VBox styleClass="details-card" spacing="0">
+                <padding><Insets top="32" bottom="32" left="48" right="48"/></padding>
+
+                <!-- Title -->
+                <Label text="REPORT FORM"
+                       styleClass="page-title"
+                       maxWidth="Infinity"
+                       alignment="CENTER">
+                    <VBox.margin><Insets bottom="24"/></VBox.margin>
+                </Label>
+
+                <!-- Two-column form -->
+                <HBox spacing="48" alignment="TOP_LEFT">
+
+                    <!-- LEFT — Lost Item Details -->
+                    <VBox spacing="14" prefWidth="380" minWidth="300">
+
+                        <Label text="Lost Item Details" styleClass="section-heading"/>
+
+                        <!-- Lost Item Name -->
+                        <VBox spacing="5">
+                            <HBox spacing="4">
+                                <Label text="Lost Item Name" styleClass="form-label"/>
+                                <Label text="*" styleClass="required-star"/>
+                            </HBox>
+                            <TextField fx:id="itemNameField"
+                                       promptText="Name of item"
+                                       styleClass="form-input"/>
+                        </VBox>
+
+                        <!-- Category -->
+                        <VBox spacing="5">
+                            <HBox spacing="4">
+                                <Label text="Category" styleClass="form-label"/>
+                                <Label text="*" styleClass="required-star"/>
+                            </HBox>
+                            <ComboBox fx:id="categoryCombo"
+                                      styleClass="form-input"
+                                      maxWidth="Infinity"/>
+                        </VBox>
+
+                        <!-- Description -->
+                        <VBox spacing="5">
+                            <HBox spacing="4">
+                                <Label text="Description" styleClass="form-label"/>
+                                <Label text="*" styleClass="required-star"/>
+                            </HBox>
+                            <TextArea fx:id="descriptionArea"
+                                      promptText="Describe the missing item (e.g, color, brand, unique marks)"
+                                      styleClass="form-input"
+                                      prefHeight="110"
+                                      wrapText="true"/>
+                        </VBox>
+
+                        <!-- Upload Images -->
+                        <VBox spacing="8">
+                            <Button text="Upload Images"
+                                    styleClass="upload-btn"
+                                    maxWidth="Infinity"
+                                    onAction="#onUploadImages"/>
+
+                            <!-- Uploaded image list -->
+                            <VBox fx:id="imageListBox" spacing="6"/>
+                        </VBox>
+
+                    </VBox>
+
+                    <!-- RIGHT — Reporter Information -->
+                    <VBox spacing="14" HBox.hgrow="ALWAYS">
+
+                        <Label text="Reporter Information" styleClass="section-heading"/>
+
+                        <!-- Name -->
+                        <VBox spacing="5">
+                            <HBox spacing="4">
+                                <Label text="Name" styleClass="form-label"/>
+                                <Label text="*" styleClass="required-star"/>
+                            </HBox>
+                            <TextField fx:id="reporterNameField"
+                                       promptText="Surname, First Name"
+                                       styleClass="form-input"/>
+                        </VBox>
+
+                        <!-- Student ID -->
+                        <VBox spacing="5">
+                            <Label text="Student ID (If Student)" styleClass="form-label"/>
+                            <TextField fx:id="studentIdField"
+                                       promptText="YYYY-*****-SR-0"
+                                       styleClass="form-input"/>
+                        </VBox>
+
+                        <!-- Contact Number -->
+                        <VBox spacing="5">
+                            <HBox spacing="4">
+                                <Label text="Contact Number" styleClass="form-label"/>
+                                <Label text="*" styleClass="required-star"/>
+                            </HBox>
+                            <TextField fx:id="contactField"
+                                       promptText="09XX-XXX-XXXX"
+                                       styleClass="form-input"/>
+                        </VBox>
+
+                        <!-- Location Lost/Found -->
+                        <VBox spacing="5">
+                            <HBox spacing="4">
+                                <Label text="Location Lost/ Found" styleClass="form-label"/>
+                                <Label text="*" styleClass="required-star"/>
+                            </HBox>
+                            <TextField fx:id="locationField"
+                                       styleClass="form-input"/>
+                        </VBox>
+
+                        <!-- Date Lost + Date Found (side by side) -->
+                        <HBox spacing="12">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <HBox spacing="4">
+                                    <Label text="Date Lost" styleClass="form-label"/>
+                                    <Label text="*" styleClass="required-star"/>
+                                </HBox>
+                                <TextField fx:id="dateLostField"
+                                           promptText="dd/mm/yyyy"
+                                           styleClass="form-input"
+                                           maxWidth="Infinity"/>
+                            </VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="Date Found" styleClass="form-label"/>
+                                <TextField fx:id="dateFoundField"
+                                           promptText="dd/mm/yyyy"
+                                           styleClass="form-input"
+                                           maxWidth="Infinity"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Status -->
+                        <VBox spacing="5">
+                            <HBox spacing="4">
+                                <Label text="Status" styleClass="form-label"/>
+                                <Label text="*" styleClass="required-star"/>
+                            </HBox>
+                            <ComboBox fx:id="statusCombo"
+                                      styleClass="form-input"
+                                      maxWidth="Infinity"/>
+                        </VBox>
+
+                        <!-- Error label -->
+                        <Label fx:id="errorLabel" styleClass="error-label"
+                               wrapText="true" maxWidth="Infinity"/>
+
+                    </VBox>
+
+                </HBox>
+
+                <!-- Action Buttons -->
+                <HBox spacing="16" alignment="CENTER">
+                    <VBox.margin><Insets top="32"/></VBox.margin>
+                    <Button text="CANCEL"      styleClass="btn-view" prefWidth="200"
+                            onAction="#onCancel"/>
+                    <Button text="SAVE REPORT" styleClass="btn-view" prefWidth="200"
+                            onAction="#onSaveReport"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

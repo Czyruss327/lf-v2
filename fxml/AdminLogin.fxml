@@ -66,6 +66,15 @@
                            onAction="#onForgotPassword"/>
             </HBox>
 
+            <!-- Figure 3 — NO branch: don't have an account? -->
+            <HBox alignment="CENTER" spacing="4">
+                <Label text="No account yet?"
+                       styleClass="forgot-text"/>
+                <Hyperlink text="Create one"
+                           styleClass="forgot-link"
+                           onAction="#onCreateAccount"/>
+            </HBox>
+
         </VBox>
 
     </VBox>

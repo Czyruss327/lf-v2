@@ -1,16 +1,11 @@
 package model;
 
-/**
- * SessionManager — singleton that tracks the currently logged-in user.
- * Set the role when the user logs in; check it anywhere in the app.
- */
 public class SessionManager {
 
     public enum Role { ADMIN, STUDENT }
 
     private static SessionManager instance;
-
-    private Role   currentRole;
+    private Role currentRole;
     private String currentUsername;
 
     private SessionManager() {}
@@ -21,19 +16,18 @@ public class SessionManager {
     }
 
     public void login(Role role, String username) {
-        this.currentRole     = role;
+        this.currentRole = role;
         this.currentUsername = username;
     }
 
     public void logout() {
-        this.currentRole     = null;
+        this.currentRole = null;
         this.currentUsername = null;
     }
 
-    public Role   getRole()     { return currentRole; }
-    public String getUsername() { return currentUsername; }
-
-    public boolean isAdmin()   { return currentRole == Role.ADMIN; }
-    public boolean isStudent() { return currentRole == Role.STUDENT; }
-    public boolean isLoggedIn(){ return currentRole != null; }
+    public Role getRole()         { return currentRole; }
+    public String getUsername()   { return currentUsername; }
+    public boolean isAdmin()      { return currentRole == Role.ADMIN; }
+    public boolean isStudent()    { return currentRole == Role.STUDENT; }
+    public boolean isLoggedIn()   { return currentRole != null; }
 }

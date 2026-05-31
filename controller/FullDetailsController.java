@@ -18,107 +18,90 @@ import java.util.ResourceBundle;
 
 /**
  * FullDetailsController
- *
- * ADMIN  → can see everything, EDIT button is visible, can change Status only.
- * STUDENT → read-only view, EDIT button is hidden, CLAIM button is visible.
+ * ADMIN:   can see all fields. EDIT enables Status dropdown only. CLAIM opens verification.
+ * STUDENT: read-only, EDIT button hidden. Can CLAIM.
  */
 public class FullDetailsController implements Initializable {
 
-    @FXML private ImageView  logoImage;
-
-    // Left — Item
-    @FXML private ImageView  itemImage;
-    @FXML private TextField  itemNameField;
+    @FXML private ImageView logoImage;
+    @FXML private ImageView itemImage;
+    @FXML private TextField itemNameField;
     @FXML private ComboBox<String> categoryCombo;
-    @FXML private TextArea   descriptionArea;
-
-    // Right — Reporter
-    @FXML private TextField  reporterNameField;
-    @FXML private TextField  studentIdField;
-    @FXML private TextField  contactField;
-    @FXML private TextField  locationField;
-    @FXML private TextField  dateLostField;
+    @FXML private TextArea  descriptionArea;
+    @FXML private TextField reporterNameField;
+    @FXML private TextField studentIdField;
+    @FXML private TextField contactField;
+    @FXML private TextField locationField;
+    @FXML private TextField dateLostField;
     @FXML private ComboBox<String> statusCombo;
-
-    // Buttons
-    @FXML private Button editBtn;
-    @FXML private Button claimBtn;
+    @FXML private Button    editBtn;
+    @FXML private Button    claimBtn;
 
     private Item item;
+    private DashboardController dashboardController;
     private boolean editMode = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadImage(logoImage, "/images/logo.png");
-
         categoryCombo.getItems().addAll(
-            "Bags & Wallets", "Electronics", "IDs & Documents",
-            "Clothing", "School Supplies", "Keys", "Accessories", "Others"
-        );
-        statusCombo.getItems().addAll("LOST", "FOUND", "CLAIMED");
+            "Bags & Wallets","Electronics","IDs & Documents",
+            "Clothing","School Supplies","Keys","Accessories","Others");
+        statusCombo.getItems().addAll("LOST","FOUND","CLAIMED");
+        setAllReadOnly();
 
-        // All fields are always read-only — only status dropdown changes on Edit
-        setAllFieldsReadOnly();
-
-        // Role-based visibility
         boolean isAdmin = SessionManager.getInstance().isAdmin();
         editBtn.setVisible(isAdmin);
         editBtn.setManaged(isAdmin);
-
-        // Students can claim; admins can too but it's less common
-        claimBtn.setVisible(true);
     }
 
     public void setItem(Item item) {
         this.item = item;
-
         itemNameField.setText(item.getName());
         descriptionArea.setText(item.getColor());
         locationField.setText(item.getLocation());
         dateLostField.setText(item.getDate());
         statusCombo.setValue(item.getStatusLabel());
-        categoryCombo.setValue(item.getCategory() != null ? item.getCategory() : "Bags & Wallets");
-
-        reporterNameField.setText(item.getReporterName()   != null ? item.getReporterName()   : "");
-        studentIdField.setText(item.getStudentId()         != null ? item.getStudentId()       : "");
-        contactField.setText(item.getContactNumber()       != null ? item.getContactNumber()   : "");
-
+        categoryCombo.setValue(item.getCategory() != null ? item.getCategory() : "Others");
+        reporterNameField.setText(item.getReporterName()  != null ? item.getReporterName()  : "");
+        studentIdField.setText(item.getStudentId()        != null ? item.getStudentId()      : "");
+        contactField.setText(item.getContactNumber()      != null ? item.getContactNumber()  : "");
         loadItemImage(item.getImagePath());
     }
 
-    // ── Button Actions ────────────────────────────────────────
+    public void setDashboardController(DashboardController dc) {
+        this.dashboardController = dc;
+    }
 
     @FXML
     private void onEdit() {
-        if (!SessionManager.getInstance().isAdmin()) return; // safety check
-
+        if (!SessionManager.getInstance().isAdmin()) return;
         if (!editMode) {
-            // Enter edit mode — ONLY status dropdown is enabled
+            // Enter edit mode — ONLY status dropdown enabled
             statusCombo.setDisable(false);
             editBtn.setText("SAVE");
             editMode = true;
         } else {
-            // Save — apply status change to item
+            // Save status change
             if (item != null && statusCombo.getValue() != null) {
                 switch (statusCombo.getValue()) {
                     case "LOST"    -> item.setStatus(Item.Status.LOST);
                     case "FOUND"   -> item.setStatus(Item.Status.FOUND);
-                    case "CLAIMED" -> item.setStatus(Item.Status.LOST); // or add CLAIMED to enum
+                    case "CLAIMED" -> item.setStatus(Item.Status.FOUND);
                 }
             }
             statusCombo.setDisable(true);
             editBtn.setText("EDIT");
             editMode = false;
-
             showAlert(Alert.AlertType.INFORMATION, "Saved", "Status updated successfully.");
         }
     }
 
+    /** Figure 2: opens Claim Verification form. */
     @FXML
     private void onClaim() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/ClaimVerification.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ClaimVerification.fxml"));
             Parent root = loader.load();
             ClaimVerificationController ctrl = loader.getController();
             ctrl.setItem(item);
@@ -129,12 +112,10 @@ public class FullDetailsController implements Initializable {
     }
 
     @FXML private void onCancel()  { navigateBack(); }
-    @FXML private void onAddItem() { navigateTo("/fxml/ReportForm.fxml", "Report Form"); }
-    @FXML private void onMenu()    {}
+    @FXML private void onAddItem() { navigateTo("/fxml/ReportForm.fxml", "New Post"); }
+    @FXML private void onMenu()    { }
 
-    // ── Helpers ──────────────────────────────────────────────
-
-    private void setAllFieldsReadOnly() {
+    private void setAllReadOnly() {
         itemNameField.setEditable(false);
         descriptionArea.setEditable(false);
         reporterNameField.setEditable(false);
@@ -143,7 +124,7 @@ public class FullDetailsController implements Initializable {
         locationField.setEditable(false);
         dateLostField.setEditable(false);
         categoryCombo.setDisable(true);
-        statusCombo.setDisable(true); // enabled only in edit mode for admin
+        statusCombo.setDisable(true);
     }
 
     private void navigateBack() {
@@ -156,9 +137,9 @@ public class FullDetailsController implements Initializable {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private void navigateTo(String fxmlPath, String title) {
+    private void navigateTo(String path, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Parent root = loader.load();
             Stage stage = (Stage) itemNameField.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -177,17 +158,14 @@ public class FullDetailsController implements Initializable {
     }
 
     private void loadImage(ImageView iv, String path) {
-        try {
-            URL url = getClass().getResource(path);
+        try { URL url = getClass().getResource(path);
             if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
         } catch (Exception ignored) {}
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {
         Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
+        alert.setTitle(title); alert.setHeaderText(null); alert.setContentText(msg);
         alert.showAndWait();
     }
 }

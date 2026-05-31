@@ -17,17 +17,16 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * AdminLoginController — Figure 3 YES branch.
- * Admin logs in with registered account saved in the database.
- *
- * DEFAULT ACCOUNTS:
- *   admin / admin123
- *   pupsrc_admin / pup2026
+ * CreateAdminAccountController
+ * Figure 3 — NO branch.
+ * Admin fills required fields → system saves → access granted.
  */
-public class AdminLoginController implements Initializable {
+public class CreateAdminAccountController implements Initializable {
 
+    @FXML private TextField     fullNameField;
     @FXML private TextField     usernameField;
     @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmPasswordField;
     @FXML private Label         errorLabel;
     @FXML private ImageView     bgImage;
     @FXML private ImageView     logoImage;
@@ -37,48 +36,42 @@ public class AdminLoginController implements Initializable {
         errorLabel.setText("");
         loadImage(bgImage,   "/images/campus_bg.jpg");
         loadImage(logoImage, "/images/logo.png");
-        passwordField.setOnAction(e -> onLogin());
     }
 
-    /** Figure 3 YES branch — authenticate and grant access. */
     @FXML
-    private void onLogin() {
+    private void onCreateAccount() {
         errorLabel.setText("");
-        String user = usernameField.getText().trim();
-        String pass = passwordField.getText();
 
-        if (user.isEmpty() || pass.isEmpty()) {
-            errorLabel.setText("Please enter username and password.");
+        String fullName = fullNameField.getText().trim();
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText();
+        String confirm  = confirmPasswordField.getText();
+
+        // Validation
+        if (fullName.isEmpty())  { errorLabel.setText("Full name is required.");       return; }
+        if (username.isEmpty())  { errorLabel.setText("Username is required.");         return; }
+        if (password.isEmpty())  { errorLabel.setText("Password is required.");         return; }
+        if (!password.equals(confirm)) { errorLabel.setText("Passwords do not match."); return; }
+        if (password.length() < 6) { errorLabel.setText("Password must be at least 6 characters."); return; }
+
+        // Check username not already taken
+        if (UserAccount.authenticate(username, password) != null
+                || UserAccount.usernameExists(username)) {
+            errorLabel.setText("Username already taken. Choose another.");
             return;
         }
 
-        UserAccount account = UserAccount.authenticate(user, pass);
+        // Figure 3: system saves the information
+        UserAccount.addAccount(username, password, SessionManager.Role.ADMIN);
 
-        if (account == null) {
-            errorLabel.setText("Invalid username or password.");
-            passwordField.clear();
-            return;
-        }
-        if (account.getRole() != SessionManager.Role.ADMIN) {
-            errorLabel.setText("This login is for admins only.");
-            passwordField.clear();
-            return;
-        }
-
-        // Set session — admin can now access the system freely
-        SessionManager.getInstance().login(SessionManager.Role.ADMIN, user);
+        // Log in with new account immediately → access granted
+        SessionManager.getInstance().login(SessionManager.Role.ADMIN, username);
         navigateToDashboard();
     }
 
     @FXML
-    private void onForgotPassword() {
-        errorLabel.setText("Please contact your system administrator.");
-    }
-
-    /** Figure 3 NO branch — navigate to create account. */
-    @FXML
-    private void onCreateAccount() {
-        navigateTo("/fxml/CreateAdminAccount.fxml", "Create Admin Account – PUPSRC Lost and Found");
+    private void onBackToLogin() {
+        navigateTo("/fxml/AdminLogin.fxml", "Admin Login – PUPSRC Lost and Found");
     }
 
     private void navigateToDashboard() {

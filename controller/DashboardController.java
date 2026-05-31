@@ -18,6 +18,7 @@ import model.SessionManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -29,10 +30,13 @@ import java.util.stream.Collectors;
 public class DashboardController implements Initializable {
 
     @FXML private TextField        searchField;
+    @FXML private Button           menuButton;
     @FXML private ComboBox<String> filterCombo;
     @FXML private FlowPane         itemGrid;
     @FXML private HBox             paginationBox;
     @FXML private ImageView        logoImage;
+
+    private ContextMenu hamburgerMenu;
 
     private static final int ITEMS_PER_PAGE = 12;
     private int    currentPage   = 1;
@@ -44,6 +48,7 @@ public class DashboardController implements Initializable {
         loadImage(logoImage, "/images/logo.png");
         filterCombo.getItems().addAll("All", "Lost", "Found");
         filterCombo.setValue("All");
+        buildHamburgerMenu();
         renderGrid();
     }
 
@@ -81,7 +86,75 @@ public class DashboardController implements Initializable {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    @FXML private void onMenuToggle() {}
+    /** Builds the hamburger ContextMenu once and reuses it. */
+    private void buildHamburgerMenu() {
+        hamburgerMenu = new ContextMenu();
+        hamburgerMenu.getStyleClass().add("hamburger-menu");
+
+        // Account
+        MenuItem accountItem = new MenuItem("👤  Account");
+        accountItem.getStyleClass().add("menu-item-styled");
+        accountItem.setOnAction(e -> navigateTo("/fxml/Account.fxml", "Account – PUPSRC Lost and Found"));
+
+        // Dashboard
+        MenuItem dashItem = new MenuItem("🏠  Dashboard");
+        dashItem.getStyleClass().add("menu-item-styled");
+        dashItem.setOnAction(e -> navigateTo("/fxml/Dashboard.fxml", "PUPSRC Lost and Found"));
+
+        // Report Form
+        MenuItem reportItem = new MenuItem("📋  Report Form");
+        reportItem.getStyleClass().add("menu-item-styled");
+        reportItem.setOnAction(e -> navigateTo("/fxml/ReportForm.fxml", "Report Form – PUPSRC Lost and Found"));
+
+        // Claim Verification
+        MenuItem claimItem = new MenuItem("✅  Claim Verification");
+        claimItem.getStyleClass().add("menu-item-styled");
+        claimItem.setOnAction(e -> navigateTo("/fxml/ClaimVerification.fxml", "Claim Verification – PUPSRC Lost and Found"));
+
+        // Separator
+        SeparatorMenuItem sep = new SeparatorMenuItem();
+
+        // Log Out
+        MenuItem logoutItem = new MenuItem("↩  Log Out");
+        logoutItem.getStyleClass().addAll("menu-item-styled", "menu-item-logout");
+        logoutItem.setOnAction(e -> handleLogout());
+
+        hamburgerMenu.getItems().addAll(accountItem, dashItem, reportItem, claimItem, sep, logoutItem);
+    }
+
+    @FXML
+    private void onMenuToggle() {
+        if (hamburgerMenu == null) buildHamburgerMenu();
+        if (hamburgerMenu.isShowing()) {
+            hamburgerMenu.hide();
+        } else {
+            hamburgerMenu.show(menuButton, javafx.geometry.Side.BOTTOM, 0, 4);
+        }
+    }
+
+    private void handleLogout() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Log Out");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Are you sure you want to log out?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            SessionManager.getInstance().logout();
+            navigateTo("/fxml/Login.fxml", "PUPSRC Lost and Found");
+        }
+    }
+
+    private void navigateTo(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(title);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // ── Grid ─────────────────────────────────────────────────
 
@@ -170,16 +243,16 @@ public class DashboardController implements Initializable {
 
     private List<Item> getFilteredItems() {
         return ItemStore.getInstance().getItems().stream()
-            .filter(i -> {
-                if ("Lost".equals(currentFilter))  return i.getStatus() == Item.Status.LOST;
-                if ("Found".equals(currentFilter)) return i.getStatus() == Item.Status.FOUND;
-                return true;
-            })
-            .filter(i -> searchQuery.isEmpty()
-                || i.getName().toLowerCase().contains(searchQuery)
-                || i.getLocation().toLowerCase().contains(searchQuery)
-                || i.getColor().toLowerCase().contains(searchQuery))
-            .collect(Collectors.toList());
+                .filter(i -> {
+                    if ("Lost".equals(currentFilter))  return i.getStatus() == Item.Status.LOST;
+                    if ("Found".equals(currentFilter)) return i.getStatus() == Item.Status.FOUND;
+                    return true;
+                })
+                .filter(i -> searchQuery.isEmpty()
+                        || i.getName().toLowerCase().contains(searchQuery)
+                        || i.getLocation().toLowerCase().contains(searchQuery)
+                        || i.getColor().toLowerCase().contains(searchQuery))
+                .collect(Collectors.toList());
     }
 
     private void showAlert(String title, String msg) {

@@ -86,9 +86,8 @@ public class AdminLoginController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root, 960, 700));
+            SceneUtil.setScene(stage, root);
             stage.setTitle("PUPSRC Lost and Found – Admin");
-            stage.centerOnScreen();
         } catch (IOException e) { e.printStackTrace(); }
     }
 
@@ -97,7 +96,7 @@ public class AdminLoginController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Parent root = loader.load();
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneUtil.setScene(stage, root);
             stage.setTitle(title);
         } catch (IOException e) { e.printStackTrace(); }
     }

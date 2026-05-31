@@ -33,6 +33,7 @@ import java.util.function.Consumer;
 public class ReportFormController implements Initializable {
 
     @FXML private ImageView logoImage;
+    @FXML private Button     menuButton;
     @FXML private TextField  itemNameField;
     @FXML private ComboBox<String> categoryCombo;
     @FXML private TextArea   descriptionArea;
@@ -48,6 +49,7 @@ public class ReportFormController implements Initializable {
 
     private final List<File> uploadedImages = new ArrayList<>();
     private Consumer<Item>   onItemSaved;
+    private NavbarHelper     navbar;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -59,6 +61,7 @@ public class ReportFormController implements Initializable {
         );
         statusCombo.getItems().addAll("LOST", "FOUND");
         statusCombo.setValue("LOST"); // Figure 1: default status is LOST
+        navbar = new NavbarHelper(() -> (Stage) itemNameField.getScene().getWindow());
     }
 
     public void setOnItemSaved(Consumer<Item> callback) { this.onItemSaved = callback; }
@@ -130,14 +133,14 @@ public class ReportFormController implements Initializable {
 
     @FXML private void onCancel()  { navigateBack(); }
     @FXML private void onAddItem() { }
-    @FXML private void onMenu()    { }
+    @FXML private void onMenu()    { navbar.toggle(menuButton); }
 
     private void navigateBack() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) itemNameField.getScene().getWindow();
-            stage.setScene(new Scene(root, 960, 700));
+            SceneUtil.setScene(stage, root);
             stage.setTitle("PUPSRC Lost and Found");
         } catch (IOException e) { e.printStackTrace(); }
     }

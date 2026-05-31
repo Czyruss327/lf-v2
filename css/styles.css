@@ -98,6 +98,15 @@
     -fx-background-color: transparent;
 }
 
+.page-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+.page-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
 .item-grid {
     -fx-background-color: transparent;
     -fx-hgap: 16;
@@ -537,4 +546,100 @@
 .hamburger-menu .separator .line {
     -fx-border-color: #e8dedd;
     -fx-border-width: 1 0 0 0;
+}
+
+/* ── Account Page ──────────────────────────────────────────── */
+.account-card {
+    -fx-alignment: CENTER;
+}
+
+.account-divider {
+    -fx-opacity: 0.35;
+}
+
+/* Circle avatar (dark maroon default) */
+.avatar-pane {
+    -fx-cursor: hand;
+}
+
+.avatar-circle {
+    -fx-fill: #6B0D0D;
+}
+
+.avatar-initials {
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-family: "Bebas Neue", "Impact", "Arial Black";
+}
+
+/* Semi-transparent overlay shown on hover */
+.avatar-overlay {
+    -fx-background-color: rgba(0,0,0,0.45);
+    -fx-background-radius: 60;
+    -fx-padding: 0;
+}
+
+.account-role-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5A1010;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-letter-spacing: 1px;
+}
+
+.account-name-field {
+    -fx-alignment: CENTER;
+    -fx-font-size: 14px;
+}
+
+/* Dark pill buttons (matching screenshot) */
+.btn-dark-pill {
+    -fx-background-color: #5A1010;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 10 24 10 24;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+}
+.btn-dark-pill:hover {
+    -fx-background-color: #7B1C1C;
+}
+
+/* History section */
+.history-section-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A1A1A;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.history-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.history-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.history-card {
+    -fx-background-color: white;
+    -fx-border-color: #D8CECE;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.history-card-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A1A1A;
+}
+
+.history-card-sub {
+    -fx-font-size: 11px;
+    -fx-text-fill: #777777;
 }

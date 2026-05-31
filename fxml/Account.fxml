@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.AccountController"
+            stylesheets="@../css/styles.css"
+            prefWidth="960" prefHeight="700">
+
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
+            <padding><Insets top="10" bottom="10" left="20" right="20"/></padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <ImageView fx:id="logoImage" fitWidth="36" fitHeight="36" preserveRatio="true"/>
+                <Label text="PUPSRC Lost and Found" styleClass="navbar-title"/>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="addButton"
+                    text="+"
+                    styleClass="navbar-icon-btn"
+                    onAction="#onAddItem"/>
+
+            <Button fx:id="menuButton"
+                    text="☰"
+                    styleClass="navbar-icon-btn"
+                    onAction="#onMenu"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="page-scroll">
+            <VBox styleClass="main-content" alignment="TOP_CENTER">
+                <padding><Insets top="40" bottom="40" left="40" right="40"/></padding>
+
+                <VBox styleClass="details-card account-card" alignment="TOP_CENTER" spacing="0" maxWidth="540">
+                    <padding><Insets top="36" bottom="36" left="48" right="48"/></padding>
+
+                    <Label text="ACCOUNT"
+                           styleClass="page-title"
+                           maxWidth="Infinity"
+                           alignment="CENTER">
+                        <VBox.margin><Insets bottom="4"/></VBox.margin>
+                    </Label>
+
+                    <Separator styleClass="account-divider">
+                        <VBox.margin><Insets bottom="24"/></VBox.margin>
+                    </Separator>
+
+                    <VBox alignment="CENTER" spacing="0">
+                        <VBox.margin><Insets bottom="16"/></VBox.margin>
+
+                        <StackPane fx:id="avatarPane"
+                                   prefWidth="120" prefHeight="120"
+                                   maxWidth="120" maxHeight="120"
+                                   styleClass="avatar-pane"
+                                   onMouseClicked="#onChangePhoto">
+                            <Circle fx:id="avatarCircle"
+                                    radius="60"
+                                    styleClass="avatar-circle"/>
+                            <Label fx:id="initialsLabel"
+                                   styleClass="avatar-initials"
+                                   text="A"/>
+                            <ImageView fx:id="profileImageView"
+                                       fitWidth="120" fitHeight="120"
+                                       preserveRatio="false"
+                                       visible="false"/>
+                            <VBox fx:id="cameraOverlay"
+                                  alignment="CENTER"
+                                  styleClass="avatar-overlay"
+                                  mouseTransparent="true">
+                                <Label text="Change" style="-fx-font-size:10px;-fx-text-fill:white;"/>
+                                <Label text="Photo" style="-fx-font-size:10px;-fx-text-fill:white;"/>
+                            </VBox>
+                        </StackPane>
+                    </VBox>
+
+                    <VBox alignment="CENTER" maxWidth="320">
+                        <VBox.margin><Insets bottom="16"/></VBox.margin>
+                        <Label fx:id="roleLabel"
+                               text="Admin"
+                               styleClass="account-role-label"
+                               maxWidth="Infinity"
+                               alignment="CENTER">
+                            <VBox.margin><Insets bottom="8"/></VBox.margin>
+                        </Label>
+
+                        <TextField fx:id="adminNameField"
+                                   promptText="Admin name"
+                                   styleClass="form-input account-name-field"
+                                   maxWidth="320"
+                                   editable="false"/>
+                    </VBox>
+
+                    <Button text="+ Add Another Admin"
+                            styleClass="btn-dark-pill"
+                            maxWidth="260"
+                            onAction="#onAddAdmin">
+                        <VBox.margin><Insets bottom="10"/></VBox.margin>
+                    </Button>
+
+                    <Button text="Change Password"
+                            styleClass="btn-dark-pill"
+                            maxWidth="260"
+                            onAction="#onChangePassword">
+                        <VBox.margin><Insets bottom="24"/></VBox.margin>
+                    </Button>
+
+                    <Separator styleClass="account-divider">
+                        <VBox.margin><Insets bottom="12"/></VBox.margin>
+                    </Separator>
+
+                    <Label text="History" styleClass="history-section-label">
+                        <VBox.margin><Insets bottom="10"/></VBox.margin>
+                    </Label>
+
+                    <VBox fx:id="historyList" spacing="10" maxWidth="Infinity">
+                        <padding><Insets top="2" bottom="2"/></padding>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

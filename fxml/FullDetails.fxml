@@ -25,7 +25,7 @@
             <Label text="PUPSRC Lost and Found" styleClass="navbar-title"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="+" styleClass="navbar-icon-btn" onAction="#onAddItem"/>
-            <Button text="☰" styleClass="navbar-icon-btn" onAction="#onMenu"/>
+            <Button fx:id="menuButton" text="☰" styleClass="navbar-icon-btn" onAction="#onMenu"/>
         </HBox>
     </top>
 

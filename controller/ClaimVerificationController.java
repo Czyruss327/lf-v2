@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+
 /**
  * ClaimVerificationController
  * Figure 2 YES branch:
@@ -33,6 +34,7 @@ import java.util.ResourceBundle;
 public class ClaimVerificationController implements Initializable {
 
     @FXML private ImageView logoImage;
+    @FXML private Button    menuButton;
     @FXML private TextField claimNameField;
     @FXML private TextField studentIdField;
     @FXML private TextField contactField;
@@ -44,11 +46,13 @@ public class ClaimVerificationController implements Initializable {
 
     private Item item;
     private final List<File> proofImages = new ArrayList<>();
+    private NavbarHelper navbar;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadImage(logoImage, "/images/logo.png");
         errorLabel.setText("");
+        navbar = new NavbarHelper(() -> (Stage) claimNameField.getScene().getWindow());
     }
 
     public void setItem(Item item) {
@@ -113,14 +117,14 @@ public class ClaimVerificationController implements Initializable {
 
     @FXML private void onCancel()  { navigateBack(); }
     @FXML private void onAddItem() { navigateTo("/fxml/ReportForm.fxml", "New Post"); }
-    @FXML private void onMenu()    { }
+    @FXML private void onMenu()    { navbar.toggle(menuButton); }
 
     private void navigateBack() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) claimNameField.getScene().getWindow();
-            stage.setScene(new Scene(root, 960, 700));
+            SceneUtil.setScene(stage, root);
             stage.setTitle("PUPSRC Lost and Found");
         } catch (IOException e) { e.printStackTrace(); }
     }
@@ -130,7 +134,7 @@ public class ClaimVerificationController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Parent root = loader.load();
             Stage stage = (Stage) claimNameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneUtil.setScene(stage, root);
             stage.setTitle(title + " – PUPSRC Lost and Found");
         } catch (IOException e) { e.printStackTrace(); }
     }

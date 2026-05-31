@@ -16,8 +16,10 @@ public class App extends Application {
         Parent root = loader.load();
 
         primaryStage.setTitle("PUPSRC Lost and Found");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.setResizable(false);
+        primaryStage.setScene(new Scene(root, 960, 700));
+        primaryStage.setMinWidth(860);
+        primaryStage.setMinHeight(620);
+        primaryStage.setResizable(true);
         primaryStage.centerOnScreen();
         primaryStage.show();
     }

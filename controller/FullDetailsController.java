@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 public class FullDetailsController implements Initializable {
 
     @FXML private ImageView logoImage;
+    @FXML private Button    menuButton;
     @FXML private ImageView itemImage;
     @FXML private TextField itemNameField;
     @FXML private ComboBox<String> categoryCombo;
@@ -40,19 +41,22 @@ public class FullDetailsController implements Initializable {
     private Item item;
     private DashboardController dashboardController;
     private boolean editMode = false;
+    private NavbarHelper navbar;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadImage(logoImage, "/images/logo.png");
         categoryCombo.getItems().addAll(
-            "Bags & Wallets","Electronics","IDs & Documents",
-            "Clothing","School Supplies","Keys","Accessories","Others");
+                "Bags & Wallets","Electronics","IDs & Documents",
+                "Clothing","School Supplies","Keys","Accessories","Others");
         statusCombo.getItems().addAll("LOST","FOUND","CLAIMED");
         setAllReadOnly();
 
         boolean isAdmin = SessionManager.getInstance().isAdmin();
         editBtn.setVisible(isAdmin);
         editBtn.setManaged(isAdmin);
+
+        navbar = new NavbarHelper(() -> (Stage) itemNameField.getScene().getWindow());
     }
 
     public void setItem(Item item) {
@@ -106,14 +110,14 @@ public class FullDetailsController implements Initializable {
             ClaimVerificationController ctrl = loader.getController();
             ctrl.setItem(item);
             Stage stage = (Stage) itemNameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneUtil.setScene(stage, root);
             stage.setTitle("Claim Verification – PUPSRC Lost and Found");
         } catch (IOException e) { e.printStackTrace(); }
     }
 
     @FXML private void onCancel()  { navigateBack(); }
     @FXML private void onAddItem() { navigateTo("/fxml/ReportForm.fxml", "New Post"); }
-    @FXML private void onMenu()    { }
+    @FXML private void onMenu()    { navbar.toggle(menuButton); }
 
     private void setAllReadOnly() {
         itemNameField.setEditable(false);
@@ -132,7 +136,7 @@ public class FullDetailsController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) itemNameField.getScene().getWindow();
-            stage.setScene(new Scene(root, 960, 700));
+            SceneUtil.setScene(stage, root);
             stage.setTitle("PUPSRC Lost and Found");
         } catch (IOException e) { e.printStackTrace(); }
     }
@@ -142,7 +146,7 @@ public class FullDetailsController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Parent root = loader.load();
             Stage stage = (Stage) itemNameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            SceneUtil.setScene(stage, root);
             stage.setTitle(title + " – PUPSRC Lost and Found");
         } catch (IOException e) { e.printStackTrace(); }
     }
@@ -151,7 +155,7 @@ public class FullDetailsController implements Initializable {
         if (path == null || path.isBlank()) return;
         try {
             String uri = path.startsWith("file:") ? path
-                : (getClass().getResource(path) != null
+                    : (getClass().getResource(path) != null
                     ? getClass().getResource(path).toExternalForm() : null);
             if (uri != null) itemImage.setImage(new Image(uri, true));
         } catch (Exception ignored) {}

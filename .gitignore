@@ -62,5 +62,12 @@ crashlytics-build.properties
 
 # Created by .ignore support plugin (hsz.mobi)
 
-#Contain Secrets
+# Contain Secrets
 venv/
+
+# Ignore files for javafx
+.vscode/
+lib/
+bin/
+legal/
+src.zip

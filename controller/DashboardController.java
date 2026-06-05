@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 public class DashboardController implements Initializable {
 
     @FXML private TextField        searchField;
+    @FXML private Button           addButton;
     @FXML private Button           menuButton;
     @FXML private ComboBox<String> filterCombo;
     @FXML private ScrollPane       scrollPane;
@@ -46,9 +47,15 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadImage(logoImage, "/images/logo.png");
-        filterCombo.getItems().addAll("All", "Lost", "Found");
+        filterCombo.getItems().addAll("All", "Unclaimed", "Claimed");
         filterCombo.setValue("All");
         navbar = new NavbarHelper(() -> (Stage) searchField.getScene().getWindow());
+        if (!SessionManager.getInstance().isAdmin()) {
+            addButton.setVisible(false);
+            addButton.setManaged(false);
+            menuButton.setVisible(false);
+            menuButton.setManaged(false);
+        }
         scrollPane.viewportBoundsProperty().addListener((obs, oldBounds, bounds) ->
                 itemGrid.setPrefWrapLength(Math.max(360, bounds.getWidth() - 16)));
         renderGrid();
@@ -181,8 +188,8 @@ public class DashboardController implements Initializable {
     private List<Item> getFilteredItems() {
         return ItemStore.getInstance().getItems().stream()
             .filter(i -> {
-                if ("Lost".equals(currentFilter))  return i.getStatus() == Item.Status.LOST;
-                if ("Found".equals(currentFilter)) return i.getStatus() == Item.Status.FOUND;
+                if ("Unclaimed".equals(currentFilter)) return i.getStatus() == Item.Status.LOST;
+                if ("Claimed".equals(currentFilter))   return i.getStatus() == Item.Status.FOUND;
                 return true;
             })
             .filter(i -> searchQuery.isEmpty()

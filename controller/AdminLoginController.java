@@ -81,6 +81,11 @@ public class AdminLoginController implements Initializable {
         navigateTo("/fxml/CreateAdminAccount.fxml", "Create Admin Account – PUPSRC Lost and Found");
     }
 
+    @FXML
+    private void onBack() {
+        navigateTo("/fxml/Login.fxml", "PUPSRC Lost and Found");
+    }
+
     private void navigateToDashboard() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));

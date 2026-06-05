@@ -5,19 +5,12 @@
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 
-<!--
-    FullDetails.fxml
-    Shows full item details + reporter information.
-    Opened when user clicks VIEW DETAILS on a card.
-    Buttons: CANCEL | EDIT | CLAIM
--->
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.FullDetailsController"
             stylesheets="@../css/styles.css"
             prefWidth="960" prefHeight="700">
 
-    <!-- NAVBAR -->
     <top>
         <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
             <padding><Insets top="10" bottom="10" left="20" right="20"/></padding>
@@ -25,20 +18,17 @@
             <Label text="PUPSRC Lost and Found" styleClass="navbar-title"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="+" styleClass="navbar-icon-btn" onAction="#onAddItem"/>
-            <Button fx:id="menuButton" text="☰" styleClass="navbar-icon-btn" onAction="#onMenu"/>
+            <Button fx:id="menuButton" text="..." styleClass="navbar-icon-btn" onAction="#onMenu"/>
         </HBox>
     </top>
 
-    <!-- CONTENT -->
     <center>
         <VBox alignment="TOP_CENTER" styleClass="main-content">
             <padding><Insets top="32" bottom="32" left="60" right="60"/></padding>
 
-            <!-- Card -->
             <VBox styleClass="details-card" spacing="0">
                 <padding><Insets top="32" bottom="32" left="48" right="48"/></padding>
 
-                <!-- Title -->
                 <Label text="FULL DETAILS"
                        styleClass="page-title"
                        maxWidth="Infinity"
@@ -46,15 +36,10 @@
                     <VBox.margin><Insets bottom="28"/></VBox.margin>
                 </Label>
 
-                <!-- Two-column layout -->
                 <HBox spacing="48" alignment="TOP_LEFT">
-
-                    <!-- LEFT — Lost Item Details -->
                     <VBox spacing="16" prefWidth="380" minWidth="320">
+                        <Label text="Item Details" styleClass="section-heading"/>
 
-                        <Label text="Lost Item Details" styleClass="section-heading"/>
-
-                        <!-- Photo -->
                         <StackPane styleClass="detail-img-wrap"
                                    prefWidth="320" prefHeight="200"
                                    maxWidth="320">
@@ -63,15 +48,13 @@
                                        preserveRatio="false"/>
                         </StackPane>
 
-                        <!-- Lost Item Name -->
                         <VBox spacing="5">
-                            <Label text="Lost Item Name" styleClass="form-label"/>
+                            <Label text="Item Name" styleClass="form-label"/>
                             <TextField fx:id="itemNameField"
                                        styleClass="form-input detail-readonly"
                                        editable="false"/>
                         </VBox>
 
-                        <!-- Category -->
                         <VBox spacing="5">
                             <Label text="Category" styleClass="form-label"/>
                             <ComboBox fx:id="categoryCombo"
@@ -80,7 +63,6 @@
                                       disable="true"/>
                         </VBox>
 
-                        <!-- Description -->
                         <VBox spacing="5">
                             <Label text="Description" styleClass="form-label"/>
                             <TextArea fx:id="descriptionArea"
@@ -89,15 +71,11 @@
                                       wrapText="true"
                                       editable="false"/>
                         </VBox>
-
                     </VBox>
 
-                    <!-- RIGHT — Reporter Information -->
                     <VBox spacing="16" HBox.hgrow="ALWAYS">
+                        <Label text="Finder's Information" styleClass="section-heading"/>
 
-                        <Label text="Reporter Information" styleClass="section-heading"/>
-
-                        <!-- Name -->
                         <VBox spacing="5">
                             <Label text="Name" styleClass="form-label"/>
                             <TextField fx:id="reporterNameField"
@@ -105,7 +83,6 @@
                                        editable="false"/>
                         </VBox>
 
-                        <!-- Student ID -->
                         <VBox spacing="5">
                             <Label text="Student ID (If Student)" styleClass="form-label"/>
                             <TextField fx:id="studentIdField"
@@ -114,7 +91,6 @@
                                        editable="false"/>
                         </VBox>
 
-                        <!-- Contact Number -->
                         <VBox spacing="5">
                             <Label text="Contact Number" styleClass="form-label"/>
                             <TextField fx:id="contactField"
@@ -123,23 +99,20 @@
                                        editable="false"/>
                         </VBox>
 
-                        <!-- Location Lost/Found -->
                         <VBox spacing="5">
-                            <Label text="Location Lost/ Found" styleClass="form-label"/>
+                            <Label text="Location Found" styleClass="form-label"/>
                             <TextField fx:id="locationField"
                                        styleClass="form-input detail-readonly"
                                        editable="false"/>
                         </VBox>
 
-                        <!-- Date Lost -->
                         <VBox spacing="5">
-                            <Label text="Date Lost" styleClass="form-label"/>
-                            <TextField fx:id="dateLostField"
+                            <Label text="Date Found" styleClass="form-label"/>
+                            <TextField fx:id="dateFoundField"
                                        styleClass="form-input detail-readonly"
                                        editable="false"/>
                         </VBox>
 
-                        <!-- Status -->
                         <VBox spacing="5">
                             <Label text="Status" styleClass="form-label"/>
                             <ComboBox fx:id="statusCombo"
@@ -147,24 +120,17 @@
                                       maxWidth="Infinity"
                                       disable="true"/>
                         </VBox>
-
                     </VBox>
-
                 </HBox>
 
-                <!-- Action Buttons -->
                 <HBox spacing="16" alignment="CENTER">
                     <VBox.margin><Insets top="32"/></VBox.margin>
-                    <Button text="CANCEL" styleClass="btn-view" prefWidth="180"
+                    <Button text="CANCEL" styleClass="btn-cancel" prefWidth="180"
                             onAction="#onCancel"/>
-                    <Button fx:id="editBtn" text="EDIT" styleClass="btn-view" prefWidth="180"
-                            onAction="#onEdit"/>
                     <Button fx:id="claimBtn" text="CLAIM" styleClass="btn-view" prefWidth="180"
                             onAction="#onClaim"/>
                 </HBox>
-
             </VBox>
         </VBox>
     </center>
-
 </BorderPane>

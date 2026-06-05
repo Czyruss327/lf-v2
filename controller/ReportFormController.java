@@ -42,7 +42,6 @@ public class ReportFormController implements Initializable {
     @FXML private TextField  studentIdField;
     @FXML private TextField  contactField;
     @FXML private TextField  locationField;
-    @FXML private TextField  dateLostField;
     @FXML private TextField  dateFoundField;
     @FXML private ComboBox<String> statusCombo;
     @FXML private Label      errorLabel;
@@ -59,8 +58,8 @@ public class ReportFormController implements Initializable {
             "Bags & Wallets", "Electronics", "IDs & Documents",
             "Clothing", "School Supplies", "Keys", "Accessories", "Others"
         );
-        statusCombo.getItems().addAll("LOST", "FOUND");
-        statusCombo.setValue("LOST"); // Figure 1: default status is LOST
+        statusCombo.getItems().addAll("UNCLAIMED", "CLAIMED");
+        statusCombo.setValue("UNCLAIMED");
         navbar = new NavbarHelper(() -> (Stage) itemNameField.getScene().getWindow());
     }
 
@@ -105,16 +104,16 @@ public class ReportFormController implements Initializable {
         if (reporterNameField.getText().isBlank()){ errorLabel.setText("Reporter name is required.");return;}
         if (contactField.getText().isBlank())    { errorLabel.setText("Contact number is required.");return;}
         if (locationField.getText().isBlank())   { errorLabel.setText("Location is required.");     return; }
-        if (dateLostField.getText().isBlank())   { errorLabel.setText("Date is required.");         return; }
+        if (dateFoundField.getText().isBlank())  { errorLabel.setText("Date found is required.");   return; }
         if (statusCombo.getValue() == null)      { errorLabel.setText("Please select a status.");   return; }
 
-        Item.Status status = "FOUND".equals(statusCombo.getValue()) ? Item.Status.FOUND : Item.Status.LOST;
+        Item.Status status = "CLAIMED".equals(statusCombo.getValue()) ? Item.Status.FOUND : Item.Status.LOST;
         String imagePath = uploadedImages.isEmpty() ? "" : uploadedImages.get(0).toURI().toString();
 
         Item newItem = new Item(0,
             itemNameField.getText().trim(), status,
             descriptionArea.getText().trim(),
-            dateLostField.getText().trim(),
+            dateFoundField.getText().trim(),
             locationField.getText().trim(), imagePath);
         newItem.setCategory(categoryCombo.getValue());
         newItem.setReporterName(reporterNameField.getText().trim());

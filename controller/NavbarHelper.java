@@ -3,24 +3,13 @@ package controller;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.SessionManager;
 
 import java.io.IOException;
 import java.util.Optional;
 
-/**
- * NavbarHelper — shared hamburger-menu logic for every page.
- * Usage:
- *   private NavbarHelper navbar;
- *
- *   // In initialize():
- *   navbar = new NavbarHelper(() -> (Stage) anyNode.getScene().getWindow());
- *
- *   // In @FXML onMenu():
- *   navbar.toggle(menuButton);
- */
 public class NavbarHelper {
 
     public interface StageSupplier { Stage get(); }
@@ -33,26 +22,28 @@ public class NavbarHelper {
         build();
     }
 
-    /** Show or hide the dropdown below the given button. */
     public void toggle(Button anchor) {
-        if (menu.isShowing()) { menu.hide(); return; }
+        if (menu.isShowing()) {
+            menu.hide();
+            return;
+        }
         menu.show(anchor, Side.BOTTOM, 0, 4);
     }
-
-    // ── Private ──────────────────────────────────────────────
 
     private void build() {
         menu = new ContextMenu();
         menu.getStyleClass().add("hamburger-menu");
 
-        menu.getItems().addAll(
-            item("👤  Account",             () -> go("/fxml/Account.fxml",            "Account – PUPSRC Lost and Found")),
-            item("🏠  Dashboard",            () -> go("/fxml/Dashboard.fxml",          "PUPSRC Lost and Found")),
-            item("📋  Report Form",          () -> go("/fxml/ReportForm.fxml",         "Report Form – PUPSRC Lost and Found")),
-            item("✅  Claim Verification",   () -> go("/fxml/ClaimVerification.fxml",  "Claim Verification – PUPSRC Lost and Found")),
-            new SeparatorMenuItem(),
-            logoutItem()
-        );
+        menu.getItems().add(item("Account", () -> go("/fxml/Account.fxml", "Account - PUPSRC Lost and Found")));
+        menu.getItems().add(item("Dashboard", () -> go("/fxml/Dashboard.fxml", "PUPSRC Lost and Found")));
+
+        if (SessionManager.getInstance().isAdmin()) {
+            menu.getItems().add(item("Found Items Report", () -> go("/fxml/ReportForm.fxml", "Found Items Report - PUPSRC Lost and Found")));
+            menu.getItems().add(item("Claim Verification", () -> go("/fxml/ClaimVerification.fxml", "Claim Verification - PUPSRC Lost and Found")));
+        }
+
+        menu.getItems().add(new SeparatorMenuItem());
+        menu.getItems().add(logoutItem());
     }
 
     private MenuItem item(String label, Runnable action) {
@@ -63,7 +54,7 @@ public class NavbarHelper {
     }
 
     private MenuItem logoutItem() {
-        MenuItem mi = new MenuItem("↩  Log Out");
+        MenuItem mi = new MenuItem("Log Out");
         mi.getStyleClass().addAll("menu-item-styled", "menu-item-logout");
         mi.setOnAction(e -> handleLogout());
         return mi;
@@ -76,7 +67,7 @@ public class NavbarHelper {
         confirm.setContentText("Are you sure you want to log out?");
         Optional<ButtonType> result = confirm.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            model.SessionManager.getInstance().logout();
+            SessionManager.getInstance().logout();
             go("/fxml/Login.fxml", "PUPSRC Lost and Found");
         }
     }

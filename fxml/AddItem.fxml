@@ -6,7 +6,7 @@
 
 <!--
     AddItem.fxml
-    Form for reporting a new lost or found item.
+    Form for reporting an item.
     Open as a separate Stage when the + button is clicked.
 -->
 <BorderPane xmlns="http://javafx.com/javafx"
@@ -41,10 +41,10 @@
             <VBox spacing="6">
                 <Label text="Status *" styleClass="form-label"/>
                 <HBox spacing="16">
-                    <RadioButton fx:id="lostRadio" text="Lost" styleClass="form-radio">
+                    <RadioButton fx:id="lostRadio" text="Unclaimed" styleClass="form-radio">
                         <toggleGroup><ToggleGroup fx:id="statusGroup"/></toggleGroup>
                     </RadioButton>
-                    <RadioButton fx:id="foundRadio" text="Found" toggleGroup="$statusGroup"
+                    <RadioButton fx:id="foundRadio" text="Claimed" toggleGroup="$statusGroup"
                                  styleClass="form-radio"/>
                 </HBox>
             </VBox>
@@ -72,7 +72,7 @@
                             <String fx:value="Court Bleacher"/>
                             <String fx:value="Court"/>
                             <String fx:value="Kubo"/>
-                            <String fx:value="School"/>
+                            <String fx:value="Main Lobby"/>
                             <String fx:value="Room 201"/>
                             <String fx:value="Room 302"/>
                             <String fx:value="Room 303"/>
@@ -101,7 +101,7 @@
             <padding><Insets top="12" bottom="20" left="28" right="28"/></padding>
             <Label fx:id="errorLabel" styleClass="error-label" HBox.hgrow="ALWAYS"/>
             <Button text="SUBMIT" styleClass="btn-view" onAction="#onSubmit"/>
-            <Button text="CANCEL" styleClass="btn-outline" onAction="#onClose"/>
+            <Button text="CANCEL" styleClass="btn-cancel" onAction="#onClose"/>
         </HBox>
     </bottom>
 

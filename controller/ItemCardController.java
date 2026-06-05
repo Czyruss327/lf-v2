@@ -24,6 +24,7 @@ public class ItemCardController implements Initializable {
     @FXML private Label     statusBadge;
     @FXML private Label     itemName;
     @FXML private Label     itemColor;
+    @FXML private Label     itemCategory;
     @FXML private Label     itemDate;
     @FXML private Label     itemLocation;
     @FXML private Button    viewDetailsBtn;
@@ -43,9 +44,10 @@ public class ItemCardController implements Initializable {
         this.item = item;
 
         itemName.setText(item.getName());
-        itemColor.setText(item.getColor());
-        itemDate.setText(item.getDate());
-        itemLocation.setText(item.getLocation());
+        itemColor.setText("Color: " + valueOrDash(item.getColor()));
+        itemCategory.setText("Category: " + valueOrDash(item.getCategory()));
+        itemDate.setText("Posted: " + valueOrDash(item.getDate()));
+        itemLocation.setText("Found: " + valueOrDash(item.getLocation()));
 
         statusBadge.setText(item.getStatusLabel());
         statusBadge.getStyleClass().removeAll("badge-lost", "badge-found");
@@ -55,6 +57,10 @@ public class ItemCardController implements Initializable {
         );
 
         loadImage(item.getImagePath());
+    }
+
+    private String valueOrDash(String value) {
+        return value == null || value.isBlank() ? "-" : value;
     }
 
     public void setOnViewDetails(Consumer<Item> callback) {

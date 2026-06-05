@@ -25,7 +25,7 @@
                    fitWidth="195" fitHeight="110"
                    preserveRatio="false"/>
 
-        <!-- LOST / FOUND badge -->
+        <!-- Claimed / Unclaimed badge -->
         <Label fx:id="statusBadge"
                styleClass="badge"
                StackPane.alignment="TOP_RIGHT">
@@ -41,6 +41,7 @@
         <Label fx:id="itemName" styleClass="card-name" wrapText="true"/>
 
         <Label fx:id="itemColor" styleClass="card-meta"/>
+        <Label fx:id="itemCategory" styleClass="card-meta"/>
         <Label fx:id="itemDate"  styleClass="card-meta"/>
         <Label fx:id="itemLocation" styleClass="card-meta"/>
 

@@ -37,7 +37,7 @@ public class ItemStore {
         items.remove(item);
     }
 
-    /** Figure 2: update status to FOUND in the store. */
+    /** Figure 2: update status to CLAIMED in the store. */
     public void markAsClaimed(Item item, String claimantName) {
         item.setStatus(Item.Status.FOUND);
         AuditLog.logClaim(item.getName(), claimantName,
@@ -51,7 +51,7 @@ public class ItemStore {
         Item w = new Item(1, "Wallet", Item.Status.LOST, "Brown", "March 24, 2026", "Court Bleacher", "/images/wallet.jpg");
         w.setReporterName("Dela Cruz, Juan"); w.setStudentId("2023-00000-SR-0"); w.setContactNumber("0912-345-6789"); w.setCategory("Bags & Wallets");
         items.add(w);
-        Item p = new Item(2, "Android Phone", Item.Status.LOST, "Silver", "March 15, 2026", "School", "/images/phone.jpg");
+        Item p = new Item(2, "Android Phone", Item.Status.LOST, "Silver", "March 15, 2026", "Main Lobby", "/images/phone.jpg");
         p.setCategory("Electronics"); items.add(p);
         Item id1 = new Item(3, "School ID", Item.Status.LOST, "Red", "March 25, 2026", "Room 201", "/images/id.jpg");
         id1.setCategory("IDs & Documents"); items.add(id1);
@@ -63,7 +63,7 @@ public class ItemStore {
         items.add(new Item(8, "Book", Item.Status.LOST, "Yellow", "April 6, 2026", "Court", "/images/book.jpg"));
         items.add(new Item(9, "iPhone", Item.Status.LOST, "Silver", "April 14, 2026", "Room 303", "/images/iphone.jpg"));
         items.add(new Item(10, "Umbrella", Item.Status.LOST, "Green", "May 20, 2026", "Court", "/images/umbrella.jpg"));
-        items.add(new Item(11, "School ID", Item.Status.LOST, "Red", "May 05, 2026", "School", "/images/id2.jpg"));
+        items.add(new Item(11, "School ID", Item.Status.LOST, "Red", "May 05, 2026", "Registrar Window", "/images/id2.jpg"));
         items.add(new Item(12, "BAG", Item.Status.LOST, "Black", "May 20, 2026", "Court", "/images/bag.jpg"));
         items.add(new Item(13, "Aquaflask", Item.Status.FOUND, "Gray", "May 19, 2026", "Room 212", "/images/aquaflask2.jpg"));
         items.add(new Item(14, "Bag", Item.Status.FOUND, "Black", "March 20, 2026", "Court", "/images/bag2.jpg"));

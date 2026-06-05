@@ -5,20 +5,12 @@
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 
-<!--
-    ClaimVerification.fxml
-    Form for verifying a claim on a lost/found item.
-    Fields: Name, Student ID, Contact Number, Date Lost, Date Found,
-            Course and Section, Proof of Claim (image upload)
-    Buttons: CANCEL | CONFIRM CLAIM
--->
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controller.ClaimVerificationController"
             stylesheets="@../css/styles.css"
             prefWidth="960" prefHeight="700">
 
-    <!-- NAVBAR -->
     <top>
         <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
             <padding><Insets top="10" bottom="10" left="20" right="20"/></padding>
@@ -26,20 +18,17 @@
             <Label text="PUPSRC Lost and Found" styleClass="navbar-title"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="+" styleClass="navbar-icon-btn" onAction="#onAddItem"/>
-            <Button fx:id="menuButton" text="☰" styleClass="navbar-icon-btn" onAction="#onMenu"/>
+            <Button fx:id="menuButton" text="..." styleClass="navbar-icon-btn" onAction="#onMenu"/>
         </HBox>
     </top>
 
-    <!-- CONTENT -->
     <center>
         <VBox alignment="TOP_CENTER" styleClass="main-content">
             <padding><Insets top="40" bottom="40" left="80" right="80"/></padding>
 
-            <!-- Card -->
             <VBox styleClass="details-card" spacing="0">
                 <padding><Insets top="36" bottom="36" left="56" right="56"/></padding>
 
-                <!-- Title -->
                 <Label text="CLAIM VERIFICATION"
                        styleClass="page-title"
                        maxWidth="Infinity"
@@ -47,10 +36,7 @@
                     <VBox.margin><Insets bottom="32"/></VBox.margin>
                 </Label>
 
-                <!-- Two-column grid -->
                 <GridPane hgap="40" vgap="18">
-
-                    <!-- ROW 0: Name | Date Lost + Date Found -->
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <HBox spacing="4">
                             <Label text="Name" styleClass="form-label"/>
@@ -62,27 +48,16 @@
                                    prefWidth="340"/>
                     </VBox>
 
-                    <HBox spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <VBox spacing="5" HBox.hgrow="ALWAYS">
-                            <HBox spacing="4">
-                                <Label text="Date Lost" styleClass="form-label"/>
-                                <Label text="*" styleClass="required-star"/>
-                            </HBox>
-                            <TextField fx:id="dateLostField"
-                                       promptText="dd/mm/yyyy"
-                                       styleClass="form-input"
-                                       prefWidth="160"/>
-                        </VBox>
-                        <VBox spacing="5" HBox.hgrow="ALWAYS">
-                            <Label text="Date Found" styleClass="form-label"/>
-                            <TextField fx:id="dateFoundField"
-                                       promptText="dd/mm/yyyy"
-                                       styleClass="form-input"
-                                       prefWidth="160"/>
-                        </VBox>
-                    </HBox>
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <HBox spacing="4">
+                            <Label text="Course and Section" styleClass="form-label"/>
+                            <Label text="*" styleClass="required-star"/>
+                        </HBox>
+                        <TextField fx:id="courseSectionField"
+                                   styleClass="form-input"
+                                   prefWidth="340"/>
+                    </VBox>
 
-                    <!-- ROW 1: Student ID | Course and Section -->
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
                         <Label text="Student ID (If Student)" styleClass="form-label"/>
                         <TextField fx:id="studentIdField"
@@ -93,17 +68,6 @@
 
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
                         <HBox spacing="4">
-                            <Label text="Course and Section" styleClass="form-label"/>
-                            <Label text="*" styleClass="required-star"/>
-                        </HBox>
-                        <TextField fx:id="courseSectionField"
-                                   styleClass="form-input"
-                                   prefWidth="340"/>
-                    </VBox>
-
-                    <!-- ROW 2: Contact Number | Proof of Claim -->
-                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                        <HBox spacing="4">
                             <Label text="Contact Number" styleClass="form-label"/>
                             <Label text="*" styleClass="required-star"/>
                         </HBox>
@@ -113,37 +77,37 @@
                                    prefWidth="340"/>
                     </VBox>
 
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                        <Label text="Date and Time Claimed" styleClass="form-label"/>
+                        <TextField fx:id="claimedAtField"
+                                   styleClass="form-input detail-readonly"
+                                   editable="false"
+                                   prefWidth="340"/>
+                    </VBox>
+
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                        <HBox spacing="4">
-                            <Label text="Proof of Claim" styleClass="form-label"/>
-                            <Label text="*" styleClass="required-star"/>
-                        </HBox>
+                        <Label text="Proof of Claim (Optional)" styleClass="form-label"/>
                         <Button text="Upload Images"
                                 styleClass="upload-btn"
                                 prefWidth="340"
                                 onAction="#onUploadProof"/>
                         <VBox fx:id="proofListBox" spacing="6"/>
                     </VBox>
-
                 </GridPane>
 
-                <!-- Error label -->
                 <Label fx:id="errorLabel" styleClass="error-label"
                        wrapText="true" maxWidth="Infinity">
                     <VBox.margin><Insets top="8"/></VBox.margin>
                 </Label>
 
-                <!-- Action Buttons -->
                 <HBox spacing="16" alignment="CENTER">
                     <VBox.margin><Insets top="36"/></VBox.margin>
-                    <Button text="CANCEL"        styleClass="btn-view" prefWidth="200"
+                    <Button text="CANCEL" styleClass="btn-cancel" prefWidth="200"
                             onAction="#onCancel"/>
                     <Button text="CONFIRM CLAIM" styleClass="btn-view" prefWidth="200"
                             onAction="#onConfirmClaim"/>
                 </HBox>
-
             </VBox>
         </VBox>
     </center>
-
 </BorderPane>

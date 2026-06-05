@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * AuditLog — Figure 2: system saves information in the audit logs
- * and updates the status as FOUND when a claim is confirmed.
+ * and updates the status as CLAIMED when a claim is confirmed.
  */
 public class AuditLog {
 
@@ -43,15 +43,15 @@ public class AuditLog {
 
     private static final List<Entry> LOG = new ArrayList<>();
 
-    /** Figure 2: log a claim confirmation — status updated to FOUND. */
+    /** Figure 2: log a claim confirmation — status updated to CLAIMED. */
     public static void logClaim(String itemName, String claimantName, String adminUser) {
-        LOG.add(new Entry("ITEM CLAIMED — status updated to FOUND", itemName, claimantName, adminUser));
+        LOG.add(new Entry("ITEM CLAIMED - status updated to CLAIMED", itemName, claimantName, adminUser));
         System.out.println("AUDIT: " + LOG.get(LOG.size() - 1));
     }
 
     /** Figure 1: log a new item posted to the dashboard. */
     public static void logNewPost(String itemName, String adminUser) {
-        LOG.add(new Entry("NEW ITEM POSTED — status: LOST", itemName, "", adminUser));
+        LOG.add(new Entry("NEW ITEM POSTED - status: UNCLAIMED", itemName, "", adminUser));
         System.out.println("AUDIT: " + LOG.get(LOG.size() - 1));
     }
 

@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,19 +17,12 @@ import model.ItemStore;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
-/**
- * ClaimVerificationController
- * Figure 2 YES branch:
- *  1. Admin opens Claimant verification form and inputs claimant's info.
- *  2. System saves information in the audit logs and updates status as FOUND.
- *  3. System removes item's post from the public dashboard.
- *  4. Admin hands over physical item to the claimant.
- */
 public class ClaimVerificationController implements Initializable {
 
     @FXML private ImageView logoImage;
@@ -38,9 +30,8 @@ public class ClaimVerificationController implements Initializable {
     @FXML private TextField claimNameField;
     @FXML private TextField studentIdField;
     @FXML private TextField contactField;
-    @FXML private TextField dateLostField;
-    @FXML private TextField dateFoundField;
     @FXML private TextField courseSectionField;
+    @FXML private TextField claimedAtField;
     @FXML private VBox      proofListBox;
     @FXML private Label     errorLabel;
 
@@ -52,12 +43,12 @@ public class ClaimVerificationController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         loadImage(logoImage, "/images/logo.png");
         errorLabel.setText("");
+        claimedAtField.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy h:mm a")));
         navbar = new NavbarHelper(() -> (Stage) claimNameField.getScene().getWindow());
     }
 
     public void setItem(Item item) {
         this.item = item;
-        if (item != null) dateLostField.setText(item.getDate());
     }
 
     @FXML
@@ -65,7 +56,7 @@ public class ClaimVerificationController implements Initializable {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Upload Proof of Claim");
         chooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Images / PDF", "*.png","*.jpg","*.jpeg","*.pdf"));
+            new FileChooser.ExtensionFilter("Images / PDF", "*.png", "*.jpg", "*.jpeg", "*.pdf"));
         Stage stage = (Stage) claimNameField.getScene().getWindow();
         List<File> files = chooser.showOpenMultipleDialog(stage);
         if (files == null) return;
@@ -86,15 +77,20 @@ public class ClaimVerificationController implements Initializable {
     @FXML
     private void onConfirmClaim() {
         errorLabel.setText("");
-        if (claimNameField.getText().isBlank())    { errorLabel.setText("Name is required.");                  return; }
-        if (contactField.getText().isBlank())       { errorLabel.setText("Contact number is required.");       return; }
-        if (dateLostField.getText().isBlank())      { errorLabel.setText("Date Lost is required.");            return; }
-        if (courseSectionField.getText().isBlank()) { errorLabel.setText("Course and Section is required.");   return; }
-        if (proofImages.isEmpty())                  { errorLabel.setText("Please upload proof of claim.");     return; }
+        if (claimNameField.getText().isBlank()) {
+            errorLabel.setText("Name is required.");
+            return;
+        }
+        if (contactField.getText().isBlank()) {
+            errorLabel.setText("Contact number is required.");
+            return;
+        }
+        if (courseSectionField.getText().isBlank()) {
+            errorLabel.setText("Course and Section is required.");
+            return;
+        }
 
         if (item != null) {
-            // Figure 2: system saves to audit logs, updates status FOUND,
-            // removes item's post from public dashboard view.
             ItemStore.getInstance().markAsClaimed(item, claimNameField.getText().trim());
         }
 
@@ -107,16 +103,17 @@ public class ClaimVerificationController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(
             "Claim confirmed!\n\n" +
-            "• Audit log updated\n" +
-            "• Item status set to FOUND\n" +
-            "• Item removed from public dashboard\n\n" +
+            "- Audit log updated\n" +
+            "- Item status set to CLAIMED\n" +
+            "- Date/time claimed: " + claimedAtField.getText() + "\n" +
+            "- Item removed from public dashboard\n\n" +
             "Please hand over the physical item to the claimant.");
         alert.showAndWait();
         navigateBack();
     }
 
     @FXML private void onCancel()  { navigateBack(); }
-    @FXML private void onAddItem() { navigateTo("/fxml/ReportForm.fxml", "New Post"); }
+    @FXML private void onAddItem() { navigateTo("/fxml/ReportForm.fxml", "Found Items Report"); }
     @FXML private void onMenu()    { navbar.toggle(menuButton); }
 
     private void navigateBack() {
@@ -126,7 +123,9 @@ public class ClaimVerificationController implements Initializable {
             Stage stage = (Stage) claimNameField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle("PUPSRC Lost and Found");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void navigateTo(String path, String title) {
@@ -135,12 +134,15 @@ public class ClaimVerificationController implements Initializable {
             Parent root = loader.load();
             Stage stage = (Stage) claimNameField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
-            stage.setTitle(title + " – PUPSRC Lost and Found");
-        } catch (IOException e) { e.printStackTrace(); }
+            stage.setTitle(title + " - PUPSRC Lost and Found");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadImage(ImageView iv, String path) {
-        try { URL url = getClass().getResource(path);
+        try {
+            URL url = getClass().getResource(path);
             if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
         } catch (Exception ignored) {}
     }

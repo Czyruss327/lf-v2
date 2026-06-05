@@ -46,7 +46,7 @@ public class Item {
     public Status getStatus()                      { return status.get(); }
     public void setStatus(Status v)                { status.set(v); }
     public ObjectProperty<Status> statusProperty() { return status; }
-    public String getStatusLabel()                 { return status.get() == Status.LOST ? "LOST" : "FOUND"; }
+    public String getStatusLabel()                 { return status.get() == Status.LOST ? "UNCLAIMED" : "CLAIMED"; }
 
     // color / description
     public String getColor()               { return color.get(); }

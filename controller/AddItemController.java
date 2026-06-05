@@ -68,7 +68,7 @@ public class AddItemController implements Initializable {
             return;
         }
         if (statusGroup.getSelectedToggle() == null) {
-            errorLabel.setText("Please select Lost or Found.");
+            errorLabel.setText("Please select Unclaimed or Claimed.");
             return;
         }
         if (datePicker.getValue() == null) {

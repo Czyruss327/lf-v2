@@ -36,6 +36,7 @@ public class DashboardController implements Initializable {
     @FXML private FlowPane         itemGrid;
     @FXML private HBox             paginationBox;
     @FXML private ImageView        logoImage;
+    @FXML private Label            dashboardTitleLabel;
 
     private NavbarHelper navbar;
 
@@ -50,12 +51,17 @@ public class DashboardController implements Initializable {
         filterCombo.getItems().addAll("All", "Unclaimed", "Claimed");
         filterCombo.setValue("All");
         navbar = new NavbarHelper(() -> (Stage) searchField.getScene().getWindow());
-        if (!SessionManager.getInstance().isAdmin()) {
+        if (SessionManager.getInstance().isAdmin()) {
+            dashboardTitleLabel.setText("ADMIN DASHBOARD");
+        }
+        else {
+            dashboardTitleLabel.setText("STUDENT DASHBOARD");
             addButton.setVisible(false);
             addButton.setManaged(false);
             menuButton.setVisible(false);
             menuButton.setManaged(false);
         }
+
         scrollPane.viewportBoundsProperty().addListener((obs, oldBounds, bounds) ->
                 itemGrid.setPrefWrapLength(Math.max(360, bounds.getWidth() - 16)));
         renderGrid();

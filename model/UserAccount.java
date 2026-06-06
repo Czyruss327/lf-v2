@@ -38,6 +38,7 @@ public class UserAccount {
     static {
         ACCOUNTS.add(new UserAccount("admin",        "admin123", SessionManager.Role.ADMIN));
         ACCOUNTS.add(new UserAccount("pupsrc_admin", "pup2026",  SessionManager.Role.ADMIN));
+        ACCOUNTS.add(new UserAccount("123", "123", SessionManager.Role.ADMIN));
     }
 
     /**

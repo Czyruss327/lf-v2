@@ -70,11 +70,6 @@ public class AdminLoginController implements Initializable {
         navigateToDashboard();
     }
 
-    @FXML
-    private void onForgotPassword() {
-        errorLabel.setText("Please contact your system administrator.");
-    }
-
     /** Figure 3 NO branch — navigate to create account. */
     @FXML
     private void onCreateAccount() {

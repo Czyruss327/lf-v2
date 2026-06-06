@@ -10,10 +10,10 @@ import java.util.List;
  *
  * DEFAULT ADMIN ACCOUNTS:
  * ┌──────────────┬──────────┬───────┐
- * │ Username     │ Password │ Role  │
+ * │ Username │ Password │ Role │
  * ├──────────────┼──────────┼───────┤
- * │ admin        │ admin123 │ ADMIN │
- * │ pupsrc_admin │ pup2026  │ ADMIN │
+ * │ admin │ admin123 │ ADMIN │
+ * │ pupsrc_admin │ pup2026 │ ADMIN │
  * └──────────────┴──────────┴───────┘
  */
 public class UserAccount {
@@ -25,19 +25,27 @@ public class UserAccount {
     private UserAccount(String username, String password, SessionManager.Role role) {
         this.username = username;
         this.password = password;
-        this.role     = role;
+        this.role = role;
     }
 
-    public String getUsername()           { return username; }
-    public String getPassword()           { return password; }
-    public SessionManager.Role getRole()  { return role; }
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public SessionManager.Role getRole() {
+        return role;
+    }
 
     // ── In-memory account store ───────────────────────────────
     private static final List<UserAccount> ACCOUNTS = new ArrayList<>();
 
     static {
-        ACCOUNTS.add(new UserAccount("admin",        "admin123", SessionManager.Role.ADMIN));
-        ACCOUNTS.add(new UserAccount("pupsrc_admin", "pup2026",  SessionManager.Role.ADMIN));
+        ACCOUNTS.add(new UserAccount("admin", "admin123", SessionManager.Role.ADMIN));
+        ACCOUNTS.add(new UserAccount("pupsrc_admin", "pup2026", SessionManager.Role.ADMIN));
         ACCOUNTS.add(new UserAccount("123", "123", SessionManager.Role.ADMIN));
     }
 
@@ -59,7 +67,8 @@ public class UserAccount {
      */
     public static boolean usernameExists(String username) {
         for (UserAccount acc : ACCOUNTS) {
-            if (acc.username.equalsIgnoreCase(username)) return true;
+            if (acc.username.equalsIgnoreCase(username))
+                return true;
         }
         return false;
     }

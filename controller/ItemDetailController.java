@@ -17,19 +17,28 @@ import java.util.ResourceBundle;
  */
 public class ItemDetailController implements Initializable {
 
-    @FXML private Label     detailTitle;
-    @FXML private ImageView detailImage;
-    @FXML private Label     detailStatusBadge;
-    @FXML private Label     detailName;
-    @FXML private Label     detailColor;
-    @FXML private Label     detailDate;
-    @FXML private Label     detailLocation;
-    @FXML private Label     detailStatus;
+    @FXML
+    private Label detailTitle;
+    @FXML
+    private ImageView detailImage;
+    @FXML
+    private Label detailStatusBadge;
+    @FXML
+    private Label detailName;
+    @FXML
+    private Label detailColor;
+    @FXML
+    private Label detailDate;
+    @FXML
+    private Label detailLocation;
+    @FXML
+    private Label detailStatus;
 
     private Item item;
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {}
+    public void initialize(URL url, ResourceBundle rb) {
+    }
 
     public void setItem(Item item) {
         this.item = item;
@@ -45,9 +54,8 @@ public class ItemDetailController implements Initializable {
         detailStatusBadge.setText(item.getStatusLabel());
         detailStatusBadge.getStyleClass().removeAll("badge-lost", "badge-found");
         detailStatusBadge.getStyleClass().addAll(
-            "badge",
-            item.getStatus() == Item.Status.LOST ? "badge-lost" : "badge-found"
-        );
+                "badge",
+                item.getStatus() == Item.Status.LOST ? "badge-lost" : "badge-found");
 
         // Image
         loadImage(item.getImagePath());
@@ -65,7 +73,8 @@ public class ItemDetailController implements Initializable {
     }
 
     private void loadImage(String path) {
-        if (path == null || path.isBlank()) return;
+        if (path == null || path.isBlank())
+            return;
         try {
             URL url = getClass().getResource(path);
             if (url != null) {

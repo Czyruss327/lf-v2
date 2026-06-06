@@ -19,15 +19,24 @@ import java.util.function.Consumer;
  */
 public class AddItemController implements Initializable {
 
-    @FXML private TextField     nameField;
-    @FXML private RadioButton   lostRadio;
-    @FXML private RadioButton   foundRadio;
-    @FXML private ToggleGroup   statusGroup;
-    @FXML private TextField     colorField;
-    @FXML private DatePicker    datePicker;
-    @FXML private ComboBox<String> locationCombo;
-    @FXML private TextField     imagePathField;
-    @FXML private Label         errorLabel;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private RadioButton lostRadio;
+    @FXML
+    private RadioButton foundRadio;
+    @FXML
+    private ToggleGroup statusGroup;
+    @FXML
+    private TextField colorField;
+    @FXML
+    private DatePicker datePicker;
+    @FXML
+    private ComboBox<String> locationCombo;
+    @FXML
+    private TextField imagePathField;
+    @FXML
+    private Label errorLabel;
 
     private Consumer<Item> onItemAdded;
     private File selectedImageFile;
@@ -49,8 +58,7 @@ public class AddItemController implements Initializable {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Select Item Photo");
         chooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp")
-        );
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp"));
         Stage stage = (Stage) nameField.getScene().getWindow();
         selectedImageFile = chooser.showOpenDialog(stage);
         if (selectedImageFile != null) {
@@ -82,25 +90,27 @@ public class AddItemController implements Initializable {
 
         // Build item
         Item.Status status = (statusGroup.getSelectedToggle() == lostRadio)
-            ? Item.Status.LOST : Item.Status.FOUND;
+                ? Item.Status.LOST
+                : Item.Status.FOUND;
 
         String dateStr = datePicker.getValue()
-            .format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"));
+                .format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"));
 
         String imgPath = selectedImageFile != null
-            ? selectedImageFile.toURI().toString() : "";
+                ? selectedImageFile.toURI().toString()
+                : "";
 
         Item newItem = new Item(
-            nextId++,
-            nameField.getText().trim(),
-            status,
-            colorField.getText().trim(),
-            dateStr,
-            locationCombo.getValue(),
-            imgPath
-        );
+                nextId++,
+                nameField.getText().trim(),
+                status,
+                colorField.getText().trim(),
+                dateStr,
+                locationCombo.getValue(),
+                imgPath);
 
-        if (onItemAdded != null) onItemAdded.accept(newItem);
+        if (onItemAdded != null)
+            onItemAdded.accept(newItem);
         onClose();
     }
 

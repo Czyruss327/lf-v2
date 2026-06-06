@@ -28,22 +28,31 @@ import java.util.stream.Collectors;
  */
 public class DashboardController implements Initializable {
 
-    @FXML private TextField        searchField;
-    @FXML private Button           addButton;
-    @FXML private Button           menuButton;
-    @FXML private ComboBox<String> filterCombo;
-    @FXML private ScrollPane       scrollPane;
-    @FXML private FlowPane         itemGrid;
-    @FXML private HBox             paginationBox;
-    @FXML private ImageView        logoImage;
-    @FXML private Label            dashboardTitleLabel;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button menuButton;
+    @FXML
+    private ComboBox<String> filterCombo;
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private FlowPane itemGrid;
+    @FXML
+    private HBox paginationBox;
+    @FXML
+    private ImageView logoImage;
+    @FXML
+    private Label dashboardTitleLabel;
 
     private NavbarHelper navbar;
 
     private static final int ITEMS_PER_PAGE = 12;
-    private int    currentPage   = 1;
+    private int currentPage = 1;
     private String currentFilter = "All";
-    private String searchQuery   = "";
+    private String searchQuery = "";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -53,8 +62,7 @@ public class DashboardController implements Initializable {
         navbar = new NavbarHelper(() -> (Stage) searchField.getScene().getWindow());
         if (SessionManager.getInstance().isAdmin()) {
             dashboardTitleLabel.setText("ADMIN DASHBOARD");
-        }
-        else {
+        } else {
             dashboardTitleLabel.setText("STUDENT DASHBOARD");
             addButton.setVisible(false);
             addButton.setManaged(false);
@@ -62,18 +70,20 @@ public class DashboardController implements Initializable {
             menuButton.setManaged(false);
         }
 
-        scrollPane.viewportBoundsProperty().addListener((obs, oldBounds, bounds) ->
-                itemGrid.setPrefWrapLength(Math.max(360, bounds.getWidth() - 16)));
+        scrollPane.viewportBoundsProperty().addListener(
+                (obs, oldBounds, bounds) -> itemGrid.setPrefWrapLength(Math.max(360, bounds.getWidth() - 16)));
         renderGrid();
     }
 
-    @FXML private void onSearch() {
+    @FXML
+    private void onSearch() {
         searchQuery = searchField.getText().trim().toLowerCase();
         currentPage = 1;
         renderGrid();
     }
 
-    @FXML private void onFilterChange() {
+    @FXML
+    private void onFilterChange() {
         currentFilter = filterCombo.getValue() == null ? "All" : filterCombo.getValue();
         currentPage = 1;
         renderGrid();
@@ -98,7 +108,9 @@ public class DashboardController implements Initializable {
             Stage stage = (Stage) searchField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle("New Post – PUPSRC Lost and Found");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -112,15 +124,17 @@ public class DashboardController implements Initializable {
         List<Item> filtered = getFilteredItems();
         int total = filtered.size();
         int pages = Math.max(1, (int) Math.ceil((double) total / ITEMS_PER_PAGE));
-        if (currentPage > pages) currentPage = 1;
+        if (currentPage > pages)
+            currentPage = 1;
 
         int start = (currentPage - 1) * ITEMS_PER_PAGE;
-        int end   = Math.min(start + ITEMS_PER_PAGE, total);
+        int end = Math.min(start + ITEMS_PER_PAGE, total);
 
         itemGrid.getChildren().clear();
         for (Item item : filtered.subList(start, end)) {
             Node card = buildCard(item);
-            if (card != null) itemGrid.getChildren().add(card);
+            if (card != null)
+                itemGrid.getChildren().add(card);
         }
         buildPagination(pages);
     }
@@ -133,7 +147,10 @@ public class DashboardController implements Initializable {
             ctrl.setItem(item);
             ctrl.setOnViewDetails(this::openFullDetails);
             return card;
-        } catch (IOException e) { e.printStackTrace(); return null; }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void openFullDetails(Item item) {
@@ -146,14 +163,17 @@ public class DashboardController implements Initializable {
             Stage stage = (Stage) searchField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle(item.getName() + " – Details");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // ── Pagination ───────────────────────────────────────────
 
     private void buildPagination(int pages) {
         paginationBox.getChildren().clear();
-        if (pages <= 1) return;
+        if (pages <= 1)
+            return;
 
         Button prev = new Button("‹ Previous");
         prev.getStyleClass().add("page-btn");
@@ -186,35 +206,42 @@ public class DashboardController implements Initializable {
 
     private void goPage(int p) {
         int pages = (int) Math.ceil((double) getFilteredItems().size() / ITEMS_PER_PAGE);
-        if (p < 1 || p > pages) return;
+        if (p < 1 || p > pages)
+            return;
         currentPage = p;
         renderGrid();
     }
 
     private List<Item> getFilteredItems() {
         return ItemStore.getInstance().getItems().stream()
-            .filter(i -> {
-                if ("Unclaimed".equals(currentFilter)) return i.getStatus() == Item.Status.LOST;
-                if ("Claimed".equals(currentFilter))   return i.getStatus() == Item.Status.FOUND;
-                return true;
-            })
-            .filter(i -> searchQuery.isEmpty()
-                || i.getName().toLowerCase().contains(searchQuery)
-                || i.getLocation().toLowerCase().contains(searchQuery)
-                || i.getColor().toLowerCase().contains(searchQuery))
-            .collect(Collectors.toList());
+                .filter(i -> {
+                    if ("Unclaimed".equals(currentFilter))
+                        return i.getStatus() == Item.Status.LOST;
+                    if ("Claimed".equals(currentFilter))
+                        return i.getStatus() == Item.Status.FOUND;
+                    return true;
+                })
+                .filter(i -> searchQuery.isEmpty()
+                        || i.getName().toLowerCase().contains(searchQuery)
+                        || i.getLocation().toLowerCase().contains(searchQuery)
+                        || i.getColor().toLowerCase().contains(searchQuery))
+                .collect(Collectors.toList());
     }
 
     private void showAlert(String title, String msg) {
         Alert a = new Alert(Alert.AlertType.WARNING);
-        a.setTitle(title); a.setHeaderText(null); a.setContentText(msg);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.setContentText(msg);
         a.showAndWait();
     }
 
     private void loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);
-            if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
-        } catch (Exception ignored) {}
+            if (url != null)
+                iv.setImage(new Image(url.toExternalForm(), true));
+        } catch (Exception ignored) {
+        }
     }
 }

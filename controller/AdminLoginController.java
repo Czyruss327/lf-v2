@@ -21,21 +21,26 @@ import java.util.ResourceBundle;
  * Admin logs in with registered account saved in the database.
  *
  * DEFAULT ACCOUNTS:
- *   admin / admin123
- *   pupsrc_admin / pup2026
+ * admin / admin123
+ * pupsrc_admin / pup2026
  */
 public class AdminLoginController implements Initializable {
 
-    @FXML private TextField     usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private Label         errorLabel;
-    @FXML private ImageView     bgImage;
-    @FXML private ImageView     logoImage;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private ImageView bgImage;
+    @FXML
+    private ImageView logoImage;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         errorLabel.setText("");
-        loadImage(bgImage,   "/images/campus_bg.jpg");
+        loadImage(bgImage, "/images/campus_bg.jpg");
         loadImage(logoImage, "/images/logo.png");
         passwordField.setOnAction(e -> onLogin());
     }
@@ -88,7 +93,9 @@ public class AdminLoginController implements Initializable {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle("PUPSRC Lost and Found – Admin");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void navigateTo(String path, String title) {
@@ -98,13 +105,17 @@ public class AdminLoginController implements Initializable {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle(title);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);
-            if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
-        } catch (Exception ignored) {}
+            if (url != null)
+                iv.setImage(new Image(url.toExternalForm(), true));
+        } catch (Exception ignored) {
+        }
     }
 }

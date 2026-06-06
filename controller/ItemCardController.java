@@ -15,19 +15,27 @@ import java.util.function.Consumer;
 
 /**
  * ItemCardController
- * ADMIN  → VIEW DETAILS button visible
+ * ADMIN → VIEW DETAILS button visible
  * STUDENT → VIEW DETAILS button hidden (read-only browse)
  */
 public class ItemCardController implements Initializable {
 
-    @FXML private ImageView itemImage;
-    @FXML private Label     statusBadge;
-    @FXML private Label     itemName;
-    @FXML private Label     itemColor;
-    @FXML private Label     itemCategory;
-    @FXML private Label     itemDate;
-    @FXML private Label     itemLocation;
-    @FXML private Button    viewDetailsBtn;
+    @FXML
+    private ImageView itemImage;
+    @FXML
+    private Label statusBadge;
+    @FXML
+    private Label itemName;
+    @FXML
+    private Label itemColor;
+    @FXML
+    private Label itemCategory;
+    @FXML
+    private Label itemDate;
+    @FXML
+    private Label itemLocation;
+    @FXML
+    private Button viewDetailsBtn;
 
     private Item item;
     private Consumer<Item> onViewDetails;
@@ -52,9 +60,8 @@ public class ItemCardController implements Initializable {
         statusBadge.setText(item.getStatusLabel());
         statusBadge.getStyleClass().removeAll("badge-lost", "badge-found");
         statusBadge.getStyleClass().addAll(
-            "badge",
-            item.getStatus() == Item.Status.LOST ? "badge-lost" : "badge-found"
-        );
+                "badge",
+                item.getStatus() == Item.Status.LOST ? "badge-lost" : "badge-found");
 
         loadImage(item.getImagePath());
     }
@@ -75,10 +82,13 @@ public class ItemCardController implements Initializable {
     }
 
     private void loadImage(String path) {
-        if (path == null || path.isBlank()) return;
+        if (path == null || path.isBlank())
+            return;
         try {
             URL url = getClass().getResource(path);
-            if (url != null) itemImage.setImage(new Image(url.toExternalForm(), true));
-        } catch (Exception ignored) {}
+            if (url != null)
+                itemImage.setImage(new Image(url.toExternalForm(), true));
+        } catch (Exception ignored) {
+        }
     }
 }

@@ -12,7 +12,9 @@ import java.util.Optional;
 
 public class NavbarHelper {
 
-    public interface StageSupplier { Stage get(); }
+    public interface StageSupplier {
+        Stage get();
+    }
 
     private final StageSupplier stageSupplier;
     private ContextMenu menu;
@@ -38,8 +40,10 @@ public class NavbarHelper {
         menu.getItems().add(item("Dashboard", () -> go("/fxml/Dashboard.fxml", "PUPSRC Lost and Found")));
 
         if (SessionManager.getInstance().isAdmin()) {
-            menu.getItems().add(item("Found Items Report", () -> go("/fxml/ReportForm.fxml", "Found Items Report - PUPSRC Lost and Found")));
-            menu.getItems().add(item("Claim Verification", () -> go("/fxml/ClaimVerification.fxml", "Claim Verification - PUPSRC Lost and Found")));
+            menu.getItems().add(item("Found Items Report",
+                    () -> go("/fxml/ReportForm.fxml", "Found Items Report - PUPSRC Lost and Found")));
+            menu.getItems().add(item("Claim Verification",
+                    () -> go("/fxml/ClaimVerification.fxml", "Claim Verification - PUPSRC Lost and Found")));
         }
 
         menu.getItems().add(new SeparatorMenuItem());

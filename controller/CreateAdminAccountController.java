@@ -23,18 +23,25 @@ import java.util.ResourceBundle;
  */
 public class CreateAdminAccountController implements Initializable {
 
-    @FXML private TextField     fullNameField;
-    @FXML private TextField     usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private PasswordField confirmPasswordField;
-    @FXML private Label         errorLabel;
-    @FXML private ImageView     bgImage;
-    @FXML private ImageView     logoImage;
+    @FXML
+    private TextField fullNameField;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private PasswordField confirmPasswordField;
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private ImageView bgImage;
+    @FXML
+    private ImageView logoImage;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         errorLabel.setText("");
-        loadImage(bgImage,   "/images/campus_bg.jpg");
+        loadImage(bgImage, "/images/campus_bg.jpg");
         loadImage(logoImage, "/images/logo.png");
     }
 
@@ -45,14 +52,29 @@ public class CreateAdminAccountController implements Initializable {
         String fullName = fullNameField.getText().trim();
         String username = usernameField.getText().trim();
         String password = passwordField.getText();
-        String confirm  = confirmPasswordField.getText();
+        String confirm = confirmPasswordField.getText();
 
         // Validation
-        if (fullName.isEmpty())  { errorLabel.setText("Full name is required.");       return; }
-        if (username.isEmpty())  { errorLabel.setText("Username is required.");         return; }
-        if (password.isEmpty())  { errorLabel.setText("Password is required.");         return; }
-        if (!password.equals(confirm)) { errorLabel.setText("Passwords do not match."); return; }
-        if (password.length() < 6) { errorLabel.setText("Password must be at least 6 characters."); return; }
+        if (fullName.isEmpty()) {
+            errorLabel.setText("Full name is required.");
+            return;
+        }
+        if (username.isEmpty()) {
+            errorLabel.setText("Username is required.");
+            return;
+        }
+        if (password.isEmpty()) {
+            errorLabel.setText("Password is required.");
+            return;
+        }
+        if (!password.equals(confirm)) {
+            errorLabel.setText("Passwords do not match.");
+            return;
+        }
+        if (password.length() < 6) {
+            errorLabel.setText("Password must be at least 6 characters.");
+            return;
+        }
 
         // Check username not already taken
         if (UserAccount.authenticate(username, password) != null
@@ -81,7 +103,9 @@ public class CreateAdminAccountController implements Initializable {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle("PUPSRC Lost and Found – Admin");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void navigateTo(String path, String title) {
@@ -91,13 +115,17 @@ public class CreateAdminAccountController implements Initializable {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle(title);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);
-            if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
-        } catch (Exception ignored) {}
+            if (url != null)
+                iv.setImage(new Image(url.toExternalForm(), true));
+        } catch (Exception ignored) {
+        }
     }
 }

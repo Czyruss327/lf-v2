@@ -12,7 +12,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/fxml/Login.fxml"));
+                getClass().getResource("/fxml/Login.fxml"));
         Parent root = loader.load();
 
         primaryStage.setTitle("PUPSRC Lost and Found");

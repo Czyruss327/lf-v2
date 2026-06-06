@@ -34,25 +34,38 @@ import java.util.ResourceBundle;
  */
 public class AccountController implements Initializable {
 
-    private record CropSelection(int x, int y, int size) {}
+    private record CropSelection(int x, int y, int size) {
+    }
 
-    @FXML private ImageView  logoImage;
-    @FXML private Button     menuButton;
-    @FXML private Button     addButton;
+    @FXML
+    private ImageView logoImage;
+    @FXML
+    private Button menuButton;
+    @FXML
+    private Button addButton;
 
     // Avatar
-    @FXML private StackPane  avatarPane;
-    @FXML private Circle     avatarCircle;
-    @FXML private Label      initialsLabel;
-    @FXML private ImageView  profileImageView;
-    @FXML private VBox       cameraOverlay;
+    @FXML
+    private StackPane avatarPane;
+    @FXML
+    private Circle avatarCircle;
+    @FXML
+    private Label initialsLabel;
+    @FXML
+    private ImageView profileImageView;
+    @FXML
+    private VBox cameraOverlay;
 
-    @FXML private Label      roleLabel;
-    @FXML private TextField  adminNameField;
+    @FXML
+    private Label roleLabel;
+    @FXML
+    private TextField adminNameField;
 
     // History
-    @FXML private VBox       historyList;
-    @FXML private ScrollPane historyScrollPane;
+    @FXML
+    private VBox historyList;
+    @FXML
+    private ScrollPane historyScrollPane;
 
     private NavbarHelper navbar;
 
@@ -72,16 +85,18 @@ public class AccountController implements Initializable {
 
         // Initials
         String initial = (username != null && !username.isBlank())
-            ? String.valueOf(username.charAt(0)).toUpperCase() : "?";
+                ? String.valueOf(username.charAt(0)).toUpperCase()
+                : "?";
         initialsLabel.setText(initial);
 
         // Show stored photo if available
         String savedPath = ProfileStore.getInstance().getProfileImagePath();
-        if (savedPath != null) applyPhoto(savedPath);
+        if (savedPath != null)
+            applyPhoto(savedPath);
 
         // Hover: show/hide camera overlay
         avatarPane.setOnMouseEntered(e -> cameraOverlay.setVisible(true));
-        avatarPane.setOnMouseExited(e  -> cameraOverlay.setVisible(false));
+        avatarPane.setOnMouseExited(e -> cameraOverlay.setVisible(false));
         cameraOverlay.setVisible(false);
 
         // Admin-only actions
@@ -98,16 +113,18 @@ public class AccountController implements Initializable {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Choose Profile Photo");
         chooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp"));
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp"));
         Stage stage = (Stage) avatarPane.getScene().getWindow();
         File file = chooser.showOpenDialog(stage);
-        if (file == null) return;
+        if (file == null)
+            return;
 
-        String path = file.toURI().toString();   // file URI for Image
+        String path = file.toURI().toString(); // file URI for Image
         try {
             Image original = new Image(path, false);
             CropSelection crop = chooseCrop(original);
-            if (crop == null) return;
+            if (crop == null)
+                return;
 
             ProfileStore.getInstance().setProfileImagePath(path);
             ProfileStore.getInstance().setProfileCrop(crop.x(), crop.y(), crop.size());
@@ -172,7 +189,8 @@ public class AccountController implements Initializable {
 
         double maxPreview = 360;
         double scale = Math.min(maxPreview / src.getWidth(), maxPreview / src.getHeight());
-        if (scale <= 0) return null;
+        if (scale <= 0)
+            return null;
 
         double previewWidth = src.getWidth() * scale;
         double previewHeight = src.getHeight() * scale;
@@ -221,8 +239,8 @@ public class AccountController implements Initializable {
         sizeSlider.setShowTickMarks(false);
         sizeSlider.setShowTickLabels(false);
         sizeSlider.setMaxWidth(previewWidth);
-        sizeSlider.valueProperty().addListener((obs, oldValue, newValue) ->
-                resizeCropBox(cropBox, resizeHandle, newValue.doubleValue(), previewWidth, previewHeight));
+        sizeSlider.valueProperty().addListener((obs, oldValue, newValue) -> resizeCropBox(cropBox, resizeHandle,
+                newValue.doubleValue(), previewWidth, previewHeight));
 
         resizeHandle.setOnMouseDragged(e -> {
             double newSize = Math.max(e.getX() - cropBox.getX(), e.getY() - cropBox.getY());
@@ -239,7 +257,8 @@ public class AccountController implements Initializable {
         dialog.getDialogPane().setContent(content);
 
         dialog.setResultConverter(button -> {
-            if (button != ButtonType.OK) return null;
+            if (button != ButtonType.OK)
+                return null;
 
             double originalScale = src.getWidth() / previewWidth;
             int x = (int) Math.round(cropBox.getX() * originalScale);
@@ -253,7 +272,7 @@ public class AccountController implements Initializable {
     }
 
     private void resizeCropBox(Rectangle cropBox, Rectangle resizeHandle,
-                               double size, double previewWidth, double previewHeight) {
+            double size, double previewWidth, double previewHeight) {
         double oldCenterX = cropBox.getX() + cropBox.getWidth() / 2;
         double oldCenterY = cropBox.getY() + cropBox.getHeight() / 2;
 
@@ -295,7 +314,8 @@ public class AccountController implements Initializable {
         Alert dlg = new Alert(Alert.AlertType.INFORMATION);
         dlg.setTitle("Change Password");
         dlg.setHeaderText(null);
-        dlg.setContentText("Password change feature coming soon.\n\nFor now, manage passwords through the Create Admin Account screen.");
+        dlg.setContentText(
+                "Password change feature coming soon.\n\nFor now, manage passwords through the Create Admin Account screen.");
         dlg.showAndWait();
         ProfileStore.getInstance().recordEvent("Change Password");
         buildHistory();
@@ -358,14 +378,18 @@ public class AccountController implements Initializable {
 
     private void showAlert(String title, String msg) {
         Alert a = new Alert(Alert.AlertType.WARNING);
-        a.setTitle(title); a.setHeaderText(null); a.setContentText(msg);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.setContentText(msg);
         a.showAndWait();
     }
 
     private void loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);
-            if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
-        } catch (Exception ignored) {}
+            if (url != null)
+                iv.setImage(new Image(url.toExternalForm(), true));
+        } catch (Exception ignored) {
+        }
     }
 }

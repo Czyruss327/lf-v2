@@ -20,24 +20,38 @@ public class AuditLog {
         private final String adminUser;
 
         public Entry(String action, String itemName, String claimantName, String adminUser) {
-            this.timestamp    = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            this.action       = action;
-            this.itemName     = itemName;
+            this.timestamp = LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            this.action = action;
+            this.itemName = itemName;
             this.claimantName = claimantName;
-            this.adminUser    = adminUser;
+            this.adminUser = adminUser;
         }
 
-        public String getTimestamp()    { return timestamp; }
-        public String getAction()       { return action; }
-        public String getItemName()     { return itemName; }
-        public String getClaimantName() { return claimantName; }
-        public String getAdminUser()    { return adminUser; }
+        public String getTimestamp() {
+            return timestamp;
+        }
+
+        public String getAction() {
+            return action;
+        }
+
+        public String getItemName() {
+            return itemName;
+        }
+
+        public String getClaimantName() {
+            return claimantName;
+        }
+
+        public String getAdminUser() {
+            return adminUser;
+        }
 
         @Override
         public String toString() {
             return String.format("[%s] %s — Item: %s | Claimant: %s | Admin: %s",
-                timestamp, action, itemName, claimantName, adminUser);
+                    timestamp, action, itemName, claimantName, adminUser);
         }
     }
 

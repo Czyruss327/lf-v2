@@ -13,13 +13,17 @@ import java.util.List;
  */
 public class ProfileStore {
 
-    public record HistoryEntry(String title, String time, String date) {}
+    public record HistoryEntry(String title, String time, String date) {
+    }
 
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("hh:mm a");
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("MM / dd / yyyy");
 
     private static final ProfileStore INSTANCE = new ProfileStore();
-    public static ProfileStore getInstance() { return INSTANCE; }
+
+    public static ProfileStore getInstance() {
+        return INSTANCE;
+    }
 
     private String profileImagePath = null;
     private int profileCropX = -1;
@@ -31,17 +35,29 @@ public class ProfileStore {
         recordEvent("Login Activity");
     }
 
-    public String getProfileImagePath() { return profileImagePath; }
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
 
-    public void setProfileImagePath(String path) { profileImagePath = path; }
+    public void setProfileImagePath(String path) {
+        profileImagePath = path;
+    }
 
-    public boolean hasProfileCrop() { return profileCropSize > 0; }
+    public boolean hasProfileCrop() {
+        return profileCropSize > 0;
+    }
 
-    public int getProfileCropX() { return profileCropX; }
+    public int getProfileCropX() {
+        return profileCropX;
+    }
 
-    public int getProfileCropY() { return profileCropY; }
+    public int getProfileCropY() {
+        return profileCropY;
+    }
 
-    public int getProfileCropSize() { return profileCropSize; }
+    public int getProfileCropSize() {
+        return profileCropSize;
+    }
 
     public void setProfileCrop(int x, int y, int size) {
         profileCropX = x;

@@ -16,18 +16,30 @@ import java.util.ResourceBundle;
 
 public class FullDetailsController implements Initializable {
 
-    @FXML private ImageView logoImage;
-    @FXML private Button    menuButton;
-    @FXML private ImageView itemImage;
-    @FXML private TextField itemNameField;
-    @FXML private ComboBox<String> categoryCombo;
-    @FXML private TextArea  descriptionArea;
-    @FXML private TextField reporterNameField;
-    @FXML private TextField studentIdField;
-    @FXML private TextField contactField;
-    @FXML private TextField locationField;
-    @FXML private TextField dateFoundField;
-    @FXML private ComboBox<String> statusCombo;
+    @FXML
+    private ImageView logoImage;
+    @FXML
+    private Button menuButton;
+    @FXML
+    private ImageView itemImage;
+    @FXML
+    private TextField itemNameField;
+    @FXML
+    private ComboBox<String> categoryCombo;
+    @FXML
+    private TextArea descriptionArea;
+    @FXML
+    private TextField reporterNameField;
+    @FXML
+    private TextField studentIdField;
+    @FXML
+    private TextField contactField;
+    @FXML
+    private TextField locationField;
+    @FXML
+    private TextField dateFoundField;
+    @FXML
+    private ComboBox<String> statusCombo;
 
     private Item item;
     private NavbarHelper navbar;
@@ -76,9 +88,20 @@ public class FullDetailsController implements Initializable {
         }
     }
 
-    @FXML private void onCancel()  { navigateBack(); }
-    @FXML private void onAddItem() { navigateTo("/fxml/ReportForm.fxml", "Found Items Report"); }
-    @FXML private void onMenu()    { navbar.toggle(menuButton); }
+    @FXML
+    private void onCancel() {
+        navigateBack();
+    }
+
+    @FXML
+    private void onAddItem() {
+        navigateTo("/fxml/ReportForm.fxml", "Found Items Report");
+    }
+
+    @FXML
+    private void onMenu() {
+        navbar.toggle(menuButton);
+    }
 
     private void setAllReadOnly() {
         itemNameField.setEditable(false);
@@ -117,18 +140,23 @@ public class FullDetailsController implements Initializable {
     }
 
     private void loadItemImage(String path) {
-        if (path == null || path.isBlank()) return;
+        if (path == null || path.isBlank())
+            return;
         try {
             URL resource = getClass().getResource(path);
             String uri = path.startsWith("file:") ? path : (resource != null ? resource.toExternalForm() : null);
-            if (uri != null) itemImage.setImage(new Image(uri, true));
-        } catch (Exception ignored) {}
+            if (uri != null)
+                itemImage.setImage(new Image(uri, true));
+        } catch (Exception ignored) {
+        }
     }
 
     private void loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);
-            if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
-        } catch (Exception ignored) {}
+            if (url != null)
+                iv.setImage(new Image(url.toExternalForm(), true));
+        } catch (Exception ignored) {
+        }
     }
 }

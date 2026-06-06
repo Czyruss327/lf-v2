@@ -25,15 +25,24 @@ import java.util.ResourceBundle;
 
 public class ClaimVerificationController implements Initializable {
 
-    @FXML private ImageView logoImage;
-    @FXML private Button    menuButton;
-    @FXML private TextField claimNameField;
-    @FXML private TextField studentIdField;
-    @FXML private TextField contactField;
-    @FXML private TextField courseSectionField;
-    @FXML private TextField claimedAtField;
-    @FXML private VBox      proofListBox;
-    @FXML private Label     errorLabel;
+    @FXML
+    private ImageView logoImage;
+    @FXML
+    private Button menuButton;
+    @FXML
+    private TextField claimNameField;
+    @FXML
+    private TextField studentIdField;
+    @FXML
+    private TextField contactField;
+    @FXML
+    private TextField courseSectionField;
+    @FXML
+    private TextField claimedAtField;
+    @FXML
+    private VBox proofListBox;
+    @FXML
+    private Label errorLabel;
 
     private Item item;
     private final List<File> proofImages = new ArrayList<>();
@@ -56,16 +65,18 @@ public class ClaimVerificationController implements Initializable {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Upload Proof of Claim");
         chooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Images / PDF", "*.png", "*.jpg", "*.jpeg", "*.pdf"));
+                new FileChooser.ExtensionFilter("Images / PDF", "*.png", "*.jpg", "*.jpeg", "*.pdf"));
         Stage stage = (Stage) claimNameField.getScene().getWindow();
         List<File> files = chooser.showOpenMultipleDialog(stage);
-        if (files == null) return;
+        if (files == null)
+            return;
         for (File file : files) {
-            if (proofImages.size() >= 3) break;
+            if (proofImages.size() >= 3)
+                break;
             proofImages.add(file);
             HBox row = new HBox(12);
             row.setStyle("-fx-background-color:#f8f4f2;-fx-border-color:#E0D6D0;" +
-                         "-fx-border-radius:6;-fx-background-radius:6;-fx-padding:8 12;");
+                    "-fx-border-radius:6;-fx-background-radius:6;-fx-padding:8 12;");
             row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
             Label name = new Label("Proof " + proofImages.size() + ": " + file.getName());
             name.setStyle("-fx-font-size:12px;-fx-text-fill:#1A1A1A;");
@@ -102,19 +113,30 @@ public class ClaimVerificationController implements Initializable {
         alert.setTitle("Claim Confirmed");
         alert.setHeaderText(null);
         alert.setContentText(
-            "Claim confirmed!\n\n" +
-            "- Audit log updated\n" +
-            "- Item status set to CLAIMED\n" +
-            "- Date/time claimed: " + claimedAtField.getText() + "\n" +
-            "- Item removed from public dashboard\n\n" +
-            "Please hand over the physical item to the claimant.");
+                "Claim confirmed!\n\n" +
+                        "- Audit log updated\n" +
+                        "- Item status set to CLAIMED\n" +
+                        "- Date/time claimed: " + claimedAtField.getText() + "\n" +
+                        "- Item removed from public dashboard\n\n" +
+                        "Please hand over the physical item to the claimant.");
         alert.showAndWait();
         navigateBack();
     }
 
-    @FXML private void onCancel()  { navigateBack(); }
-    @FXML private void onAddItem() { navigateTo("/fxml/ReportForm.fxml", "Found Items Report"); }
-    @FXML private void onMenu()    { navbar.toggle(menuButton); }
+    @FXML
+    private void onCancel() {
+        navigateBack();
+    }
+
+    @FXML
+    private void onAddItem() {
+        navigateTo("/fxml/ReportForm.fxml", "Found Items Report");
+    }
+
+    @FXML
+    private void onMenu() {
+        navbar.toggle(menuButton);
+    }
 
     private void navigateBack() {
         try {
@@ -143,7 +165,9 @@ public class ClaimVerificationController implements Initializable {
     private void loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);
-            if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
-        } catch (Exception ignored) {}
+            if (url != null)
+                iv.setImage(new Image(url.toExternalForm(), true));
+        } catch (Exception ignored) {
+        }
     }
 }

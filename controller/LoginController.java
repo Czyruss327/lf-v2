@@ -17,14 +17,18 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
-    @FXML private ImageView bgImage;
-    @FXML private ImageView logoImage;
-    @FXML private Button    adminBtn;
-    @FXML private Button    studentBtn;
+    @FXML
+    private ImageView bgImage;
+    @FXML
+    private ImageView logoImage;
+    @FXML
+    private Button adminBtn;
+    @FXML
+    private Button studentBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loadImage(bgImage,   "/images/campus_bg.jpg");
+        loadImage(bgImage, "/images/campus_bg.jpg");
         loadImage(logoImage, "/images/logo.png");
     }
 
@@ -47,13 +51,17 @@ public class LoginController implements Initializable {
             Stage stage = (Stage) adminBtn.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle(title);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);
-            if (url != null) iv.setImage(new Image(url.toExternalForm(), true));
-        } catch (Exception ignored) {}
+            if (url != null)
+                iv.setImage(new Image(url.toExternalForm(), true));
+        } catch (Exception ignored) {
+        }
     }
 }

@@ -25,7 +25,8 @@
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="grid-scroll">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+            styleClass="grid-scroll">
             <VBox alignment="TOP_CENTER" styleClass="main-content">
                 <padding>
                     <Insets top="32" bottom="32" left="60" right="60" />

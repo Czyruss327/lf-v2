@@ -31,6 +31,8 @@ public class DashboardController implements Initializable {
     @FXML
     private TextField searchField;
     @FXML
+    private Button backButton;
+    @FXML
     private Button addButton;
     @FXML
     private Button menuButton;
@@ -62,8 +64,13 @@ public class DashboardController implements Initializable {
         navbar = new NavbarHelper(() -> (Stage) searchField.getScene().getWindow());
         if (SessionManager.getInstance().isAdmin()) {
             dashboardTitleLabel.setText("ADMIN DASHBOARD");
+            backButton.setVisible(false);
+            backButton.setManaged(false);
         } else {
             dashboardTitleLabel.setText("STUDENT DASHBOARD");
+            filterCombo.getItems().setAll("Unclaimed");
+            filterCombo.setValue("Unclaimed");
+            currentFilter = "Unclaimed";
             addButton.setVisible(false);
             addButton.setManaged(false);
             menuButton.setVisible(false);
@@ -118,6 +125,12 @@ public class DashboardController implements Initializable {
         navbar.toggle(menuButton);
     }
 
+    @FXML
+    private void onBackToRoleSelection() {
+        SessionManager.getInstance().logout();
+        navigateTo("/fxml/Login.fxml", "PUPSRC Lost and Found");
+    }
+
     // ── Grid ─────────────────────────────────────────────────
 
     public void renderGrid() {
@@ -163,6 +176,18 @@ public class DashboardController implements Initializable {
             Stage stage = (Stage) searchField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle(item.getName() + " – Details");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void navigateTo(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            SceneUtil.setScene(stage, root);
+            stage.setTitle(title);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -214,6 +239,7 @@ public class DashboardController implements Initializable {
 
     private List<Item> getFilteredItems() {
         return ItemStore.getInstance().getItems().stream()
+                .filter(i -> SessionManager.getInstance().isAdmin() || i.getStatus() == Item.Status.LOST)
                 .filter(i -> {
                     if ("Unclaimed".equals(currentFilter))
                         return i.getStatus() == Item.Status.LOST;

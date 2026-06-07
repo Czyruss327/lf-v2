@@ -134,18 +134,7 @@
                                     <Label text="Date Found" styleClass="form-label" />
                                     <Label text="*" styleClass="required-star" />
                                 </HBox>
-                                <TextField fx:id="dateFoundField"
-                                    promptText="dd/mm/yyyy"
-                                    styleClass="form-input"
-                                    maxWidth="Infinity" />
-                            </VBox>
-
-                            <VBox spacing="5">
-                                <HBox spacing="4">
-                                    <Label text="Status" styleClass="form-label" />
-                                    <Label text="*" styleClass="required-star" />
-                                </HBox>
-                                <ComboBox fx:id="statusCombo"
+                                <DatePicker fx:id="dateFoundPicker"
                                     styleClass="form-input"
                                     maxWidth="Infinity" />
                             </VBox>

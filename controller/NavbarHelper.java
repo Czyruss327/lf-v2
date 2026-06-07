@@ -36,15 +36,8 @@ public class NavbarHelper {
         menu = new ContextMenu();
         menu.getStyleClass().add("hamburger-menu");
 
-        menu.getItems().add(item("Account", () -> go("/fxml/Account.fxml", "Account - PUPSRC Lost and Found")));
         menu.getItems().add(item("Dashboard", () -> go("/fxml/Dashboard.fxml", "PUPSRC Lost and Found")));
-
-        if (SessionManager.getInstance().isAdmin()) {
-            menu.getItems().add(item("Found Items Report",
-                    () -> go("/fxml/ReportForm.fxml", "Found Items Report - PUPSRC Lost and Found")));
-            menu.getItems().add(item("Claim Verification",
-                    () -> go("/fxml/ClaimVerification.fxml", "Claim Verification - PUPSRC Lost and Found")));
-        }
+        menu.getItems().add(item("Account", () -> go("/fxml/Account.fxml", "Account - PUPSRC Lost and Found")));
 
         menu.getItems().add(new SeparatorMenuItem());
         menu.getItems().add(logoutItem());

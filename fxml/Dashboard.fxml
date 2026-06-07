@@ -36,6 +36,11 @@
                 onKeyReleased="#onSearch" />
 
             <!-- Add Button -->
+            <Button fx:id="backButton"
+                text="Back"
+                styleClass="navbar-icon-btn"
+                onAction="#onBackToRoleSelection" />
+
             <Button fx:id="addButton"
                 text="+"
                 styleClass="navbar-icon-btn"

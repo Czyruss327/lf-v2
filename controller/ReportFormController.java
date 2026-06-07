@@ -19,6 +19,7 @@ import model.SessionManager;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -53,12 +54,11 @@ public class ReportFormController implements Initializable {
     @FXML
     private TextField locationField;
     @FXML
-    private TextField dateFoundField;
-    @FXML
-    private ComboBox<String> statusCombo;
+    private DatePicker dateFoundPicker;
     @FXML
     private Label errorLabel;
 
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private final List<File> uploadedImages = new ArrayList<>();
     private Consumer<Item> onItemSaved;
     private NavbarHelper navbar;
@@ -70,8 +70,6 @@ public class ReportFormController implements Initializable {
         categoryCombo.getItems().addAll(
                 "Bags & Wallets", "Electronics", "IDs & Documents",
                 "Clothing", "School Supplies", "Keys", "Accessories", "Others");
-        statusCombo.getItems().addAll("UNCLAIMED", "CLAIMED");
-        statusCombo.setValue("UNCLAIMED");
         navbar = new NavbarHelper(() -> (Stage) itemNameField.getScene().getWindow());
     }
 
@@ -93,7 +91,14 @@ public class ReportFormController implements Initializable {
             if (uploadedImages.size() >= 5)
                 break;
             uploadedImages.add(file);
-            addImageRow(file, uploadedImages.size());
+            refreshImageList();
+        }
+    }
+
+    private void refreshImageList() {
+        imageListBox.getChildren().clear();
+        for (int i = 0; i < uploadedImages.size(); i++) {
+            addImageRow(uploadedImages.get(i), i);
         }
     }
 
@@ -105,10 +110,17 @@ public class ReportFormController implements Initializable {
         ImageView thumb = new ImageView(new Image(file.toURI().toString(), 48, 48, true, true));
         thumb.setFitWidth(48);
         thumb.setFitHeight(48);
-        Label name = new Label("Image " + index);
+        Label name = new Label("Image " + (index + 1));
         name.setStyle("-fx-font-size:13px;-fx-text-fill:#1A1A1A;");
         HBox.setHgrow(name, javafx.scene.layout.Priority.ALWAYS);
-        row.getChildren().addAll(thumb, name);
+        Button removeButton = new Button("X");
+        removeButton.setStyle("-fx-background-color:#8B0000;-fx-text-fill:white;-fx-font-weight:bold;" +
+                "-fx-background-radius:14;-fx-min-width:28;-fx-min-height:28;-fx-padding:0;");
+        removeButton.setOnAction(e -> {
+            uploadedImages.remove(file);
+            refreshImageList();
+        });
+        row.getChildren().addAll(thumb, name, removeButton);
         imageListBox.getChildren().add(row);
     }
 
@@ -139,28 +151,24 @@ public class ReportFormController implements Initializable {
             errorLabel.setText("Location is required.");
             return;
         }
-        if (dateFoundField.getText().isBlank()) {
+        if (dateFoundPicker.getValue() == null) {
             errorLabel.setText("Date found is required.");
             return;
         }
-        if (statusCombo.getValue() == null) {
-            errorLabel.setText("Please select a status.");
-            return;
-        }
 
-        Item.Status status = "CLAIMED".equals(statusCombo.getValue()) ? Item.Status.FOUND : Item.Status.LOST;
+        String dateFound = dateFoundPicker.getValue().format(DATE_FORMATTER);
         String imagePath = uploadedImages.isEmpty() ? "" : uploadedImages.get(0).toURI().toString();
 
         Item newItem = new Item(0,
-                itemNameField.getText().trim(), status,
+                itemNameField.getText().trim(), Item.Status.LOST,
                 descriptionArea.getText().trim(),
-                dateFoundField.getText().trim(),
+                dateFound,
                 locationField.getText().trim(), imagePath);
         newItem.setCategory(categoryCombo.getValue());
         newItem.setReporterName(reporterNameField.getText().trim());
         newItem.setStudentId(studentIdField.getText().trim());
         newItem.setContactNumber(contactField.getText().trim());
-        newItem.setDateFound(dateFoundField.getText().trim());
+        newItem.setDateFound(dateFound);
 
         if (onItemSaved != null) {
             onItemSaved.accept(newItem);

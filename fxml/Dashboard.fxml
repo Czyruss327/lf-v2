@@ -82,6 +82,7 @@
                 VBox.vgrow="ALWAYS">
                 <FlowPane fx:id="itemGrid"
                     styleClass="item-grid"
+                    alignment="TOP_CENTER"
                     hgap="16" vgap="16"
                     prefWrapLength="880">
                     <padding>

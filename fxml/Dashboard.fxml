@@ -39,7 +39,11 @@
             <Button fx:id="backButton"
                 text="Back"
                 styleClass="navbar-icon-btn"
-                onAction="#onBackToRoleSelection" />
+                onAction="#onBackToRoleSelection">
+                <graphic>
+                    <ImageView fx:id="homeIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
 
             <Button fx:id="addButton"
                 text="+"

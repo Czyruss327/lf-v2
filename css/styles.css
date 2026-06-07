@@ -41,7 +41,7 @@
 }
 
 .navbar-icon-btn {
-  -fx-background-color: #a52828;
+  -fx-background-color: transparent;
   -fx-text-fill: white;
   -fx-font-size: 16px;
   -fx-min-width: 32px;

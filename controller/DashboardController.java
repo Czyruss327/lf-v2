@@ -37,6 +37,8 @@ public class DashboardController implements Initializable {
     @FXML
     private Button menuButton;
     @FXML
+    private ImageView homeIcon;
+    @FXML
     private ImageView reportFormIcon;
     @FXML
     private ImageView menuBarIcon;
@@ -82,6 +84,11 @@ public class DashboardController implements Initializable {
             backButton.setManaged(false);
         } else {
             dashboardTitleLabel.setText("STUDENT DASHBOARD");
+            if (loadImage(homeIcon, "/images/home.png")) {
+                backButton.setText("");
+            } else {
+                backButton.setGraphic(null);
+            }
             filterCombo.getItems().setAll("Unclaimed");
             filterCombo.setValue("Unclaimed");
             currentFilter = "Unclaimed";

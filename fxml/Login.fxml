@@ -42,7 +42,7 @@
             </padding>
 
             <ImageView fx:id="logoImage"
-                fitWidth="80" fitHeight="80"
+                fitWidth="200" fitHeight="200"
                 preserveRatio="true" />
 
             <Label text="Select Your Role"

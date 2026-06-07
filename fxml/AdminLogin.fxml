@@ -20,7 +20,7 @@
 
               <VBox alignment="CENTER" spacing="14">
                      <ImageView fx:id="logoImage"
-                            fitWidth="88" fitHeight="88"
+                            fitWidth="200" fitHeight="200"
                             preserveRatio="true" />
                      <Label text="PUPSRC LOST AND FOUND"
                             styleClass="login-welcome-line2"

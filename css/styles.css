@@ -93,6 +93,7 @@
   -fx-border-color: transparent;
   -fx-hbar-policy: NEVER;
   -fx-vbar-policy: AS_NEEDED;
+  -fx-alignment: CENTER;
 }
 .grid-scroll > .viewport {
   -fx-background-color: transparent;

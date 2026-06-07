@@ -58,7 +58,7 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loadImage(logoImage, "/images/logo.png");
+        loadImage(logoImage, "/images/logo-dashboard.png");
         filterCombo.getItems().addAll("All", "Unclaimed", "Claimed");
         filterCombo.setValue("All");
         navbar = new NavbarHelper(() -> (Stage) searchField.getScene().getWindow());

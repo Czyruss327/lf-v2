@@ -19,8 +19,16 @@
             <ImageView fx:id="logoImage" fitWidth="36" fitHeight="36" preserveRatio="true" />
             <Label text="PUPSRC Lost and Found" styleClass="navbar-title" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button text="+" styleClass="navbar-icon-btn" onAction="#onAddItem" />
-            <Button fx:id="menuButton" text="..." styleClass="navbar-icon-btn" onAction="#onMenu" />
+            <Button fx:id="addButton" text="+" styleClass="navbar-icon-btn" onAction="#onAddItem">
+                <graphic>
+                    <ImageView fx:id="reportFormIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
+            <Button fx:id="menuButton" text="..." styleClass="navbar-icon-btn" onAction="#onMenu">
+                <graphic>
+                    <ImageView fx:id="menuBarIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
         </HBox>
     </top>
 

@@ -44,13 +44,21 @@
             <Button fx:id="addButton"
                 text="+"
                 styleClass="navbar-icon-btn"
-                onAction="#onAddItem" />
+                onAction="#onAddItem">
+                <graphic>
+                    <ImageView fx:id="reportFormIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
 
             <!-- Menu Button -->
             <Button fx:id="menuButton"
                 text="☰"
                 styleClass="navbar-icon-btn"
-                onAction="#onMenuToggle" />
+                onAction="#onMenuToggle">
+                <graphic>
+                    <ImageView fx:id="menuBarIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
         </HBox>
     </top>
 

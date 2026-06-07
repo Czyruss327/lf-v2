@@ -37,6 +37,10 @@ public class DashboardController implements Initializable {
     @FXML
     private Button menuButton;
     @FXML
+    private ImageView reportFormIcon;
+    @FXML
+    private ImageView menuBarIcon;
+    @FXML
     private ComboBox<String> filterCombo;
     @FXML
     private ScrollPane scrollPane;
@@ -59,6 +63,16 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadImage(logoImage, "/images/logo-dashboard.png");
+        if (loadImage(reportFormIcon, "/images/report-form.png")) {
+            addButton.setText("");
+        } else {
+            addButton.setGraphic(null);
+        }
+        if (loadImage(menuBarIcon, "/images/menu-bar.png")) {
+            menuButton.setText("");
+        } else {
+            menuButton.setGraphic(null);
+        }
         filterCombo.getItems().addAll("All", "Unclaimed", "Claimed");
         filterCombo.setValue("All");
         navbar = new NavbarHelper(() -> (Stage) searchField.getScene().getWindow());
@@ -262,12 +276,15 @@ public class DashboardController implements Initializable {
         a.showAndWait();
     }
 
-    private void loadImage(ImageView iv, String path) {
+    private boolean loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);
-            if (url != null)
+            if (url != null) {
                 iv.setImage(new Image(url.toExternalForm(), true));
+                return true;
+            }
         } catch (Exception ignored) {
         }
+        return false;
     }
 }

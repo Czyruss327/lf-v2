@@ -1,0 +1,139 @@
+package com.campuslf.dao;
+
+import com.campuslf.database.DatabaseConnection;
+import com.campuslf.models.ItemReport;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ItemReportDAO {
+
+    // INSERT
+    public boolean addItemReport(ItemReport report) {
+        String sql = "INSERT INTO item_reports (admin_id, category_id, name, description, " +
+                "location_found, date_reported, date_posted, finder_student_id, finder_contact_num, " +
+                "image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS report_status))";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setInt(1, report.getAdminId());
+            pstmt.setInt(2, report.getCategoryId());
+            pstmt.setString(3, report.getItemName());
+            pstmt.setString(4, report.getDescription());
+            pstmt.setString(5, report.getLocationFound());
+            pstmt.setDate(6, Date.valueOf(report.getDateReported()));
+            pstmt.setDate(7, Date.valueOf(report.getDatePosted()));
+            pstmt.setString(8, report.getFinderStudentId());
+            pstmt.setString(9, report.getFinderContactNum());
+            pstmt.setString(10, report.getImageUrl());
+            pstmt.setString(11, report.getReportStatus());
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        report.setReportId(generatedKeys.getInt(1));
+                    }
+                }
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // READ all items (optional filter by status)
+    public List<ItemReport> getAllItemReports(String statusFilter) {
+        List<ItemReport> list = new ArrayList<>();
+        String sql = "SELECT * FROM item_reports";
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            sql += " WHERE status = CAST(? AS report_status)";
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                pstmt.setString(1, statusFilter);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapResultSetToItemReport(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // READ single item by ID
+    public ItemReport getItemReportById(int reportId) {
+        String sql = "SELECT * FROM item_reports WHERE report_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, reportId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToItemReport(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // UPDATE item status
+    public boolean updateReportStatus(int reportId, String newStatus) {
+        String sql = "UPDATE item_reports SET status = CAST(? AS report_status) WHERE report_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, newStatus);
+            pstmt.setInt(2, reportId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // DELETE (or archive) an item report
+    public boolean deleteItemReport(int reportId) {
+        String sql = "DELETE FROM item_reports WHERE report_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, reportId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Helper to map ResultSet to ItemReport object
+    private ItemReport mapResultSetToItemReport(ResultSet rs) throws SQLException {
+        ItemReport report = new ItemReport();
+        report.setReportId(rs.getInt("report_id"));
+        report.setAdminId(rs.getInt("admin_id"));
+        report.setCategoryId(rs.getInt("category_id"));
+        report.setItemName(rs.getString("name"));
+        report.setDescription(rs.getString("description"));
+        report.setLocationFound(rs.getString("location_found"));
+        report.setDateReported(rs.getDate("date_reported").toLocalDate());
+        report.setDatePosted(rs.getDate("date_posted").toLocalDate());
+        report.setFinderStudentId(rs.getString("finder_student_id"));
+        report.setFinderContactNum(rs.getString("finder_contact_num"));
+        report.setImageUrl(rs.getString("image_url"));
+        report.setReportStatus(rs.getString("status"));
+        return report;
+    }
+}

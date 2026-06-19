@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.LoginController"
+    stylesheets="@../css/styles.css"
+    prefWidth="860" prefHeight="520">
+
+    <StackPane HBox.hgrow="ALWAYS" styleClass="login-left-panel">
+        <ImageView fx:id="bgImage"
+            fitWidth="430" fitHeight="520"
+            preserveRatio="false" />
+
+        <Pane styleClass="login-overlay" />
+
+        <VBox alignment="BOTTOM_LEFT" spacing="8">
+            <padding>
+                <Insets bottom="60" left="40" right="40" />
+            </padding>
+            <Label text="WELCOME TO" styleClass="login-welcome-line1" />
+            <Label text="PUPSRC LOST AND" styleClass="login-welcome-line2" />
+            <Label text="FOUND" styleClass="login-welcome-line2" />
+            <Label text="A simple campus hub for reporting, browsing, and claiming lost items."
+                styleClass="login-welcome-subtitle"
+                wrapText="true"
+                maxWidth="310" />
+        </VBox>
+    </StackPane>
+
+    <VBox alignment="CENTER" spacing="0"
+        styleClass="login-right-panel"
+        prefWidth="320" minWidth="280">
+
+        <VBox alignment="CENTER" spacing="16" styleClass="login-card">
+            <padding>
+                <Insets top="48" bottom="48" left="40" right="40" />
+            </padding>
+
+            <ImageView fx:id="logoImage"
+                fitWidth="200" fitHeight="200"
+                preserveRatio="true" />
+
+            <Label text="Select Your Role"
+                styleClass="login-role-title"
+                wrapText="true"
+                alignment="CENTER"
+                textAlignment="CENTER" />
+
+            <Label text="Choose how you want to access the lost and found system."
+                styleClass="login-role-subtitle"
+                wrapText="true"
+                alignment="CENTER"
+                textAlignment="CENTER"
+                maxWidth="230" />
+
+            <Region prefHeight="8" />
+
+            <Button fx:id="adminBtn"
+                text="ADMIN"
+                styleClass="login-role-btn"
+                maxWidth="Infinity"
+                onAction="#onAdminLogin" />
+
+            <Button fx:id="studentBtn"
+                text="STUDENT"
+                styleClass="login-role-btn-outline"
+                maxWidth="Infinity"
+                onAction="#onStudentLogin" />
+        </VBox>
+    </VBox>
+</HBox>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.ClaimVerificationController"
+    stylesheets="@../css/styles.css"
+    prefWidth="960" prefHeight="700">
+
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
+            <padding>
+                <Insets top="10" bottom="10" left="20" right="20" />
+            </padding>
+            <ImageView fx:id="logoImage" fitWidth="36" fitHeight="36" preserveRatio="true" />
+            <Label text="PUPSRC Lost and Found" styleClass="navbar-title" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="+" styleClass="navbar-icon-btn" onAction="#onAddItem" />
+            <Button fx:id="menuButton" text="..." styleClass="navbar-icon-btn" onAction="#onMenu" />
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="TOP_CENTER" styleClass="main-content">
+            <padding>
+                <Insets top="40" bottom="40" left="80" right="80" />
+            </padding>
+
+            <VBox styleClass="details-card" spacing="0">
+                <padding>
+                    <Insets top="36" bottom="36" left="56" right="56" />
+                </padding>
+
+                <Label text="CLAIM VERIFICATION"
+                    styleClass="page-title"
+                    maxWidth="Infinity"
+                    alignment="CENTER">
+                    <VBox.margin>
+                        <Insets bottom="32" />
+                    </VBox.margin>
+                </Label>
+
+                <GridPane hgap="40" vgap="18">
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <HBox spacing="4">
+                            <Label text="Name" styleClass="form-label" />
+                            <Label text="*" styleClass="required-star" />
+                        </HBox>
+                        <TextField fx:id="claimNameField"
+                            promptText="Surname, First Name"
+                            styleClass="form-input"
+                            prefWidth="340" />
+                    </VBox>
+
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <HBox spacing="4">
+                            <Label text="Course and Section" styleClass="form-label" />
+                            <Label text="*" styleClass="required-star" />
+                        </HBox>
+                        <TextField fx:id="courseSectionField"
+                            styleClass="form-input"
+                            prefWidth="340" />
+                    </VBox>
+
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label text="Student ID (If Student)" styleClass="form-label" />
+                        <TextField fx:id="studentIdField"
+                            promptText="YYYY-*****-SR-0"
+                            styleClass="form-input"
+                            prefWidth="340" />
+                    </VBox>
+
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <HBox spacing="4">
+                            <Label text="Contact Number" styleClass="form-label" />
+                            <Label text="*" styleClass="required-star" />
+                        </HBox>
+                        <TextField fx:id="contactField"
+                            promptText="09XX-XXX-XXXX"
+                            styleClass="form-input"
+                            prefWidth="340" />
+                    </VBox>
+
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                        <Label text="Date and Time Claimed" styleClass="form-label" />
+                        <TextField fx:id="claimedAtField"
+                            styleClass="form-input detail-readonly"
+                            editable="false"
+                            prefWidth="340" />
+                    </VBox>
+
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Label text="Proof of Claim (Optional)" styleClass="form-label" />
+                        <Button text="Upload Images"
+                            styleClass="upload-btn"
+                            prefWidth="340"
+                            onAction="#onUploadProof" />
+                        <VBox fx:id="proofListBox" spacing="6" />
+                    </VBox>
+                </GridPane>
+
+                <Label fx:id="errorLabel" styleClass="error-label"
+                    wrapText="true" maxWidth="Infinity">
+                    <VBox.margin>
+                        <Insets top="8" />
+                    </VBox.margin>
+                </Label>
+
+                <HBox spacing="16" alignment="CENTER">
+                    <VBox.margin>
+                        <Insets top="36" />
+                    </VBox.margin>
+                    <Button text="CANCEL" styleClass="btn-cancel" prefWidth="200"
+                        onAction="#onCancel" />
+                    <Button text="CONFIRM CLAIM" styleClass="btn-view" prefWidth="200"
+                        onAction="#onConfirmClaim" />
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

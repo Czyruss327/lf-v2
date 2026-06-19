@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.FullDetailsController"
+    stylesheets="@../css/styles.css"
+    prefWidth="960" prefHeight="700">
+
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
+            <padding>
+                <Insets top="10" bottom="10" left="20" right="20" />
+            </padding>
+            <ImageView fx:id="logoImage" fitWidth="36" fitHeight="36" preserveRatio="true" />
+            <Label text="PUPSRC Lost and Found" styleClass="navbar-title" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="+" styleClass="navbar-icon-btn" onAction="#onAddItem" />
+            <Button fx:id="menuButton" text="..." styleClass="navbar-icon-btn" onAction="#onMenu" />
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+            styleClass="grid-scroll">
+            <VBox alignment="TOP_CENTER" styleClass="main-content">
+                <padding>
+                    <Insets top="32" bottom="32" left="60" right="60" />
+                </padding>
+
+                <VBox styleClass="details-card" spacing="0">
+                    <padding>
+                        <Insets top="32" bottom="32" left="48" right="48" />
+                    </padding>
+
+                    <Label text="FULL DETAILS"
+                        styleClass="page-title"
+                        maxWidth="Infinity"
+                        alignment="CENTER">
+                        <VBox.margin>
+                            <Insets bottom="28" />
+                        </VBox.margin>
+                    </Label>
+
+                    <HBox spacing="48" alignment="TOP_LEFT">
+                        <VBox spacing="16" prefWidth="380" minWidth="320">
+                            <Label text="Item Details" styleClass="section-heading" />
+
+                            <StackPane styleClass="detail-img-wrap"
+                                prefWidth="320" prefHeight="200"
+                                maxWidth="320">
+                                <ImageView fx:id="itemImage"
+                                    fitWidth="320" fitHeight="200"
+                                    preserveRatio="false" />
+                            </StackPane>
+
+                            <VBox spacing="5">
+                                <Label text="Item Name" styleClass="form-label" />
+                                <TextField fx:id="itemNameField"
+                                    styleClass="form-input detail-readonly"
+                                    editable="false" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Category" styleClass="form-label" />
+                                <ComboBox fx:id="categoryCombo"
+                                    styleClass="form-input"
+                                    maxWidth="Infinity"
+                                    disable="true" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Description" styleClass="form-label" />
+                                <TextArea fx:id="descriptionArea"
+                                    styleClass="form-input"
+                                    prefHeight="80"
+                                    wrapText="true"
+                                    editable="false" />
+                            </VBox>
+                        </VBox>
+
+                        <VBox spacing="16" HBox.hgrow="ALWAYS">
+                            <Label text="Finder's Information" styleClass="section-heading" />
+
+                            <VBox spacing="5">
+                                <Label text="Name" styleClass="form-label" />
+                                <TextField fx:id="reporterNameField"
+                                    styleClass="form-input detail-readonly"
+                                    editable="false" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Student ID (If Student)" styleClass="form-label" />
+                                <TextField fx:id="studentIdField"
+                                    promptText="YYYY-00000-SR-0"
+                                    styleClass="form-input detail-readonly"
+                                    editable="false" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Contact Number" styleClass="form-label" />
+                                <TextField fx:id="contactField"
+                                    promptText="09XX-XXX-XXXX"
+                                    styleClass="form-input detail-readonly"
+                                    editable="false" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Location Found" styleClass="form-label" />
+                                <TextField fx:id="locationField"
+                                    styleClass="form-input detail-readonly"
+                                    editable="false" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Date Found" styleClass="form-label" />
+                                <TextField fx:id="dateFoundField"
+                                    styleClass="form-input detail-readonly"
+                                    editable="false" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Status" styleClass="form-label" />
+                                <ComboBox fx:id="statusCombo"
+                                    styleClass="form-input"
+                                    maxWidth="Infinity"
+                                    disable="true" />
+                            </VBox>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="16" alignment="CENTER">
+                        <VBox.margin>
+                            <Insets top="32" />
+                        </VBox.margin>
+                        <Button text="CANCEL" styleClass="btn-cancel" prefWidth="180"
+                            onAction="#onCancel" />
+                        <Button fx:id="claimBtn" text="CLAIM" styleClass="btn-view" prefWidth="180"
+                            onAction="#onClaim" />
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

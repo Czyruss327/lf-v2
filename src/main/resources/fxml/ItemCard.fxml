@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<!--
+    ItemCard.fxml
+    A single lost/found item card.
+    Instantiated programmatically by DashboardController for each item.
+-->
+<VBox xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.ItemCardController"
+    styleClass="item-card"
+    prefWidth="195"
+    spacing="0">
+
+    <!-- Image + Badge overlay -->
+    <StackPane styleClass="card-image-wrap" prefHeight="110" minHeight="110">
+
+        <!-- Item Photo -->
+        <ImageView fx:id="itemImage"
+            fitWidth="195" fitHeight="110"
+            preserveRatio="false" />
+
+        <!-- Claimed / Unclaimed badge -->
+        <Label fx:id="statusBadge"
+            styleClass="badge"
+            StackPane.alignment="TOP_RIGHT">
+            <StackPane.margin>
+                <Insets top="8" right="8" />
+            </StackPane.margin>
+        </Label>
+
+    </StackPane>
+
+    <!-- Card Body -->
+    <VBox styleClass="card-body" spacing="3">
+        <padding>
+            <Insets top="10" bottom="6" left="10" right="10" />
+        </padding>
+
+        <Label fx:id="itemName" styleClass="card-name" wrapText="true" />
+
+        <Label fx:id="itemColor" styleClass="card-meta" />
+        <Label fx:id="itemCategory" styleClass="card-meta" />
+        <Label fx:id="itemDate" styleClass="card-meta" />
+        <Label fx:id="itemLocation" styleClass="card-meta" />
+
+    </VBox>
+
+    <!-- View Details Button -->
+    <VBox styleClass="card-footer">
+        <padding>
+            <Insets top="6" bottom="10" left="10" right="10" />
+        </padding>
+        <Button fx:id="viewDetailsBtn"
+            text="VIEW DETAILS"
+            styleClass="btn-view"
+            maxWidth="Infinity"
+            onAction="#onViewDetails" />
+    </VBox>
+
+</VBox>

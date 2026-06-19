@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.ReportFormController"
+    stylesheets="@../css/styles.css"
+    prefWidth="960" prefHeight="720">
+
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
+            <padding>
+                <Insets top="10" bottom="10" left="20" right="20" />
+            </padding>
+            <ImageView fx:id="logoImage" fitWidth="36" fitHeight="36" preserveRatio="true" />
+            <Label text="PUPSRC Lost and Found" styleClass="navbar-title" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="addButton" text="+" styleClass="navbar-icon-btn" onAction="#onAddItem">
+                <graphic>
+                    <ImageView fx:id="reportFormIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
+            <Button fx:id="menuButton" text="..." styleClass="navbar-icon-btn" onAction="#onMenu">
+                <graphic>
+                    <ImageView fx:id="menuBarIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="grid-scroll">
+            <VBox alignment="TOP_CENTER" styleClass="main-content">
+                <padding>
+                    <Insets top="32" bottom="32" left="60" right="60" />
+                </padding>
+
+                <VBox styleClass="details-card" spacing="0">
+                    <padding>
+                        <Insets top="32" bottom="32" left="48" right="48" />
+                    </padding>
+
+                    <Label text="FOUND ITEMS REPORT"
+                        styleClass="page-title"
+                        maxWidth="Infinity"
+                        alignment="CENTER">
+                        <VBox.margin>
+                            <Insets bottom="24" />
+                        </VBox.margin>
+                    </Label>
+
+                    <HBox spacing="48" alignment="TOP_LEFT">
+                        <VBox spacing="14" prefWidth="380" minWidth="300">
+                            <Label text="Item Details" styleClass="section-heading" />
+
+                            <VBox spacing="5">
+                                <HBox spacing="4">
+                                    <Label text="Item Name" styleClass="form-label" />
+                                    <Label text="*" styleClass="required-star" />
+                                </HBox>
+                                <TextField fx:id="itemNameField"
+                                    promptText="Name of item"
+                                    styleClass="form-input" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <HBox spacing="4">
+                                    <Label text="Category" styleClass="form-label" />
+                                    <Label text="*" styleClass="required-star" />
+                                </HBox>
+                                <ComboBox fx:id="categoryCombo"
+                                    styleClass="form-input"
+                                    maxWidth="Infinity" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <HBox spacing="4">
+                                    <Label text="Description" styleClass="form-label" />
+                                    <Label text="*" styleClass="required-star" />
+                                </HBox>
+                                <TextArea fx:id="descriptionArea"
+                                    promptText="Describe the item (e.g., color, brand, unique marks)"
+                                    styleClass="form-input"
+                                    prefHeight="110"
+                                    wrapText="true" />
+                            </VBox>
+
+                            <VBox spacing="8">
+                                <Button text="Upload Images"
+                                    styleClass="upload-btn"
+                                    maxWidth="Infinity"
+                                    onAction="#onUploadImages" />
+                                <VBox fx:id="imageListBox" spacing="6" />
+                            </VBox>
+                        </VBox>
+
+                        <VBox spacing="14" HBox.hgrow="ALWAYS">
+                            <Label text="Finder's Information" styleClass="section-heading" />
+
+                            <VBox spacing="5">
+                                <HBox spacing="4">
+                                    <Label text="Name" styleClass="form-label" />
+                                    <Label text="*" styleClass="required-star" />
+                                </HBox>
+                                <TextField fx:id="reporterNameField"
+                                    promptText="Surname, First Name"
+                                    styleClass="form-input" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <Label text="Student ID (If Student)" styleClass="form-label" />
+                                <TextField fx:id="studentIdField"
+                                    promptText="YYYY-*****-SR-0"
+                                    styleClass="form-input" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <HBox spacing="4">
+                                    <Label text="Contact Number" styleClass="form-label" />
+                                    <Label text="*" styleClass="required-star" />
+                                </HBox>
+                                <TextField fx:id="contactField"
+                                    promptText="09XX-XXX-XXXX"
+                                    styleClass="form-input" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <HBox spacing="4">
+                                    <Label text="Location Found" styleClass="form-label" />
+                                    <Label text="*" styleClass="required-star" />
+                                </HBox>
+                                <TextField fx:id="locationField"
+                                    styleClass="form-input" />
+                            </VBox>
+
+                            <VBox spacing="5">
+                                <HBox spacing="4">
+                                    <Label text="Date Found" styleClass="form-label" />
+                                    <Label text="*" styleClass="required-star" />
+                                </HBox>
+                                <DatePicker fx:id="dateFoundPicker"
+                                    styleClass="form-input"
+                                    maxWidth="Infinity" />
+                            </VBox>
+
+                            <Label fx:id="errorLabel" styleClass="error-label"
+                                wrapText="true" maxWidth="Infinity" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="16" alignment="CENTER">
+                        <VBox.margin>
+                            <Insets top="32" />
+                        </VBox.margin>
+                        <Button text="CANCEL" styleClass="btn-cancel" prefWidth="200"
+                            onAction="#onCancel" />
+                        <Button text="SAVE REPORT" styleClass="btn-view" prefWidth="200"
+                            onAction="#onSaveReport" />
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

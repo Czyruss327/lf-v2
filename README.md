@@ -1,117 +1,323 @@
-# Campus Lost and Found Database Layer
+# Campus Lost and Found
 
-JDBC integration with Supabase (PostgreSQL) for the Campus Lost and Found Reporting System.  
-Provides a complete data access layer using DAO pattern for the `item_reports`, `claim`, `admin`, `activity_logs`, and `category` tables.
+JavaFX desktop application for managing campus lost-and-found reports, claims, admin login, and activity logs. The app connects to a PostgreSQL/Supabase database through JDBC.
 
-## Technologies
-- Java 17+
+## Project Overview
+
+- UI: JavaFX with FXML and CSS
+- Build tool: Maven
+- Database: PostgreSQL/Supabase
+- Packaged main class: `Main`
+- JavaFX application class: `App`
+- JavaFX Maven entry point: `mvn javafx:run`
+- Windows packaging tool: `jpackage`
+
+## Requirements
+
+Install these before building:
+
+- JDK 26 or newer
 - Maven
-- PostgreSQL (Supabase)
-- JDBC
+- Internet access for the first Maven dependency download
+- PostgreSQL/Supabase database credentials
 
-## Setup for Backend Developer
+For a Windows installer `.exe`, also install:
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/grayuschaurus/LostandFoundDB.git
-   cd LostandFoundDB
+- WiX Toolset 3.x
 
-2. Create config.properties file
-Create the folder src/main/resources (if missing).
-Inside it, create a file named config.properties with the following content (replace YOUR_DB_PASSWORD with the password provided by the database team):
+`jpackage` can create an app folder without WiX, but Windows `.exe` or `.msi` installers need WiX.
 
-properties:
-db.url=jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres?sslmode=require
-db.user=postgres.ddrukchfncfxmsglimjx
-db.password=YOUR_DB_PASSWORD
-Important: This file is ignored by Git (see .gitignore). Never commit it.
+## Database Configuration
 
-3. Build the project
-Using Maven:
+The app reads database credentials in this order:
 
-bash
+1. System environment variables
+2. `.env` file in the app working folder
+3. `src/main/resources/config.properties`
+
+The recommended setup for deployment is environment variables, because credentials should not be bundled into the installer.
+
+### Option 1: Environment Variables
+
+In PowerShell:
+
+```powershell
+setx DB_URL "jdbc:postgresql://your-supabase-host:5432/postgres?sslmode=require"
+setx DB_USER "postgres.your-project-ref"
+setx DB_PASSWORD "your-password"
+```
+
+Close and reopen PowerShell after running `setx`.
+
+### Option 2: Local `.env` File
+
+Copy `.env.example` to `.env` and fill in the real values:
+
+```env
+DB_URL=jdbc:postgresql://your-supabase-host:5432/postgres?sslmode=require
+DB_USER=postgres.your-project-ref
+DB_PASSWORD=your-password
+```
+
+Do not commit `.env`.
+
+### Option 3: `config.properties`
+
+Create or update `src/main/resources/config.properties`:
+
+```properties
+db.url=jdbc:postgresql://your-supabase-host:5432/postgres?sslmode=require
+db.user=postgres.your-project-ref
+db.password=your-password
+```
+
+Only use this for local testing unless you intentionally want to package credentials with the app.
+
+## Run Locally
+
+From the project folder:
+
+```powershell
 mvn clean compile
-Or open in IntelliJ as a Maven project (dependencies will auto-download).
+mvn javafx:run
+```
 
-4. Run the test
-Execute DatabaseTest.java (inside com.campuslf.test package) to verify the connection and basic CRUD operations.
+The login window should open with the title `PUPSRC Lost and Found`.
 
-Expected output:
-Admin already exists, skipping insert.
-Item report added: true
-Claim added: true
-Activity log added: true
+## Build the JAR
 
-Project Structure:
-src/main/java/com/campuslf/
-├── database/
-│   └── DatabaseConnection.java      # Loads credentials, provides connection
-├── models/
-│   ├── Admin.java
-│   ├── Category.java
-│   ├── ItemReport.java
-│   ├── Claim.java
-│   └── ActivityLog.java
-├── dao/
-│   ├── AdminDAO.java
-│   ├── ItemReportDAO.java
-│   ├── ClaimDAO.java
-│   └── ActivityLogDAO.java
-└── test/
-    └── DatabaseTest.java            # Example usage
+Build the app:
 
-DAO Methods Overview
-* ItemReportDAO -	addItemReport() 
-              - getAllItemReports(statusFilter) 
-              - getItemReportById() 
-              - updateReportStatus() 
-              - deleteItemReport()
-* ClaimDAO	- addClaim()
-          - getClaimsByReportId()
-          - updateClaimStatus()
-* AdminDAO	- getAdminByUsername()
-          - addAdmin()
-* ActivityLogDAO	- addLog()
-                - getAllLogs()
+```powershell
+mvn clean package -DskipTests
+```
 
+This creates:
 
-Usage Example (JavaFX Controller)
-// Get all unclaimed items
-ItemReportDAO itemDAO = new ItemReportDAO();
-List<ItemReport> unclaimedItems = itemDAO.getAllItemReports("Pending");
+```text
+target/lostandfound-1.0.jar
+```
 
-// Add a new found item
-ItemReport newItem = new ItemReport();
-newItem.setAdminId(1);
-newItem.setCategoryId(1);
-newItem.setItemName("Black Wallet");
-newItem.setDescription("Leather wallet, contains student ID");
-newItem.setLocationFound("Canteen table");
-newItem.setDateReported(LocalDate.now());
-newItem.setDatePosted(LocalDate.now());
-newItem.setFinderStudentId("2024-12345");
-newItem.setFinderContactNum("09123456789");
-newItem.setImageUrl("https://example.com/wallet.jpg");
-newItem.setReportStatus("Pending");
+The JAR by itself is not the easiest deployment format for JavaFX. Use `jpackage` to bundle it with a runtime and create a Windows app or installer.
 
-boolean success = itemDAO.addItemReport(newItem);
+## Prepare Files for `jpackage`
 
+Create a deployment folder containing the app JAR and runtime dependencies:
 
+```powershell
+New-Item -ItemType Directory -Force target\deploy
+Copy-Item target\lostandfound-1.0.jar target\deploy\
+mvn dependency:copy-dependencies "-DincludeScope=runtime" "-DoutputDirectory=target/deploy"
+```
 
-Important Notes on Enums
-The Supabase schema uses custom enum types for status fields:
-* item_reports.status → type report_status (values: 'Pending', 'Claimed', 'Archived')
-* claim.claim_status → type claim_status_enum (values: 'Pending', 'Approved', 'Rejected')
+After this, `target\deploy` should contain:
 
-The DAO methods automatically handle the required casting using CAST(? AS report_status).
-You only need to pass plain Java strings like "Pending". Do not try to pass the enum type directly.
+- `lostandfound-1.0.jar`
+- JavaFX dependency JARs
+- PostgreSQL JDBC driver JAR
 
+## Create a Windows App Folder
 
+This creates a portable app image. It does not require WiX.
 
- Troubleshooting
- * Connection refused - Check that config.properties has correct URL and user. Ensure you're using the session pooler port (5432).
- * FATAL: password authentication failed - The password in config.properties is incorrect. Contact the database team for the current password.
- * relation "category" does not exist - The database schema is missing. Run the CREATE TABLE script (available from database team).
- * column "status" is of type report_status but expression is of type character varying - You forgot to use the DAO method – it already includes CAST. If you write raw SQL, add CAST(? AS report_status).
+```powershell
+jpackage `
+  --type app-image `
+  --name "Campus Lost and Found" `
+  --app-version 1.0 `
+  --input target\deploy `
+  --main-jar lostandfound-1.0.jar `
+  --main-class Main `
+  --dest target\installer
+```
 
+Output:
 
+```text
+target\installer\Campus Lost and Found\
+```
+
+Run the app:
+
+```powershell
+& "target\installer\Campus Lost and Found\Campus Lost and Found.exe"
+```
+
+## Create a Windows Installer `.exe`
+
+Install WiX Toolset 3.x first, then make sure WiX is available from PowerShell:
+
+```powershell
+candle.exe -?
+light.exe -?
+```
+
+Then run:
+
+```powershell
+jpackage `
+  --type exe `
+  --name "Campus Lost and Found" `
+  --app-version 1.0 `
+  --vendor "PUPSRC" `
+  --input target\deploy `
+  --main-jar lostandfound-1.0.jar `
+  --main-class Main `
+  --win-menu `
+  --win-menu-group "PUPSRC" `
+  --win-shortcut `
+  --dest target\installer
+```
+
+Output:
+
+```text
+target\installer\Campus Lost and Found-1.0.exe
+```
+
+Send that installer to users.
+
+After installing, open the app from:
+
+```text
+Start Menu > PUPSRC > Campus Lost and Found
+```
+
+The installer finishes after copying the app; it does not automatically open the login window.
+
+## Recommended Release Checklist
+
+Before sharing the installer:
+
+1. Confirm the database is reachable.
+2. Confirm `DB_URL`, `DB_USER`, and `DB_PASSWORD` are set on the target computer, or provide a safe `.env` setup process.
+3. Run the app from the generated app folder.
+4. Log in as admin.
+5. Open the dashboard.
+6. Add a lost/found item.
+7. Verify claims and status changes work.
+
+## Useful Commands
+
+Run the JavaFX app:
+
+```powershell
+mvn javafx:run
+```
+
+Compile only:
+
+```powershell
+mvn clean compile
+```
+
+Build JAR:
+
+```powershell
+mvn clean package -DskipTests
+```
+
+Rebuild deployment folder:
+
+```powershell
+Remove-Item -Recurse -Force target\deploy,target\installer -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Force target\deploy
+mvn clean package -DskipTests
+Copy-Item target\lostandfound-1.0.jar target\deploy\
+mvn dependency:copy-dependencies "-DincludeScope=runtime" "-DoutputDirectory=target/deploy"
+```
+
+Create installer:
+
+```powershell
+jpackage `
+  --type exe `
+  --name "Campus Lost and Found" `
+  --app-version 1.0 `
+  --vendor "PUPSRC" `
+  --input target\deploy `
+  --main-jar lostandfound-1.0.jar `
+  --main-class Main `
+  --win-menu `
+  --win-menu-group "PUPSRC" `
+  --win-shortcut `
+  --dest target\installer
+```
+
+## Troubleshooting
+
+### `jpackage` is not recognized
+
+Use a full JDK, not only a JRE. Check:
+
+```powershell
+java --version
+jpackage --version
+```
+
+### `candle.exe` or `light.exe` is missing
+
+WiX Toolset is missing or not on `PATH`. Install WiX Toolset 3.x, reopen PowerShell, and try again.
+
+### App opens but database features fail
+
+Check that these are set correctly:
+
+```text
+DB_URL
+DB_USER
+DB_PASSWORD
+```
+
+The app also supports `.env` and `config.properties`, but environment variables are safer for installed copies.
+
+### Installed app shows no window and no error
+
+Make sure the package uses `Main`, not `App`, as the `jpackage` main class:
+
+```powershell
+--main-class Main
+```
+
+`App` extends `javafx.application.Application` directly. If the packaged launcher starts `App`, Windows may hide the JavaFX startup error and the app can appear to do nothing.
+
+The app also writes startup logs here:
+
+```text
+%LOCALAPPDATA%\CampusLostAndFound\logs\startup.log
+```
+
+If the installed app does not open, check that file for the exact error.
+
+### `Database credentials are missing`
+
+The app could not find credentials from environment variables, `.env`, or `config.properties`.
+
+### PostgreSQL password authentication failed
+
+The database password is incorrect or expired. Update `DB_PASSWORD`.
+
+### Supabase connection refused or timeout
+
+Check the database URL, Supabase project status, network connection, and whether the database allows the selected connection method.
+
+### Java version errors
+
+The project is currently configured for Java release `26` in `pom.xml`. Build and package with JDK 26 or update the Maven compiler release in `pom.xml` to match the JDK you intend to use.
+
+## Project Structure
+
+```text
+src/main/java/Main.java                        Packaged launcher entry point
+src/main/java/App.java                         JavaFX application class
+src/main/java/controller/                      JavaFX controllers
+src/main/java/model/                           UI-facing model/session classes
+src/main/java/mapper/                          Mapping helpers
+src/main/java/com/campuslf/database/           Database connection utilities
+src/main/java/com/campuslf/dao/                DAO classes
+src/main/java/com/campuslf/service/            Service classes
+src/main/java/com/campuslf/models/             Database model classes
+src/main/resources/fxml/                       JavaFX layouts
+src/main/resources/css/                        App styles
+src/main/resources/images/                     App images
+```

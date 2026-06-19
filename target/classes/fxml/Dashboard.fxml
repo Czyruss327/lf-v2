@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.DashboardController"
+    stylesheets="@../css/styles.css"
+    prefWidth="960" prefHeight="700">
+
+    <!-- ═══════════════════════════════ TOP NAVBAR ═══════════════════════════════ -->
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="12">
+            <padding>
+                <Insets top="10" bottom="10" left="20" right="20" />
+            </padding>
+
+            <!-- Logo + App Name -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <ImageView fx:id="logoImage" fitWidth="36" fitHeight="36" preserveRatio="true" />
+                <Label text="PUPSRC Lost and Found" styleClass="navbar-title" />
+            </HBox>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Search Bar -->
+            <TextField fx:id="searchField"
+                promptText="Search..."
+                styleClass="search-field"
+                prefWidth="200"
+                onKeyReleased="#onSearch" />
+
+            <!-- Add Button -->
+            <Button fx:id="backButton"
+                text="Back"
+                styleClass="navbar-icon-btn"
+                onAction="#onBackToRoleSelection">
+                <graphic>
+                    <ImageView fx:id="homeIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
+
+            <Button fx:id="addButton"
+                text="+"
+                styleClass="navbar-icon-btn"
+                onAction="#onAddItem">
+                <graphic>
+                    <ImageView fx:id="reportFormIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
+
+            <!-- Menu Button -->
+            <Button fx:id="menuButton"
+                text="☰"
+                styleClass="navbar-icon-btn"
+                onAction="#onMenuToggle">
+                <graphic>
+                    <ImageView fx:id="menuBarIcon" fitWidth="18" fitHeight="18" preserveRatio="true" />
+                </graphic>
+            </Button>
+        </HBox>
+    </top>
+
+    <!-- ═══════════════════════════════ CENTER CONTENT ═══════════════════════════ -->
+    <center>
+        <VBox styleClass="main-content" spacing="16">
+            <padding>
+                <Insets top="24" bottom="24" left="40" right="40" />
+            </padding>
+
+            <!-- Page Title -->
+            <Label fx:id="dashboardTitleLabel" text="DASHBOARD" styleClass="page-title"
+                alignment="CENTER">
+                <VBox.margin>
+                    <Insets bottom="8" />
+                </VBox.margin>
+            </Label>
+
+            <!-- Filter Row -->
+            <HBox alignment="CENTER_RIGHT" spacing="8">
+                <ComboBox fx:id="filterCombo" promptText="Filter" styleClass="filter-combo"
+                    onAction="#onFilterChange" />
+            </HBox>
+
+            <!-- Item Grid (populated programmatically via FlowPane) -->
+            <ScrollPane fx:id="scrollPane"
+                styleClass="grid-scroll"
+                fitToWidth="true"
+                VBox.vgrow="ALWAYS">
+                <FlowPane fx:id="itemGrid"
+                    styleClass="item-grid"
+                    alignment="TOP_CENTER"
+                    hgap="16" vgap="16"
+                    prefWrapLength="880">
+                    <padding>
+                        <Insets top="8" bottom="8" left="4" right="4" />
+                    </padding>
+                    <!-- Cards injected by DashboardController -->
+                </FlowPane>
+            </ScrollPane>
+
+            <!-- Pagination -->
+            <HBox fx:id="paginationBox"
+                alignment="CENTER"
+                spacing="6"
+                styleClass="pagination-bar">
+                <padding>
+                    <Insets top="8" bottom="4" />
+                </padding>
+                <!-- Pagination buttons injected programmatically -->
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

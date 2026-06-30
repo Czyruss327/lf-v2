@@ -1,4 +1,2 @@
-Main.class
-StartupDiagnostics$TeePrintStream.class
-StartupDiagnostics.class
-StartupDiagnostics$TeeOutputStream.class
+controller\ReportMenuHelper.class
+controller\ReportMenuHelper$StageSupplier.class

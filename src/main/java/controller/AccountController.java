@@ -73,6 +73,7 @@ public class AccountController implements Initializable {
     private ScrollPane historyScrollPane;
 
     private NavbarHelper navbar;
+    private ReportMenuHelper reportMenu;
     private final ActivityLogService activityLogService = new ActivityLogService();
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("hh:mm a");
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("MM / dd / yyyy");
@@ -84,6 +85,7 @@ public class AccountController implements Initializable {
         loadImage(logoImage, "/images/logo.png");
 
         navbar = new NavbarHelper(() -> (Stage) menuButton.getScene().getWindow());
+        reportMenu = new ReportMenuHelper(() -> (Stage) menuButton.getScene().getWindow());
 
         // Role / name
         boolean isAdmin = SessionManager.getInstance().isAdmin();
@@ -336,7 +338,7 @@ public class AccountController implements Initializable {
             showAlert("Access Denied", "Only admins can post new items.");
             return;
         }
-        navigateTo("/fxml/ReportForm.fxml", "New Post – PUPSRC Lost and Found");
+        reportMenu.toggle(addButton);
     }
 
     @FXML
@@ -406,6 +408,10 @@ public class AccountController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Parent root = loader.load();
+            if ("/fxml/ReportForm.fxml".equals(fxml)) {
+                ReportFormController ctrl = loader.getController();
+                ctrl.setFoundReportMode();
+            }
             Stage stage = (Stage) menuButton.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle(title);

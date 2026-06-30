@@ -4,6 +4,8 @@ import com.campuslf.dao.ClaimDAO;
 import com.campuslf.models.Claim;
 import com.campuslf.dao.ItemReportDAO;
 
+import java.time.LocalDate;
+
 public class ClaimService {
 
     private final ClaimDAO claimDAO;
@@ -25,8 +27,16 @@ public class ClaimService {
             return false;
         }
 
+        if (claim.getReportId() <= 0) {
+            return false;
+        }
+
         if (claim.getClaimStatus() == null) {
             claim.setClaimStatus("Pending");
+        }
+
+        if (claim.getDateClaimed() == null) {
+            claim.setDateClaimed(LocalDate.now());
         }
 
         return claimDAO.addClaim(claim);

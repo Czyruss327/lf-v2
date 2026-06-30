@@ -1,15 +1,17 @@
-import com.campuslf.service.ActivityLogService;
+package com.campuslf.service;
 
-public static void main(String[] args) {
+public class ActivityLogServiceTest {
+    public static void main(String[] args) {
 
-    ActivityLogService service =
-            new ActivityLogService();
+        ActivityLogService service =
+                new ActivityLogService();
 
-    boolean result =
-            service.logAction(
-                    1,
-                    "Backend Service Test"
-            );
+        boolean result =
+                service.logAction(
+                        1,
+                        "Backend Service Test"
+                );
 
-    System.out.println(result);
+        System.out.println(result);
+    }
 }

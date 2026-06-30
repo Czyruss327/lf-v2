@@ -19,7 +19,7 @@
             <ImageView fx:id="logoImage" fitWidth="36" fitHeight="36" preserveRatio="true" />
             <Label text="PUPSRC Lost and Found" styleClass="navbar-title" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button text="+" styleClass="navbar-icon-btn" onAction="#onAddItem" />
+            <Button fx:id="addButton" text="+" styleClass="navbar-icon-btn" onAction="#onAddItem" />
             <Button fx:id="menuButton" text="..." styleClass="navbar-icon-btn" onAction="#onMenu" />
         </HBox>
     </top>
@@ -48,7 +48,7 @@
 
                     <HBox spacing="48" alignment="TOP_LEFT">
                         <VBox spacing="16" prefWidth="380" minWidth="320">
-                            <Label text="Item Details" styleClass="section-heading" />
+                            <Label text="Lost Item Details" styleClass="section-heading" />
 
                             <StackPane styleClass="detail-img-wrap"
                                 prefWidth="320" prefHeight="200"
@@ -84,7 +84,7 @@
                         </VBox>
 
                         <VBox spacing="16" HBox.hgrow="ALWAYS">
-                            <Label text="Finder's Information" styleClass="section-heading" />
+                            <Label text="Reporter Information" styleClass="section-heading" />
 
                             <VBox spacing="5">
                                 <Label text="Name" styleClass="form-label" />
@@ -110,18 +110,27 @@
                             </VBox>
 
                             <VBox spacing="5">
-                                <Label text="Location Found" styleClass="form-label" />
+                                <Label text="Location Lost / Found" styleClass="form-label" />
                                 <TextField fx:id="locationField"
                                     styleClass="form-input detail-readonly"
                                     editable="false" />
                             </VBox>
 
-                            <VBox spacing="5">
-                                <Label text="Date Found" styleClass="form-label" />
-                                <TextField fx:id="dateFoundField"
-                                    styleClass="form-input detail-readonly"
-                                    editable="false" />
-                            </VBox>
+                            <HBox spacing="14">
+                                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                    <Label text="Date Lost / Found" styleClass="form-label" />
+                                    <TextField fx:id="dateFoundField"
+                                        styleClass="form-input detail-readonly"
+                                        editable="false" />
+                                </VBox>
+                                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                    <Label text="Time Lost / Found" styleClass="form-label" />
+                                    <TextField fx:id="timeFoundField"
+                                        promptText="8:00"
+                                        styleClass="form-input detail-readonly"
+                                        editable="false" />
+                                </VBox>
+                            </HBox>
 
                             <VBox spacing="5">
                                 <Label text="Status" styleClass="form-label" />
@@ -130,6 +139,12 @@
                                     maxWidth="Infinity"
                                     disable="true" />
                             </VBox>
+
+                            <Button fx:id="generatePdfBtn"
+                                text="PDF  Generate PDF for Blog Site"
+                                styleClass="btn-pdf-link"
+                                maxWidth="220"
+                                onAction="#onGeneratePdf" />
                         </VBox>
                     </HBox>
 

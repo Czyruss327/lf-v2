@@ -16,7 +16,7 @@ JavaFX desktop application for managing campus lost-and-found reports, claims, a
 
 Install these before building:
 
-- JDK 26 or newer
+- JDK 24 or newer
 - Maven
 - Internet access for the first Maven dependency download
 - PostgreSQL/Supabase database credentials
@@ -71,7 +71,7 @@ db.user=postgres.your-project-ref
 db.password=your-password
 ```
 
-Only use this for local testing unless you intentionally want to package credentials with the app.
+Only use this for local testing. Maven is configured not to package `config.properties` into the installer, because database credentials should stay outside the app bundle.
 
 ## Run Locally
 
@@ -89,7 +89,7 @@ The login window should open with the title `PUPSRC Lost and Found`.
 Build the app:
 
 ```powershell
-mvn clean package -DskipTests
+mvn clean package "-Dmaven.test.skip=true"
 ```
 
 This creates:
@@ -159,12 +159,12 @@ jpackage `
   --type exe `
   --name "Campus Lost and Found" `
   --app-version 1.0 `
-  --vendor "PUPSRC" `
+  --vendor "Group 2" `
   --input target\deploy `
   --main-jar lostandfound-1.0.jar `
   --main-class Main `
   --win-menu `
-  --win-menu-group "PUPSRC" `
+  --win-menu-group "Group 2" `
   --win-shortcut `
   --dest target\installer
 ```
@@ -214,7 +214,7 @@ mvn clean compile
 Build JAR:
 
 ```powershell
-mvn clean package -DskipTests
+mvn clean package "-Dmaven.test.skip=true"
 ```
 
 Rebuild deployment folder:
@@ -222,7 +222,7 @@ Rebuild deployment folder:
 ```powershell
 Remove-Item -Recurse -Force target\deploy,target\installer -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force target\deploy
-mvn clean package -DskipTests
+mvn clean package "-Dmaven.test.skip=true"
 Copy-Item target\lostandfound-1.0.jar target\deploy\
 mvn dependency:copy-dependencies "-DincludeScope=runtime" "-DoutputDirectory=target/deploy"
 ```
@@ -303,7 +303,17 @@ Check the database URL, Supabase project status, network connection, and whether
 
 ### Java version errors
 
-The project is currently configured for Java release `26` in `pom.xml`. Build and package with JDK 26 or update the Maven compiler release in `pom.xml` to match the JDK you intend to use.
+The project is configured for Java release `24` in `pom.xml` because it uses JavaFX `24`.
+
+The Java release in `pom.xml` must be less than or equal to the JDK used by `jpackage`. For example, a Java 25 packaged runtime can run Java 24 class files, but it cannot run Java 26 class files.
+
+Check both versions before packaging:
+
+```powershell
+java --version
+javac --version
+jpackage --version
+```
 
 ## Project Structure
 

@@ -25,6 +25,7 @@ public class CreateAdminAccountController implements Initializable {
 
     private final AuthenticationService authenticationService = new AuthenticationService();
 
+    @FXML
     private TextField usernameField;
     @FXML
     private PasswordField passwordField;

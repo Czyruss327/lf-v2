@@ -18,11 +18,11 @@
     spacing="0">
 
     <!-- Image + Badge overlay -->
-    <StackPane styleClass="card-image-wrap" prefHeight="110" minHeight="110">
+    <StackPane styleClass="card-image-wrap" prefHeight="150" minHeight="150">
 
         <!-- Item Photo -->
         <ImageView fx:id="itemImage"
-            fitWidth="195" fitHeight="110"
+            fitWidth="195" fitHeight="150"
             preserveRatio="false" />
 
         <!-- Claimed / Unclaimed badge -->

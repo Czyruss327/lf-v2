@@ -11,7 +11,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import com.campuslf.models.Claim;
+import com.campuslf.models.ItemReport;
 import com.campuslf.service.ActivityLogService;
+import com.campuslf.service.ClaimService;
 import com.campuslf.service.ItemService;
 import model.Item;
 import model.ItemStore;
@@ -20,6 +23,7 @@ import model.SessionManager;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,12 +33,13 @@ import java.util.ResourceBundle;
 public class ClaimVerificationController implements Initializable {
 
     private static final String NAME_PATTERN = "[A-Za-z .,]+";
-    private static final String STUDENT_ID_PATTERN = "\\d{4}-\\d{5}-SR-0";
     private static final String CONTACT_PATTERN = "09\\d{2}-\\d{3}-\\d{4}";
     private static final int MAX_COURSE_SECTION_LENGTH = 40;
 
     @FXML
     private ImageView logoImage;
+    @FXML
+    private Button addButton;
     @FXML
     private Button menuButton;
     @FXML
@@ -46,7 +51,19 @@ public class ClaimVerificationController implements Initializable {
     @FXML
     private TextField courseSectionField;
     @FXML
-    private TextField claimedAtField;
+    private TextField emailField;
+    @FXML
+    private DatePicker dateLostPicker;
+    @FXML
+    private DatePicker dateFoundPicker;
+    @FXML
+    private TextArea descriptionArea;
+    @FXML
+    private CheckBox singleClaimantCheck;
+    @FXML
+    private CheckBox multipleClaimantsCheck;
+    @FXML
+    private VBox idListBox;
     @FXML
     private VBox proofListBox;
     @FXML
@@ -54,26 +71,52 @@ public class ClaimVerificationController implements Initializable {
 
     private Item item;
     private final ItemService itemService = new ItemService();
+    private final ClaimService claimService = new ClaimService();
     private final ActivityLogService activityLogService = new ActivityLogService();
     private final List<File> proofImages = new ArrayList<>();
+    private final List<File> idImages = new ArrayList<>();
     private NavbarHelper navbar;
+    private ReportMenuHelper reportMenu;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadImage(logoImage, "/images/logo.png");
         errorLabel.setText("");
-        claimedAtField.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy h:mm a")));
+        configureClaimantChecks();
         navbar = new NavbarHelper(() -> (Stage) claimNameField.getScene().getWindow());
+        reportMenu = new ReportMenuHelper(() -> (Stage) claimNameField.getScene().getWindow());
     }
 
     public void setItem(Item item) {
         this.item = item;
+        if (item == null) {
+            return;
+        }
+
+        if (notBlank(item.getDate())) {
+            dateLostPicker.getEditor().setText(item.getDate());
+        }
+        if (notBlank(item.getDateFound())) {
+            dateFoundPicker.getEditor().setText(item.getDateFound());
+        }
+        if (notBlank(item.getColor())) {
+            descriptionArea.setText(item.getColor());
+        }
     }
 
     @FXML
     private void onUploadProof() {
+        uploadFiles("Upload Proof of Claim", proofImages, proofListBox);
+    }
+
+    @FXML
+    private void onUploadId() {
+        uploadFiles("Upload ID", idImages, idListBox);
+    }
+
+    private void uploadFiles(String title, List<File> selectedFiles, VBox listBox) {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Upload Proof of Claim");
+        chooser.setTitle(title);
         chooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Images / PDF", "*.png", "*.jpg", "*.jpeg", "*.pdf"));
         Stage stage = (Stage) claimNameField.getScene().getWindow();
@@ -81,18 +124,24 @@ public class ClaimVerificationController implements Initializable {
         if (files == null)
             return;
         for (File file : files) {
-            if (proofImages.size() >= 3)
+            if (selectedFiles.size() >= 3)
                 break;
-            proofImages.add(file);
-            HBox row = new HBox(12);
-            row.setStyle("-fx-background-color:#f8f4f2;-fx-border-color:#E0D6D0;" +
-                    "-fx-border-radius:6;-fx-background-radius:6;-fx-padding:8 12;");
-            row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-            Label name = new Label("Proof " + proofImages.size() + ": " + file.getName());
-            name.setStyle("-fx-font-size:12px;-fx-text-fill:#1A1A1A;");
-            row.getChildren().add(name);
-            proofListBox.getChildren().add(row);
+            selectedFiles.add(file);
+            listBox.getChildren().add(uploadRow(selectedFiles.size(), file.getName()));
         }
+    }
+
+    private HBox uploadRow(int index, String fileName) {
+        HBox row = new HBox(8);
+        row.getStyleClass().add("image-upload-row");
+        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        Label name = new Label(index + ". " + fileName);
+        name.getStyleClass().add("image-upload-name");
+        name.setMaxWidth(260);
+        name.setWrapText(true);
+        row.getChildren().add(name);
+        return row;
     }
 
     @FXML
@@ -102,6 +151,7 @@ public class ClaimVerificationController implements Initializable {
         String studentId = studentIdField.getText().trim();
         String contactNumber = contactField.getText().trim();
         String courseSection = courseSectionField.getText().trim();
+        boolean multipleClaimants = multipleClaimantsCheck.isSelected();
 
         if (claimantName.isBlank()) {
             errorLabel.setText("Name is required.");
@@ -111,50 +161,90 @@ public class ClaimVerificationController implements Initializable {
             errorLabel.setText("Name can only contain letters, spaces, comma, and period.");
             return;
         }
-        if (!studentId.isBlank() && !isValidStudentId(studentId)) {
-            errorLabel.setText("Student ID must follow this format: 2023-00123-SR-0");
+        if (multipleClaimants && contactNumber.isBlank()) {
+            errorLabel.setText("Contact number is required when there is more than one claimant.");
             return;
         }
-        if (contactNumber.isBlank()) {
-            errorLabel.setText("Contact number is required.");
-            return;
-        }
-        if (!isValidContactNumber(contactNumber)) {
+        if (!contactNumber.isBlank() && !isValidContactNumber(contactNumber)) {
             errorLabel.setText("Contact number must follow this format: 09XX-XXX-XXXX");
-            return;
-        }
-        if (courseSection.isBlank()) {
-            errorLabel.setText("Course and Section is required.");
             return;
         }
         if (courseSection.length() > MAX_COURSE_SECTION_LENGTH) {
             errorLabel.setText("Course and Section must not exceed " + MAX_COURSE_SECTION_LENGTH + " characters.");
             return;
         }
-
-        if (item != null) {
-            if (!itemService.markClaimed(item.getId())) {
-                errorLabel.setText("Unable to update item status.");
-                return;
-            }
-            activityLogService.logAction(
-                    Math.max(1, SessionManager.getInstance().getAdminId()),
-                    "Claimed item: " + item.getName() + " by " + claimantName);
-            ItemStore.getInstance().markAsClaimed(item, claimantName);
+        if (dateLostPicker.getValue() == null && dateLostPicker.getEditor().getText().trim().isBlank()) {
+            errorLabel.setText("Date Lost is required.");
+            return;
         }
+        if (proofImages.isEmpty()) {
+            errorLabel.setText("Proof of Claim is required.");
+            return;
+        }
+        if (!singleClaimantCheck.isSelected() && !multipleClaimantsCheck.isSelected()) {
+            errorLabel.setText("Please select the number of claimants.");
+            return;
+        }
+
+        if (item == null) {
+            errorLabel.setText("Unable to submit claim. No item was selected.");
+            return;
+        }
+
+        int adminId = resolveAdminId();
+        Claim claim = new Claim();
+        claim.setReportId(item.getId());
+        claim.setAdminId(adminId);
+        claim.setClaimantName(claimantName);
+        claim.setClaimantStudentId(studentId.isBlank() ? null : studentId);
+        claim.setClaimantContact(contactNumber.isBlank() ? null : contactNumber);
+        claim.setCourseSection(courseSection.isBlank() ? null : courseSection);
+        claim.setClaimStatus("Approved");
+        claim.setDateClaimed(LocalDate.now());
+
+        if (!claimService.submitClaim(claim)) {
+            errorLabel.setText("Unable to save claim to Supabase.");
+            return;
+        }
+
+        if (!itemService.markClaimed(item.getId())) {
+            errorLabel.setText("Unable to update item status.");
+            return;
+        }
+        activityLogService.logAction(
+                adminId,
+                "Claimed item: " + item.getName() + " by " + claimantName);
+        ItemStore.getInstance().markAsClaimed(item, claimantName);
 
         showConfirmAndGoBack();
     }
 
+    private int resolveAdminId() {
+        int sessionAdminId = SessionManager.getInstance().getAdminId();
+        if (sessionAdminId > 0) {
+            return sessionAdminId;
+        }
+
+        if (item != null && item.getId() > 0) {
+            ItemReport report = itemService.getItemById(item.getId());
+            if (report != null && report.getAdminId() > 0) {
+                return report.getAdminId();
+            }
+        }
+
+        return 1;
+    }
+
     private void showConfirmAndGoBack() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        String claimedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy h:mm a"));
         alert.setTitle("Claim Confirmed");
         alert.setHeaderText(null);
         alert.setContentText(
                 "Claim confirmed!\n\n" +
                         "- Audit log updated\n" +
                         "- Item status set to CLAIMED\n" +
-                        "- Date/time claimed: " + claimedAtField.getText() + "\n" +
+                        "- Date/time claimed: " + claimedAt + "\n" +
                         "- Item removed from public dashboard\n\n" +
                         "Please hand over the physical item to the claimant.");
         alert.showAndWait();
@@ -168,7 +258,7 @@ public class ClaimVerificationController implements Initializable {
 
     @FXML
     private void onAddItem() {
-        navigateTo("/fxml/ReportForm.fxml", "Found Items Report");
+        reportMenu.toggle(addButton);
     }
 
     @FXML
@@ -192,6 +282,10 @@ public class ClaimVerificationController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Parent root = loader.load();
+            if ("/fxml/ReportForm.fxml".equals(path)) {
+                ReportFormController ctrl = loader.getController();
+                ctrl.setFoundReportMode();
+            }
             Stage stage = (Stage) claimNameField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
             stage.setTitle(title + " - PUPSRC Lost and Found");
@@ -213,11 +307,29 @@ public class ClaimVerificationController implements Initializable {
         return value.matches(NAME_PATTERN);
     }
 
-    private boolean isValidStudentId(String value) {
-        return value.matches(STUDENT_ID_PATTERN);
-    }
-
     private boolean isValidContactNumber(String value) {
         return value.matches(CONTACT_PATTERN);
+    }
+
+    private void configureClaimantChecks() {
+        singleClaimantCheck.selectedProperty().addListener((obs, oldValue, selected) -> {
+            if (selected) {
+                multipleClaimantsCheck.setSelected(false);
+            } else if (!multipleClaimantsCheck.isSelected()) {
+                singleClaimantCheck.setSelected(true);
+            }
+        });
+
+        multipleClaimantsCheck.selectedProperty().addListener((obs, oldValue, selected) -> {
+            if (selected) {
+                singleClaimantCheck.setSelected(false);
+            } else if (!singleClaimantCheck.isSelected()) {
+                multipleClaimantsCheck.setSelected(true);
+            }
+        });
+    }
+
+    private boolean notBlank(String value) {
+        return value != null && !value.isBlank();
     }
 }

@@ -1,22 +1,24 @@
 package controller;
 
-import com.campuslf.models.Admin;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import com.campuslf.service.ActivityLogService;
 import com.campuslf.service.AuthenticationService;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import model.SessionManager;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import model.UserAccount;
 
 /**
  * AdminLoginController — Figure 3 YES branch.
@@ -51,6 +53,8 @@ public class AdminLoginController implements Initializable {
     }
 
     /** Figure 3 YES branch — authenticate and grant access. */
+    
+    /*
     @FXML
     private void onLogin() {
         errorLabel.setText("");
@@ -78,6 +82,37 @@ public class AdminLoginController implements Initializable {
         activityLogService.logAction(
                 Math.max(1, SessionManager.getInstance().getAdminId()),
                 "Admin logged in: " + user);
+        navigateToDashboard();
+    }
+
+    */
+    
+     @FXML
+    private void onLogin() {
+        errorLabel.setText("");
+        String user = usernameField.getText().trim();
+        String pass = passwordField.getText();
+
+        if (user.isEmpty() || pass.isEmpty()) {
+            errorLabel.setText("Please enter username and password.");
+            return;
+        }
+
+        UserAccount account = UserAccount.authenticate(user, pass);
+
+        if (account == null) {
+            errorLabel.setText("Invalid username or password.");
+            passwordField.clear();
+            return;
+        }
+        if (account.getRole() != SessionManager.Role.ADMIN) {
+            errorLabel.setText("This login is for admins only.");
+            passwordField.clear();
+            return;
+        }
+
+        // Set session — admin can now access the system freely
+        SessionManager.getInstance().login(SessionManager.Role.ADMIN, user);
         navigateToDashboard();
     }
 

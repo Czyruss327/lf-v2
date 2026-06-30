@@ -18,14 +18,13 @@
 
         <Pane styleClass="login-overlay" />
 
-        <VBox alignment="BOTTOM_LEFT" spacing="8">
+        <VBox alignment="CENTER" spacing="8">
             <padding>
-                <Insets bottom="60" left="40" right="40" />
+                <Insets bottom="40" left="40" right="40" />
             </padding>
             <Label text="WELCOME TO" styleClass="login-welcome-line1" />
-            <Label text="PUPSRC LOST AND" styleClass="login-welcome-line2" />
-            <Label text="FOUND" styleClass="login-welcome-line2" />
-            <Label text="A simple campus hub for reporting, browsing, and claiming lost items."
+            <Label text="PUPSRC LOST AND FOUND" styleClass="login-welcome-line2" />
+            <Label text="A simple campus hub for reporting and claiming lost items."
                 styleClass="login-welcome-subtitle"
                 wrapText="true"
                 maxWidth="310" />
@@ -45,32 +44,14 @@
                 fitWidth="200" fitHeight="200"
                 preserveRatio="true" />
 
-            <Label text="Select Your Role"
-                styleClass="login-role-title"
-                wrapText="true"
-                alignment="CENTER"
-                textAlignment="CENTER" />
-
-            <Label text="Choose how you want to access the lost and found system."
-                styleClass="login-role-subtitle"
-                wrapText="true"
-                alignment="CENTER"
-                textAlignment="CENTER"
-                maxWidth="230" />
-
             <Region prefHeight="8" />
 
             <Button fx:id="adminBtn"
-                text="ADMIN"
+                text="LOGIN"
                 styleClass="login-role-btn"
                 maxWidth="Infinity"
                 onAction="#onAdminLogin" />
 
-            <Button fx:id="studentBtn"
-                text="STUDENT"
-                styleClass="login-role-btn-outline"
-                maxWidth="Infinity"
-                onAction="#onStudentLogin" />
         </VBox>
     </VBox>
 </HBox>

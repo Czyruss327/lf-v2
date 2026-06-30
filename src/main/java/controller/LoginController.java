@@ -23,8 +23,6 @@ public class LoginController implements Initializable {
     private ImageView logoImage;
     @FXML
     private Button adminBtn;
-    @FXML
-    private Button studentBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -37,12 +35,6 @@ public class LoginController implements Initializable {
         navigateTo("/fxml/AdminLogin.fxml", "Admin Login – PUPSRC Lost and Found");
     }
 
-    @FXML
-    private void onStudentLogin() {
-        // Students go straight to dashboard — no password needed
-        SessionManager.getInstance().login(SessionManager.Role.STUDENT, "student");
-        navigateTo("/fxml/Dashboard.fxml", "PUPSRC Lost and Found");
-    }
 
     private void navigateTo(String fxmlPath, String title) {
         try {

@@ -60,6 +60,7 @@ public class DashboardController implements Initializable {
     private Label dashboardTitleLabel;
 
     private NavbarHelper navbar;
+    private ReportMenuHelper reportMenu;
 
     private final ItemService itemService = new ItemService();
     private static final int ITEMS_PER_PAGE = 12;
@@ -84,6 +85,7 @@ public class DashboardController implements Initializable {
         filterCombo.getItems().addAll("All", "Unclaimed", "Claimed");
         filterCombo.setValue("All");
         navbar = new NavbarHelper(() -> (Stage) searchField.getScene().getWindow());
+        reportMenu = new ReportMenuHelper(() -> (Stage) searchField.getScene().getWindow());
         if (SessionManager.getInstance().isAdmin()) {
             dashboardTitleLabel.setText("ADMIN DASHBOARD");
             backButton.setVisible(false);
@@ -132,15 +134,7 @@ public class DashboardController implements Initializable {
             showAlert("Access Denied", "Only admins can post new items.");
             return;
         }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReportForm.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            SceneUtil.setScene(stage, root);
-            stage.setTitle("New Post – PUPSRC Lost and Found");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        reportMenu.toggle(addButton);
     }
 
     @FXML

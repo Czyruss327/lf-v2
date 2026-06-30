@@ -431,7 +431,11 @@ public class ReportFormController implements Initializable {
                 savedReport.getFinderContactNum(),
                 savedAnonymousFinder,
                 "[" + itemName + " - Front View]",
-                "[" + itemName + " - Alternate Angle]"
+                "[" + itemName + " - Alternate Angle]",
+                uploadedImages.stream()
+                        .limit(2)
+                        .map(file -> file.toURI().toString())
+                        .toList()
         );
     }
 

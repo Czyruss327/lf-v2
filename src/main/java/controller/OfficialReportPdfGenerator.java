@@ -4,12 +4,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 final class OfficialReportPdfGenerator {
 
@@ -33,7 +39,7 @@ final class OfficialReportPdfGenerator {
                            String location, LocalDate reportDate, String reportDateText,
                            String time, String description, String reporterName,
                            String emailAddress, String contactNumber, boolean anonymousFinder,
-                           String imageLabelOne, String imageLabelTwo) {
+                           String imageLabelOne, String imageLabelTwo, List<String> imagePaths) {
         String prefix = foundReport ? "FI" : "LR";
         int id = reportId > 0 ? reportId : Math.abs((itemName + LocalDate.now()).hashCode() % 10000);
         String caseId = String.format("%s-%d-%04d", prefix, LocalDate.now().getYear(), id);
@@ -54,7 +60,8 @@ final class OfficialReportPdfGenerator {
                 valueOrDash(contactNumber),
                 anonymousFinder,
                 valueOrDefault(imageLabelOne, "[" + valueOrDash(itemName) + " - Front View]"),
-                valueOrDefault(imageLabelTwo, "[" + valueOrDash(itemName) + " - Alternate Angle]")
+                valueOrDefault(imageLabelTwo, "[" + valueOrDash(itemName) + " - Alternate Angle]"),
+                imagePaths == null ? List.of() : imagePaths.stream().limit(2).toList()
         );
     }
 
@@ -178,13 +185,27 @@ final class OfficialReportPdfGenerator {
         double boxWidth = (CONTENT_WIDTH - gap) / 2;
         double boxHeight = 67;
         String imageCaption = data.foundReport() ? "Saved Item Photo" : "Submitted Reference Photo";
-        canvas.text("Image 1: " + imageCaption, MARGIN, y + 11, 8.7, "F2", "4a5568");
-        canvas.text("Image 2: " + imageCaption, MARGIN + boxWidth + gap, y + 11, 8.7, "F2", "4a5568");
+        canvas.text("Image 1: " + (data.imagePaths().isEmpty() ? "No Reference Image" : imageCaption),
+                MARGIN, y + 11, 8.7, "F2", "4a5568");
+        canvas.text("Image 2: " + (data.imagePaths().size() < 2 ? "No Reference Image" : imageCaption),
+                MARGIN + boxWidth + gap, y + 11, 8.7, "F2", "4a5568");
         canvas.dashRect(MARGIN, y + 18, boxWidth, boxHeight, "f8fafc", "cbd5e1");
         canvas.dashRect(MARGIN + boxWidth + gap, y + 18, boxWidth, boxHeight, "f8fafc", "cbd5e1");
-        canvas.textCentered(data.imageLabelOne(), MARGIN + (boxWidth / 2), y + 29, 8.8, "F1", "64748b");
-        canvas.textCentered(data.imageLabelTwo(), MARGIN + boxWidth + gap + (boxWidth / 2), y + 29, 8.8, "F1", "64748b");
+
+        drawImageSlot(canvas, data.imagePaths(), 0, MARGIN, y + 18, boxWidth, boxHeight, data.imageLabelOne());
+        drawImageSlot(canvas, data.imagePaths(), 1, MARGIN + boxWidth + gap, y + 18, boxWidth, boxHeight, data.imageLabelTwo());
         return y + 18 + boxHeight;
+    }
+
+    private static void drawImageSlot(PdfCanvas canvas, List<String> imagePaths, int index,
+                                      double x, double y, double width, double height, String fallbackLabel) {
+        String imagePath = index < imagePaths.size() ? imagePaths.get(index) : "";
+        if (canvas.image(imagePath, x + 4, y + 4, width - 8, height - 8)) {
+            return;
+        }
+
+        String label = index == 0 ? fallbackLabel : "No Reference Image";
+        canvas.textCentered(label, x + (width / 2), y + 12, 8.8, "F1", "64748b");
     }
 
     private static List<String> wrap(String value, int maxLength) {
@@ -216,7 +237,7 @@ final class OfficialReportPdfGenerator {
                       String category, String location, String reportDate, String time,
                       String description, String reporterName, String emailAddress,
                       String contactNumber, boolean anonymousFinder, String imageLabelOne,
-                      String imageLabelTwo) {
+                      String imageLabelTwo, List<String> imagePaths) {
 
         String reportType() {
             return foundReport ? "FOUND" : "LOST";
@@ -232,6 +253,7 @@ final class OfficialReportPdfGenerator {
 
     private static final class PdfCanvas {
         private final StringBuilder content = new StringBuilder();
+        private final List<ImageResource> images = new ArrayList<>();
 
         void text(String text, double x, double yTop, double size, String font, String color) {
             content.append("BT\n")
@@ -279,6 +301,31 @@ final class OfficialReportPdfGenerator {
             content.append("[] 0 d\n");
         }
 
+        boolean image(String path, double x, double yTop, double boxWidth, double boxHeight) {
+            try {
+                ImageResource image = ImageResource.from(path, "Im" + (images.size() + 1));
+                if (image == null) {
+                    return false;
+                }
+                images.add(image);
+
+                double scale = Math.min(boxWidth / image.width(), boxHeight / image.height());
+                double drawWidth = image.width() * scale;
+                double drawHeight = image.height() * scale;
+                double drawX = x + ((boxWidth - drawWidth) / 2);
+                double drawY = PAGE_HEIGHT - yTop - ((boxHeight - drawHeight) / 2) - drawHeight;
+
+                content.append("q\n")
+                        .append(format(drawWidth)).append(" 0 0 ").append(format(drawHeight)).append(" ")
+                        .append(format(drawX)).append(" ").append(format(drawY)).append(" cm\n")
+                        .append("/").append(image.name()).append(" Do\n")
+                        .append("Q\n");
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
         void write(File output) throws IOException {
             ByteArrayOutputStream body = new ByteArrayOutputStream();
             List<Integer> offsets = new ArrayList<>();
@@ -288,7 +335,15 @@ final class OfficialReportPdfGenerator {
             offsets.add(body.size());
             writeLine(body, "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
             offsets.add(body.size());
-            writeLine(body, "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >> >> >>\nendobj\n");
+            writeLine(body, "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >>");
+            if (!images.isEmpty()) {
+                writeLine(body, " /XObject <<");
+                for (int i = 0; i < images.size(); i++) {
+                    writeLine(body, " /" + images.get(i).name() + " " + (8 + i) + " 0 R");
+                }
+                writeLine(body, " >>");
+            }
+            writeLine(body, " >> >>\nendobj\n");
 
             String stream = content.toString();
             offsets.add(body.size());
@@ -301,13 +356,23 @@ final class OfficialReportPdfGenerator {
             writeLine(body, "6 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\nendobj\n");
             offsets.add(body.size());
             writeLine(body, "7 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>\nendobj\n");
+            for (ImageResource image : images) {
+                offsets.add(body.size());
+                writeLine(body, (7 + offsets.size() - 7) + " 0 obj\n");
+                writeLine(body, "<< /Type /XObject /Subtype /Image /Width " + image.width()
+                        + " /Height " + image.height()
+                        + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "
+                        + image.bytes().length + " >>\nstream\n");
+                body.write(image.bytes());
+                writeLine(body, "\nendstream\nendobj\n");
+            }
 
             int xrefOffset = body.size();
-            writeLine(body, "xref\n0 8\n0000000000 65535 f \n");
+            writeLine(body, "xref\n0 " + (8 + images.size()) + "\n0000000000 65535 f \n");
             for (int offset : offsets) {
                 writeLine(body, String.format("%010d 00000 n %n", offset));
             }
-            writeLine(body, "trailer\n<< /Size 8 /Root 1 0 R >>\nstartxref\n" + xrefOffset + "\n%%EOF\n");
+            writeLine(body, "trailer\n<< /Size " + (8 + images.size()) + " /Root 1 0 R >>\nstartxref\n" + xrefOffset + "\n%%EOF\n");
 
             try (FileOutputStream out = new FileOutputStream(output)) {
                 body.writeTo(out);
@@ -338,6 +403,45 @@ final class OfficialReportPdfGenerator {
 
         private static String sanitize(String value) {
             return valueOrDash(value).replaceAll("[^\\x20-\\x7E]", " ");
+        }
+    }
+
+    private record ImageResource(String name, byte[] bytes, int width, int height) {
+        static ImageResource from(String path, String name) throws IOException {
+            File file = resolveFile(path);
+            if (file == null || !file.isFile()) {
+                return null;
+            }
+
+            BufferedImage source = ImageIO.read(file);
+            if (source == null) {
+                return null;
+            }
+
+            BufferedImage rgb = new BufferedImage(source.getWidth(), source.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics = rgb.createGraphics();
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, rgb.getWidth(), rgb.getHeight());
+            graphics.drawImage(source, 0, 0, null);
+            graphics.dispose();
+
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            ImageIO.write(rgb, "jpg", bytes);
+            return new ImageResource(name, bytes.toByteArray(), rgb.getWidth(), rgb.getHeight());
+        }
+
+        private static File resolveFile(String path) {
+            if (path == null || path.isBlank()) {
+                return null;
+            }
+            try {
+                if (path.startsWith("file:")) {
+                    return new File(new URI(path));
+                }
+            } catch (IllegalArgumentException | URISyntaxException ignored) {
+                return null;
+            }
+            return new File(path);
         }
     }
 }

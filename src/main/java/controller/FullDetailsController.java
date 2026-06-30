@@ -14,6 +14,7 @@ import model.Item;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class FullDetailsController implements Initializable {
@@ -198,7 +199,8 @@ public class FullDetailsController implements Initializable {
                 item.getContactNumber(),
                 anonymousFinder,
                 "[" + valueOrDash(item.getName()) + " - Front View]",
-                "[" + valueOrDash(item.getName()) + " - Alternate Angle]"
+                "[" + valueOrDash(item.getName()) + " - Alternate Angle]",
+                List.of(valueOrDash(item.getImagePath()))
         );
     }
 

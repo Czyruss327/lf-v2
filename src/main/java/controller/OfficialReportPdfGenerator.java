@@ -183,7 +183,7 @@ final class OfficialReportPdfGenerator {
     private static double drawImagePlaceholders(PdfCanvas canvas, double y, ReportData data) {
         double gap = 10;
         double boxWidth = (CONTENT_WIDTH - gap) / 2;
-        double boxHeight = 67;
+        double boxHeight = 112;
         String imageCaption = data.foundReport() ? "Saved Item Photo" : "Submitted Reference Photo";
         canvas.text("Image 1: " + (data.imagePaths().isEmpty() ? "No Reference Image" : imageCaption),
                 MARGIN, y + 11, 8.7, "F2", "4a5568");

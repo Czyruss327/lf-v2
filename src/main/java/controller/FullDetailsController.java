@@ -11,14 +11,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Item;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class FullDetailsController implements Initializable {
@@ -156,7 +151,7 @@ public class FullDetailsController implements Initializable {
         }
 
         try {
-            writeSimplePdf(output, buildPdfLines());
+            OfficialReportPdfGenerator.write(output, buildOfficialReportData());
             showInfo("PDF Generated", "The blog-site PDF has been saved.");
         } catch (IOException e) {
             showAlert("PDF Error", "Unable to generate the PDF file.");
@@ -185,102 +180,26 @@ public class FullDetailsController implements Initializable {
         alert.showAndWait();
     }
 
-    private List<String> buildPdfLines() {
-        List<String> lines = new ArrayList<>();
-        lines.add("LOST ITEM DETAILS");
-        lines.add("PUPSRC Lost and Found");
-        lines.add("");
-        lines.add("Item Name: " + valueOrDash(item.getName()));
-        lines.add("Category: " + valueOrDash(item.getCategory()));
-        lines.add("Description: " + valueOrDash(item.getColor()));
-        lines.add("Location Lost / Found: " + valueOrDash(item.getLocation()));
-        lines.add("Date Lost / Found: " + valueOrDash(item.getDate()));
-        if (!timeFoundField.getText().isBlank()) {
-            lines.add("Time Lost / Found: " + timeFoundField.getText().trim());
-        }
-        lines.add("");
-        lines.add("Reporter: " + valueOrDash(item.getReporterName()));
-        lines.add("Student ID: " + valueOrDash(item.getStudentId()));
-        lines.add("Contact Number: " + valueOrDash(item.getContactNumber()));
-        lines.add("Status: " + valueOrDash(item.getStatusLabel()));
-        return lines;
-    }
-
-    private void writeSimplePdf(File output, List<String> lines) throws IOException {
-        ByteArrayOutputStream body = new ByteArrayOutputStream();
-        List<Integer> offsets = new ArrayList<>();
-        writePdfLine(body, "%PDF-1.4\n");
-        offsets.add(body.size());
-        writePdfLine(body, "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
-        offsets.add(body.size());
-        writePdfLine(body, "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
-        offsets.add(body.size());
-        writePdfLine(body, "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n");
-
-        String stream = buildPdfContentStream(lines);
-        offsets.add(body.size());
-        writePdfLine(body, "4 0 obj\n<< /Length " + stream.getBytes(StandardCharsets.US_ASCII).length + " >>\nstream\n");
-        writePdfLine(body, stream);
-        writePdfLine(body, "endstream\nendobj\n");
-        offsets.add(body.size());
-        writePdfLine(body, "5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n");
-
-        int xrefOffset = body.size();
-        writePdfLine(body, "xref\n0 6\n0000000000 65535 f \n");
-        for (int offset : offsets) {
-            writePdfLine(body, String.format("%010d 00000 n %n", offset));
-        }
-        writePdfLine(body, "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefOffset + "\n%%EOF\n");
-
-        try (FileOutputStream out = new FileOutputStream(output)) {
-            body.writeTo(out);
-        }
-    }
-
-    private String buildPdfContentStream(List<String> lines) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("BT\n/F1 18 Tf\n72 730 Td\n(").append(escapePdf(lines.get(0))).append(") Tj\n");
-        sb.append("/F1 11 Tf\n0 -28 Td\n");
-        for (int i = 1; i < lines.size(); i++) {
-            for (String wrapped : wrapLine(lines.get(i), 78)) {
-                sb.append("(").append(escapePdf(wrapped)).append(") Tj\n0 -18 Td\n");
-            }
-        }
-        sb.append("ET\n");
-        return sb.toString();
-    }
-
-    private List<String> wrapLine(String line, int maxLength) {
-        List<String> result = new ArrayList<>();
-        if (line.length() <= maxLength) {
-            result.add(line);
-            return result;
-        }
-        String remaining = line;
-        while (remaining.length() > maxLength) {
-            int split = remaining.lastIndexOf(' ', maxLength);
-            if (split <= 0) {
-                split = maxLength;
-            }
-            result.add(remaining.substring(0, split).trim());
-            remaining = remaining.substring(split).trim();
-        }
-        if (!remaining.isBlank()) {
-            result.add(remaining);
-        }
-        return result;
-    }
-
-    private String escapePdf(String value) {
-        return value
-                .replace("\\", "\\\\")
-                .replace("(", "\\(")
-                .replace(")", "\\)")
-                .replaceAll("[^\\x20-\\x7E]", " ");
-    }
-
-    private void writePdfLine(ByteArrayOutputStream body, String value) throws IOException {
-        body.write(value.getBytes(StandardCharsets.US_ASCII));
+    private OfficialReportPdfGenerator.ReportData buildOfficialReportData() {
+        boolean foundReport = item.getStatus() == Item.Status.FOUND;
+        boolean anonymousFinder = foundReport && valueOrDash(item.getReporterName()).equals("-");
+        return OfficialReportPdfGenerator.data(
+                foundReport,
+                item.getId(),
+                item.getName(),
+                item.getCategory(),
+                item.getLocation(),
+                null,
+                item.getDate(),
+                timeFoundField.getText(),
+                item.getColor(),
+                item.getReporterName(),
+                "",
+                item.getContactNumber(),
+                anonymousFinder,
+                "[" + valueOrDash(item.getName()) + " - Front View]",
+                "[" + valueOrDash(item.getName()) + " - Alternate Angle]"
+        );
     }
 
     private String buildPdfFileName(String itemName) {

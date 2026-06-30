@@ -18,12 +18,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.SessionManager;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,8 +130,10 @@ public class ReportFormController implements Initializable {
     private boolean foundReportMode;
     private ItemReport savedReport;
     private String savedReporterName = "";
+    private String savedEmailAddress = "";
     private String savedPublicDescription = "";
     private String savedTime = "";
+    private boolean savedAnonymousFinder;
 
     private int getCategoryId(String category) {
         category = category.toUpperCase();
@@ -227,6 +226,7 @@ public class ReportFormController implements Initializable {
         String contactNumber = contactField.getText().trim();
         String location = locationField.getText().trim();
         String time = timeField.getText().trim();
+        String emailAddress = emailField.getText().trim();
 
         if (!validateReport(itemName, description, reporterName, studentId, contactNumber, location)) {
             return;
@@ -258,8 +258,10 @@ public class ReportFormController implements Initializable {
 
         savedReport = report;
         savedReporterName = reporterName.isBlank() ? "Anonymous" : reporterName;
+        savedEmailAddress = emailAddress;
         savedPublicDescription = description;
         savedTime = time;
+        savedAnonymousFinder = foundReportMode && anonymousFinderCheck.isSelected();
         modalOverlay.setVisible(true);
         modalOverlay.setManaged(true);
     }
@@ -284,7 +286,7 @@ public class ReportFormController implements Initializable {
         }
 
         try {
-            writeSimplePdf(output, buildPdfLines());
+            OfficialReportPdfGenerator.write(output, buildOfficialReportData());
             showAlert("PDF Generated", "The blog-site PDF has been saved.");
             navigateBack();
         } catch (IOException e) {
@@ -412,104 +414,25 @@ public class ReportFormController implements Initializable {
         return "Finder: " + name + System.lineSeparator() + description;
     }
 
-    private List<String> buildPdfLines() {
-        List<String> lines = new ArrayList<>();
-        lines.add(foundReportMode ? "FOUND ITEM REPORT" : "LOST ITEM REPORT");
-        lines.add("PUPSRC Lost and Found");
-        lines.add("");
-        lines.add("Item Name: " + savedReport.getItemName());
-        lines.add("Category: " + categoryCombo.getValue());
-        lines.add("Description: " + savedPublicDescription);
-        lines.add("Location " + (foundReportMode ? "Found" : "Lost") + ": " + savedReport.getLocationFound());
-        lines.add("Date " + (foundReportMode ? "Found" : "Lost") + ": " + savedReport.getDateReported());
-        if (!savedTime.isBlank()) {
-            lines.add("Time " + (foundReportMode ? "Found" : "Lost") + ": " + savedTime);
-        }
-        lines.add("");
-        lines.add("Reporter: " + savedReporterName);
-        if (savedReport.getFinderContactNum() != null && !savedReport.getFinderContactNum().isBlank()) {
-            lines.add("Contact Number: " + savedReport.getFinderContactNum());
-        }
-        lines.add("Status: UNCLAIMED");
-        lines.add("Date Posted: " + savedReport.getDatePosted());
-        return lines;
-    }
-
-    private void writeSimplePdf(File output, List<String> lines) throws IOException {
-        ByteArrayOutputStream body = new ByteArrayOutputStream();
-        List<Integer> offsets = new ArrayList<>();
-        writePdfLine(body, "%PDF-1.4\n");
-        offsets.add(body.size());
-        writePdfLine(body, "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
-        offsets.add(body.size());
-        writePdfLine(body, "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
-        offsets.add(body.size());
-        writePdfLine(body, "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n");
-
-        String stream = buildPdfContentStream(lines);
-        offsets.add(body.size());
-        writePdfLine(body, "4 0 obj\n<< /Length " + stream.getBytes(StandardCharsets.US_ASCII).length + " >>\nstream\n");
-        writePdfLine(body, stream);
-        writePdfLine(body, "endstream\nendobj\n");
-        offsets.add(body.size());
-        writePdfLine(body, "5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n");
-
-        int xrefOffset = body.size();
-        writePdfLine(body, "xref\n0 6\n0000000000 65535 f \n");
-        for (int offset : offsets) {
-            writePdfLine(body, String.format("%010d 00000 n %n", offset));
-        }
-        writePdfLine(body, "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefOffset + "\n%%EOF\n");
-
-        try (FileOutputStream out = new FileOutputStream(output)) {
-            body.writeTo(out);
-        }
-    }
-
-    private String buildPdfContentStream(List<String> lines) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("BT\n/F1 18 Tf\n72 730 Td\n(").append(escapePdf(lines.get(0))).append(") Tj\n");
-        sb.append("/F1 11 Tf\n0 -28 Td\n");
-        for (int i = 1; i < lines.size(); i++) {
-            for (String wrapped : wrapLine(lines.get(i), 78)) {
-                sb.append("(").append(escapePdf(wrapped)).append(") Tj\n0 -18 Td\n");
-            }
-        }
-        sb.append("ET\n");
-        return sb.toString();
-    }
-
-    private List<String> wrapLine(String line, int maxLength) {
-        List<String> result = new ArrayList<>();
-        if (line.length() <= maxLength) {
-            result.add(line);
-            return result;
-        }
-        String remaining = line;
-        while (remaining.length() > maxLength) {
-            int split = remaining.lastIndexOf(' ', maxLength);
-            if (split <= 0) {
-                split = maxLength;
-            }
-            result.add(remaining.substring(0, split).trim());
-            remaining = remaining.substring(split).trim();
-        }
-        if (!remaining.isBlank()) {
-            result.add(remaining);
-        }
-        return result;
-    }
-
-    private String escapePdf(String value) {
-        return value
-                .replace("\\", "\\\\")
-                .replace("(", "\\(")
-                .replace(")", "\\)")
-                .replaceAll("[^\\x20-\\x7E]", " ");
-    }
-
-    private void writePdfLine(ByteArrayOutputStream body, String value) throws IOException {
-        body.write(value.getBytes(StandardCharsets.US_ASCII));
+    private OfficialReportPdfGenerator.ReportData buildOfficialReportData() {
+        String itemName = savedReport.getItemName();
+        return OfficialReportPdfGenerator.data(
+                foundReportMode,
+                savedReport.getReportId(),
+                itemName,
+                categoryCombo.getValue(),
+                savedReport.getLocationFound(),
+                savedReport.getDateReported(),
+                null,
+                savedTime,
+                savedPublicDescription,
+                savedReporterName,
+                savedEmailAddress,
+                savedReport.getFinderContactNum(),
+                savedAnonymousFinder,
+                "[" + itemName + " - Front View]",
+                "[" + itemName + " - Alternate Angle]"
+        );
     }
 
     private String buildPdfFileName(String itemName) {

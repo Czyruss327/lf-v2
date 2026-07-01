@@ -1,5 +1,8 @@
 package controller;
 
+import com.campuslf.models.ReportStatus;
+import com.campuslf.service.ActivityLogService;
+import com.campuslf.service.ItemService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -10,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Item;
+import model.SessionManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,11 +54,15 @@ public class FullDetailsController implements Initializable {
     @FXML
     private Button claimBtn;
     @FXML
+    private Button resolveBtn;
+    @FXML
     private Button generatePdfBtn;
 
     private Item item;
     private NavbarHelper navbar;
     private ReportMenuHelper reportMenu;
+    private final ItemService itemService = new ItemService();
+    private final ActivityLogService activityLogService = new ActivityLogService();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -62,7 +70,7 @@ public class FullDetailsController implements Initializable {
         categoryCombo.getItems().addAll(
                 "Bags & Wallets", "Electronics", "IDs & Documents",
                 "Clothing", "School Supplies", "Keys", "Accessories", "Others");
-        statusCombo.getItems().addAll("UNCLAIMED", "CLAIMED");
+        statusCombo.getItems().addAll(ReportStatus.LOST, ReportStatus.FOUND, ReportStatus.CLAIMED, ReportStatus.RESOLVED);
         setAllReadOnly();
         navbar = new NavbarHelper(() -> (Stage) itemNameField.getScene().getWindow());
         reportMenu = new ReportMenuHelper(() -> (Stage) itemNameField.getScene().getWindow());
@@ -81,7 +89,7 @@ public class FullDetailsController implements Initializable {
         studentIdField.setText(item.getStudentId() != null ? item.getStudentId() : "");
         contactField.setText(item.getContactNumber() != null ? item.getContactNumber() : "");
         loadItemImage(item.getImagePath());
-        updateClaimButtonState();
+        updateActionButtonState();
     }
 
     public void setDashboardController(DashboardController dc) {
@@ -90,8 +98,8 @@ public class FullDetailsController implements Initializable {
 
     @FXML
     private void onClaim() {
-        if (item == null || item.getStatus() == Item.Status.FOUND) {
-            showAlert("Already Claimed", "This item has already been claimed.");
+        if (item == null || item.getStatus() != Item.Status.FOUND) {
+            showAlert("Cannot Claim", "Only FOUND items can be claimed.");
             return;
         }
 
@@ -106,6 +114,33 @@ public class FullDetailsController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onResolve() {
+        if (item == null || item.getStatus() != Item.Status.LOST) {
+            showAlert("Cannot Resolve", "Only LOST items can be marked as RESOLVED.");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Resolve Lost Item");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Mark this lost item report as RESOLVED?");
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+            return;
+        }
+
+        if (!itemService.markResolved(item.getId())) {
+            showAlert("Resolve Failed", "Unable to update item status.");
+            return;
+        }
+
+        item.setStatus(Item.Status.RESOLVED);
+        statusCombo.setValue(item.getStatusLabel());
+        updateActionButtonState();
+        activityLogService.logAction(resolveAdminId(), "Resolved lost item: " + item.getName());
+        showInfo("Resolved", "Lost item report marked as RESOLVED.");
     }
 
     @FXML
@@ -161,10 +196,20 @@ public class FullDetailsController implements Initializable {
         }
     }
 
-    private void updateClaimButtonState() {
-        boolean alreadyClaimed = item != null && item.getStatus() == Item.Status.FOUND;
-        claimBtn.setDisable(alreadyClaimed);
-        claimBtn.setText(alreadyClaimed ? "CLAIMED" : "CLAIM");
+    private void updateActionButtonState() {
+        boolean canClaim = item != null && item.getStatus() == Item.Status.FOUND;
+        claimBtn.setDisable(!canClaim);
+        claimBtn.setText(canClaim ? "CLAIM" : item == null ? "CLAIM" : item.getStatusLabel());
+
+        boolean canResolve = item != null && item.getStatus() == Item.Status.LOST;
+        resolveBtn.setDisable(!canResolve);
+        resolveBtn.setVisible(canResolve);
+        resolveBtn.setManaged(canResolve);
+    }
+
+    private int resolveAdminId() {
+        int adminId = SessionManager.getInstance().getAdminId();
+        return adminId > 0 ? adminId : 1;
     }
 
     private void showAlert(String title, String message) {
@@ -184,7 +229,7 @@ public class FullDetailsController implements Initializable {
     }
 
     private OfficialReportPdfGenerator.ReportData buildOfficialReportData() {
-        boolean foundReport = item.getStatus() == Item.Status.FOUND;
+        boolean foundReport = item.getStatus() == Item.Status.FOUND || item.getStatus() == Item.Status.CLAIMED;
         boolean anonymousFinder = foundReport && valueOrDash(item.getReporterName()).equals("-");
         return OfficialReportPdfGenerator.data(
                 foundReport,

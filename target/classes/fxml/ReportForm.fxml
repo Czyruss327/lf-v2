@@ -113,7 +113,7 @@
                                     <VBox fx:id="foundLocationBox" spacing="5" GridPane.rowIndex="1" GridPane.columnSpan="2"
                                         visible="false" managed="false">
                                         <HBox spacing="4">
-                                            <Label text="Location Lost" styleClass="form-label" />
+                                            <Label text="Location Found" styleClass="form-label" />
                                             <Label text="*" styleClass="required-star" />
                                         </HBox>
                                         <TextField fx:id="foundLocationMirrorField" styleClass="form-input" />
@@ -122,7 +122,7 @@
                                     <VBox fx:id="foundDateBox" spacing="5" GridPane.rowIndex="2"
                                         visible="false" managed="false">
                                         <HBox spacing="4">
-                                            <Label text="Date Lost" styleClass="form-label" />
+                                            <Label text="Date Found" styleClass="form-label" />
                                             <Label text="*" styleClass="required-star" />
                                         </HBox>
                                         <DatePicker fx:id="foundDateMirrorPicker"

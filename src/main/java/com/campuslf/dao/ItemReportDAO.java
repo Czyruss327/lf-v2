@@ -2,6 +2,7 @@ package com.campuslf.dao;
 
 import com.campuslf.database.DatabaseConnection;
 import com.campuslf.models.ItemReport;
+import com.campuslf.models.ReportStatus;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,31 +20,33 @@ public class ItemReportDAO {
                 "location_found, date_reported, date_posted, finder_student_id, finder_contact_num, " +
                 "image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? AS report_status))";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            ensureReportStatusLabels(conn);
+            try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            pstmt.setInt(1, report.getAdminId());
-            pstmt.setInt(2, report.getCategoryId());
-            pstmt.setString(3, report.getItemName());
-            pstmt.setString(4, report.getDescription());
-            pstmt.setString(5, report.getLocationFound());
-            pstmt.setDate(6, Date.valueOf(report.getDateReported()));
-            pstmt.setDate(7, Date.valueOf(report.getDatePosted()));
-            pstmt.setString(8, valueOrEmpty(report.getFinderStudentId()));
-            pstmt.setString(9, valueOrEmpty(report.getFinderContactNum()));
-            pstmt.setString(10, report.getImageUrl());
-            pstmt.setString(11, report.getReportStatus());
+                pstmt.setInt(1, report.getAdminId());
+                pstmt.setInt(2, report.getCategoryId());
+                pstmt.setString(3, report.getItemName());
+                pstmt.setString(4, report.getDescription());
+                pstmt.setString(5, report.getLocationFound());
+                pstmt.setDate(6, Date.valueOf(report.getDateReported()));
+                pstmt.setDate(7, Date.valueOf(report.getDatePosted()));
+                pstmt.setString(8, valueOrEmpty(report.getFinderStudentId()));
+                pstmt.setString(9, valueOrEmpty(report.getFinderContactNum()));
+                pstmt.setString(10, report.getImageUrl());
+                pstmt.setString(11, ReportStatus.normalize(report.getReportStatus()));
 
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        report.setReportId(generatedKeys.getInt(1));
+                int affectedRows = pstmt.executeUpdate();
+                if (affectedRows > 0) {
+                    try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            report.setReportId(generatedKeys.getInt(1));
+                        }
                     }
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Failed to add item report", e);
             return false;
@@ -64,16 +67,18 @@ public class ItemReportDAO {
         }
         sql += " ORDER BY date_posted DESC, report_id DESC";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            ensureReportStatusLabels(conn);
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            if (statusFilter != null && !statusFilter.isEmpty()) {
-                pstmt.setString(1, statusFilter);
-            }
+                if (statusFilter != null && !statusFilter.isEmpty()) {
+                    pstmt.setString(1, ReportStatus.normalize(statusFilter));
+                }
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapResultSetToItemReport(rs));
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        list.add(mapResultSetToItemReport(rs));
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -109,16 +114,52 @@ public class ItemReportDAO {
     // UPDATE item status
     public boolean updateReportStatus(int reportId, String newStatus) {
         String sql = "UPDATE item_reports SET status = CAST(? AS report_status) WHERE report_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            ensureReportStatusLabels(conn);
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, newStatus);
-            pstmt.setInt(2, reportId);
-            return pstmt.executeUpdate() > 0;
+                pstmt.setString(1, ReportStatus.normalize(newStatus));
+                pstmt.setInt(2, reportId);
+                return pstmt.executeUpdate() > 0;
+            }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Failed to update item report status", e);
             return false;
         }
+    }
+
+    public ItemReport findOpenMatch(ItemReport report, String status) {
+        String sql = """
+                SELECT report_id, admin_id, category_id, name, description, location_found,
+                       date_reported, date_posted, finder_student_id, finder_contact_num,
+                       image_url, status
+                FROM item_reports
+                WHERE report_id <> ?
+                  AND status = CAST(? AS report_status)
+                  AND category_id = ?
+                  AND lower(trim(name)) = lower(trim(?))
+                ORDER BY date_posted ASC, report_id ASC
+                LIMIT 1
+                """;
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            ensureReportStatusLabels(conn);
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setInt(1, report.getReportId());
+                pstmt.setString(2, ReportStatus.normalize(status));
+                pstmt.setInt(3, report.getCategoryId());
+                pstmt.setString(4, report.getItemName());
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return mapResultSetToItemReport(rs);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Failed to find matching item report", e);
+        }
+        return null;
     }
 
     // DELETE (or archive) an item report
@@ -151,11 +192,20 @@ public class ItemReportDAO {
         report.setFinderStudentId(rs.getString("finder_student_id"));
         report.setFinderContactNum(rs.getString("finder_contact_num"));
         report.setImageUrl(rs.getString("image_url"));
-        report.setReportStatus(rs.getString("status"));
+        report.setReportStatus(ReportStatus.normalize(rs.getString("status")));
         return report;
     }
 
     private String valueOrEmpty(String value) {
         return value == null ? "" : value;
+    }
+
+    private void ensureReportStatusLabels(Connection conn) throws SQLException {
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("ALTER TYPE report_status ADD VALUE IF NOT EXISTS 'LOST'");
+            stmt.execute("ALTER TYPE report_status ADD VALUE IF NOT EXISTS 'FOUND'");
+            stmt.execute("ALTER TYPE report_status ADD VALUE IF NOT EXISTS 'CLAIMED'");
+            stmt.execute("ALTER TYPE report_status ADD VALUE IF NOT EXISTS 'RESOLVED'");
+        }
     }
 }

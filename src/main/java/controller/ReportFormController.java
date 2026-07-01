@@ -1,6 +1,7 @@
 package controller;
 
 import com.campuslf.models.ItemReport;
+import com.campuslf.models.ReportStatus;
 import com.campuslf.service.ActivityLogService;
 import com.campuslf.service.ItemService;
 import javafx.fxml.FXML;
@@ -244,7 +245,7 @@ public class ReportFormController implements Initializable {
         report.setFinderStudentId(studentId.isBlank() ? null : studentId);
         report.setFinderContactNum(contactNumber.isBlank() ? null : contactNumber);
         report.setImageUrl(imagePath);
-        report.setReportStatus("Unclaimed");
+        report.setReportStatus(foundReportMode ? ReportStatus.FOUND : ReportStatus.LOST);
 
         boolean saved = itemService.addItem(report);
         if (!saved) {
@@ -254,7 +255,7 @@ public class ReportFormController implements Initializable {
 
         activityLogService.logAction(
                 Math.max(1, SessionManager.getInstance().getAdminId()),
-                "Posted new unclaimed item: " + itemName);
+                "Posted new " + report.getReportStatus().toLowerCase() + " item: " + itemName);
 
         savedReport = report;
         savedReporterName = reporterName.isBlank() ? "Anonymous" : reporterName;

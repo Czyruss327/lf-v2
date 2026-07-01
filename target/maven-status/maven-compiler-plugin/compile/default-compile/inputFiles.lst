@@ -10,6 +10,7 @@ C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\models\Admin.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\models\Category.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\models\Claim.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\models\ItemReport.java
+C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\models\ReportStatus.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\service\ActivityLogService.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\service\AuthenticationService.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\service\ClaimService.java
@@ -18,6 +19,7 @@ C:\Users\capus\OOP_Projects\lf-2\src\main\java\com\campuslf\test\DatabaseTest.ja
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\AccountController.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\AddItemController.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\AdminLoginController.java
+C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\ClaimSlipPdfGenerator.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\ClaimVerificationController.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\CreateAdminAccountController.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\DashboardController.java
@@ -26,6 +28,7 @@ C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\ItemCardController.jav
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\ItemDetailController.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\LoginController.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\NavbarHelper.java
+C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\OfficialReportPdfGenerator.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\ReportFormController.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\ReportMenuHelper.java
 C:\Users\capus\OOP_Projects\lf-2\src\main\java\controller\SceneUtil.java

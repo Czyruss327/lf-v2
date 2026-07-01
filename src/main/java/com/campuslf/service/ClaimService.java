@@ -2,6 +2,7 @@ package com.campuslf.service;
 
 import com.campuslf.dao.ClaimDAO;
 import com.campuslf.models.Claim;
+import com.campuslf.models.ReportStatus;
 import com.campuslf.dao.ItemReportDAO;
 
 import java.time.LocalDate;
@@ -71,7 +72,7 @@ public class ClaimService {
         ItemReportDAO itemDAO = new ItemReportDAO();
 
         boolean itemUpdated =
-                itemDAO.updateReportStatus(reportId, "Claimed");
+                itemDAO.updateReportStatus(reportId, ReportStatus.CLAIMED);
 
         if (!itemUpdated) return false;
 

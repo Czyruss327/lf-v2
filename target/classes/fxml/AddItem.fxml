@@ -45,12 +45,12 @@
             <VBox spacing="6">
                 <Label text="Status *" styleClass="form-label" />
                 <HBox spacing="16">
-                    <RadioButton fx:id="lostRadio" text="Unclaimed" styleClass="form-radio">
+                    <RadioButton fx:id="lostRadio" text="LOST" styleClass="form-radio">
                         <toggleGroup>
                             <ToggleGroup fx:id="statusGroup" />
                         </toggleGroup>
                     </RadioButton>
-                    <RadioButton fx:id="foundRadio" text="Claimed" toggleGroup="$statusGroup"
+                    <RadioButton fx:id="foundRadio" text="FOUND" toggleGroup="$statusGroup"
                         styleClass="form-radio" />
                 </HBox>
             </VBox>

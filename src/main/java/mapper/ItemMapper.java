@@ -1,5 +1,6 @@
 package mapper;
 
+import com.campuslf.models.ReportStatus;
 import com.campuslf.models.ItemReport;
 import model.Item;
 
@@ -28,13 +29,18 @@ public class ItemMapper {
 
         item.setReporterName(finderName(report.getDescription()));
 
-        if ("Claimed".equalsIgnoreCase(report.getReportStatus())) {
-            item.setStatus(Item.Status.FOUND);
-        } else {
-            item.setStatus(Item.Status.LOST);
-        }
+        item.setStatus(toStatus(report.getReportStatus()));
 
         return item;
+    }
+
+    private static Item.Status toStatus(String reportStatus) {
+        return switch (ReportStatus.normalize(reportStatus)) {
+            case ReportStatus.FOUND -> Item.Status.FOUND;
+            case ReportStatus.CLAIMED -> Item.Status.CLAIMED;
+            case ReportStatus.RESOLVED -> Item.Status.RESOLVED;
+            default -> Item.Status.LOST;
+        };
     }
 
     private static String categoryName(int categoryId) {

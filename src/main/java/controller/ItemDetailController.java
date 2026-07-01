@@ -52,13 +52,22 @@ public class ItemDetailController implements Initializable {
 
         // Badge
         detailStatusBadge.setText(item.getStatusLabel());
-        detailStatusBadge.getStyleClass().removeAll("badge-lost", "badge-found");
+        detailStatusBadge.getStyleClass().removeAll("badge-lost", "badge-found", "badge-claimed", "badge-resolved");
         detailStatusBadge.getStyleClass().addAll(
                 "badge",
-                item.getStatus() == Item.Status.LOST ? "badge-lost" : "badge-found");
+                badgeStyle(item));
 
         // Image
         loadImage(item.getImagePath());
+    }
+
+    private String badgeStyle(Item item) {
+        return switch (item.getStatus()) {
+            case LOST -> "badge-lost";
+            case CLAIMED -> "badge-claimed";
+            case RESOLVED -> "badge-resolved";
+            default -> "badge-found";
+        };
     }
 
     @FXML

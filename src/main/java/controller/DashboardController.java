@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import com.campuslf.models.ItemReport;
+import com.campuslf.models.ReportStatus;
 import com.campuslf.service.ItemService;
 import mapper.ItemMapper;
 import model.SessionManager;
@@ -82,7 +83,7 @@ public class DashboardController implements Initializable {
         } else {
             menuButton.setGraphic(null);
         }
-        filterCombo.getItems().addAll("All", "Unclaimed", "Claimed");
+        filterCombo.getItems().addAll("All", ReportStatus.LOST, ReportStatus.FOUND, ReportStatus.CLAIMED, ReportStatus.RESOLVED);
         filterCombo.setValue("All");
         navbar = new NavbarHelper(() -> (Stage) searchField.getScene().getWindow());
         reportMenu = new ReportMenuHelper(() -> (Stage) searchField.getScene().getWindow());
@@ -97,9 +98,9 @@ public class DashboardController implements Initializable {
             } else {
                 backButton.setGraphic(null);
             }
-            filterCombo.getItems().setAll("Unclaimed");
-            filterCombo.setValue("Unclaimed");
-            currentFilter = "Unclaimed";
+            filterCombo.getItems().setAll(ReportStatus.FOUND);
+            filterCombo.setValue(ReportStatus.FOUND);
+            currentFilter = ReportStatus.FOUND;
             filterCombo.setVisible(false);
             filterCombo.setManaged(false);
             addButton.setVisible(false);
@@ -296,15 +297,21 @@ public class DashboardController implements Initializable {
         return cachedItems.stream()
 
                 .filter(i -> SessionManager.getInstance().isAdmin()
-                        || i.getStatus() == Item.Status.LOST)
+                        || i.getStatus() == Item.Status.FOUND)
 
                 .filter(i -> {
 
-                    if ("Unclaimed".equals(currentFilter))
+                    if (ReportStatus.LOST.equals(currentFilter))
                         return i.getStatus() == Item.Status.LOST;
 
-                    if ("Claimed".equals(currentFilter))
+                    if (ReportStatus.FOUND.equals(currentFilter))
                         return i.getStatus() == Item.Status.FOUND;
+
+                    if (ReportStatus.CLAIMED.equals(currentFilter))
+                        return i.getStatus() == Item.Status.CLAIMED;
+
+                    if (ReportStatus.RESOLVED.equals(currentFilter))
+                        return i.getStatus() == Item.Status.RESOLVED;
 
                     return true;
                 })

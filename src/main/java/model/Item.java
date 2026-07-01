@@ -1,5 +1,6 @@
 package model;
 
+import com.campuslf.models.ReportStatus;
 import javafx.beans.property.*;
 
 /**
@@ -8,7 +9,7 @@ import javafx.beans.property.*;
 public class Item {
 
     public enum Status {
-        LOST, FOUND
+        LOST, FOUND, CLAIMED, RESOLVED, UNCLAIMED
     }
 
     private final IntegerProperty id = new SimpleIntegerProperty();
@@ -80,7 +81,8 @@ public class Item {
     }
 
     public String getStatusLabel() {
-        return status.get() == Status.LOST ? "UNCLAIMED" : "CLAIMED";
+        Status current = status.get();
+        return current == null ? ReportStatus.LOST : ReportStatus.normalize(current.name());
     }
 
     // color / description

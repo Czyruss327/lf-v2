@@ -55,15 +55,30 @@ public class ItemCardController implements Initializable {
         itemColor.setText("Color: " + valueOrDash(item.getColor()));
         itemCategory.setText("Category: " + valueOrDash(item.getCategory()));
         itemDate.setText("Posted: " + valueOrDash(item.getDate()));
-        itemLocation.setText("Found: " + valueOrDash(item.getLocation()));
+        itemLocation.setText(locationPrefix(item) + ": " + valueOrDash(item.getLocation()));
 
         statusBadge.setText(item.getStatusLabel());
-        statusBadge.getStyleClass().removeAll("badge-lost", "badge-found");
+        statusBadge.getStyleClass().removeAll("badge-lost", "badge-found", "badge-claimed", "badge-resolved");
         statusBadge.getStyleClass().addAll(
                 "badge",
-                item.getStatus() == Item.Status.LOST ? "badge-lost" : "badge-found");
+                badgeStyle(item));
 
         loadImage(item.getImagePath());
+    }
+
+    private String locationPrefix(Item item) {
+        return item.getStatus() == Item.Status.LOST || item.getStatus() == Item.Status.RESOLVED
+                ? "Lost"
+                : "Found";
+    }
+
+    private String badgeStyle(Item item) {
+        return switch (item.getStatus()) {
+            case LOST -> "badge-lost";
+            case CLAIMED -> "badge-claimed";
+            case RESOLVED -> "badge-resolved";
+            default -> "badge-found";
+        };
     }
 
     private String valueOrDash(String value) {

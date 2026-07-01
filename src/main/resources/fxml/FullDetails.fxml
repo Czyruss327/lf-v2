@@ -154,6 +154,8 @@
                         </VBox.margin>
                         <Button text="CANCEL" styleClass="btn-cancel" prefWidth="180"
                             onAction="#onCancel" />
+                        <Button fx:id="resolveBtn" text="RESOLVE" styleClass="btn-view" prefWidth="180"
+                            onAction="#onResolve" />
                         <Button fx:id="claimBtn" text="CLAIM" styleClass="btn-view" prefWidth="180"
                             onAction="#onClaim" />
                     </HBox>

@@ -65,7 +65,7 @@ public class AuditLog {
 
     /** Figure 1: log a new item posted to the dashboard. */
     public static void logNewPost(String itemName, String adminUser) {
-        LOG.add(new Entry("NEW ITEM POSTED - status: UNCLAIMED", itemName, "", adminUser));
+        LOG.add(new Entry("NEW ITEM POSTED", itemName, "", adminUser));
         System.out.println("AUDIT: " + LOG.get(LOG.size() - 1));
     }
 

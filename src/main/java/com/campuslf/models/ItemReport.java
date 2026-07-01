@@ -14,7 +14,7 @@ public class ItemReport {
     private String finderStudentId;
     private String finderContactNum;
     private String imageUrl;
-    private String reportStatus;      // 'Pending', 'Claimed', 'Archived'
+    private String reportStatus;      // LOST, FOUND, CLAIMED, RESOLVED
 
     // Constructors
     public ItemReport() {}
@@ -35,7 +35,7 @@ public class ItemReport {
         this.finderStudentId = finderStudentId;
         this.finderContactNum = finderContactNum;
         this.imageUrl = imageUrl;
-        this.reportStatus = reportStatus;
+        setReportStatus(reportStatus);
     }
 
     // Getters and Setters
@@ -72,6 +72,6 @@ public class ItemReport {
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public String getReportStatus() { return reportStatus; }
-    public void setReportStatus(String reportStatus) { this.reportStatus = reportStatus; }
+    public String getReportStatus() { return ReportStatus.normalize(reportStatus); }
+    public void setReportStatus(String reportStatus) { this.reportStatus = ReportStatus.normalize(reportStatus); }
 }

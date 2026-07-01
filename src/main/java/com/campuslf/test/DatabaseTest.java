@@ -45,7 +45,7 @@ public class DatabaseTest {
         item.setFinderStudentId("2024-12345");
         item.setFinderContactNum("09123456789");
         item.setImageUrl("https://example.com/laptop.jpg");
-        item.setReportStatus("Unclaimed");
+        item.setReportStatus(ReportStatus.LOST);
 
         boolean itemAdded = itemDAO.addItemReport(item);
         System.out.println("Item report added: " + itemAdded);
@@ -53,10 +53,10 @@ public class DatabaseTest {
             System.out.println("Generated report_id: " + item.getReportId());
         }
 
-        // 4. Retrieve and display unclaimed items
-        List<ItemReport> unclaimed = itemDAO.getAllItemReports("Unclaimed");
-        System.out.println("Unclaimed items count: " + unclaimed.size());
-        for (ItemReport i : unclaimed) {
+        // 4. Retrieve and display lost reports
+        List<ItemReport> lost = itemDAO.getAllItemReports(ReportStatus.LOST);
+        System.out.println("Lost reports count: " + lost.size());
+        for (ItemReport i : lost) {
             System.out.println(i.getItemName() + " - " + i.getReportStatus());
         }
 

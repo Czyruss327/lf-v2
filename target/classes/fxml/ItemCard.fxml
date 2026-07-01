@@ -25,7 +25,7 @@
             fitWidth="195" fitHeight="150"
             preserveRatio="false" />
 
-        <!-- Claimed / Unclaimed badge -->
+        <!-- Workflow status badge -->
         <Label fx:id="statusBadge"
             styleClass="badge"
             StackPane.alignment="TOP_RIGHT">

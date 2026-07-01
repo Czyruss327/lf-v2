@@ -46,7 +46,7 @@ public class ItemStore {
 
     /** Figure 2: update status to CLAIMED in the store. */
     public void markAsClaimed(Item item, String claimantName) {
-        item.setStatus(Item.Status.FOUND);
+        item.setStatus(Item.Status.CLAIMED);
         AuditLog.logClaim(item.getName(), claimantName,
                 SessionManager.getInstance().getUsername() != null
                         ? SessionManager.getInstance().getUsername()

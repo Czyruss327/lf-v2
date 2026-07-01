@@ -1,6 +1,7 @@
 package com.campuslf.service;
 
 import com.campuslf.models.ItemReport;
+import com.campuslf.models.ReportStatus;
 
 import java.time.LocalDate;
 
@@ -22,7 +23,7 @@ public class ItemServiceTest {
         item.setFinderStudentId("2024-0001");
         item.setFinderContactNum("09123456789");
         item.setImageUrl("wallet.jpg");
-        item.setReportStatus("Unclaimed");
+        item.setReportStatus(ReportStatus.LOST);
 
         boolean success = service.addItem(item);
 

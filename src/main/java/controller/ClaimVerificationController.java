@@ -23,6 +23,7 @@ import model.SessionManager;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,12 +31,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class ClaimVerificationController implements Initializable {
 
     private static final String NAME_PATTERN = "[A-Za-z .,]+";
     private static final String CONTACT_PATTERN = "09\\d{2}-\\d{3}-\\d{4}";
     private static final int MAX_COURSE_SECTION_LENGTH = 40;
+    private static final int MAX_UPLOADS_PER_SECTION = 3;
+    private static final long MAX_UPLOAD_BYTES = 5L * 1024L * 1024L;
+    private static final Set<String> ALLOWED_UPLOAD_EXTENSIONS = Set.of("png", "jpg", "jpeg", "pdf");
 
     @FXML
     private ImageView logoImage;
@@ -116,20 +121,73 @@ public class ClaimVerificationController implements Initializable {
     }
 
     private void uploadFiles(String title, List<File> selectedFiles, VBox listBox) {
+        errorLabel.setText("");
+        int remainingSlots = MAX_UPLOADS_PER_SECTION - selectedFiles.size();
+        if (remainingSlots <= 0) {
+            errorLabel.setText("You can upload up to " + MAX_UPLOADS_PER_SECTION + " files for this section.");
+            return;
+        }
+
         FileChooser chooser = new FileChooser();
         chooser.setTitle(title);
         chooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Images / PDF", "*.png", "*.jpg", "*.jpeg", "*.pdf"));
         Stage stage = (Stage) claimNameField.getScene().getWindow();
         List<File> files = chooser.showOpenMultipleDialog(stage);
-        if (files == null)
+        if (files == null || files.isEmpty()) {
             return;
+        }
+
+        int added = 0;
         for (File file : files) {
-            if (selectedFiles.size() >= 3)
+            if (added >= remainingSlots) {
                 break;
+            }
+            String validationError = validateUpload(file, selectedFiles);
+            if (validationError != null) {
+                errorLabel.setText(validationError);
+                continue;
+            }
             selectedFiles.add(file);
             listBox.getChildren().add(uploadRow(selectedFiles.size(), file.getName()));
+            added++;
         }
+
+        if (files.size() > remainingSlots) {
+            errorLabel.setText("Only " + remainingSlots + " more file(s) were accepted for this section.");
+        }
+    }
+
+    private String validateUpload(File file, List<File> selectedFiles) {
+        if (file == null || !file.isFile() || !file.canRead()) {
+            return "One selected file could not be read.";
+        }
+        if (!ALLOWED_UPLOAD_EXTENSIONS.contains(fileExtension(file.getName()))) {
+            return file.getName() + " is not a supported file type.";
+        }
+        if (selectedFiles.stream().anyMatch(existing -> sameFile(existing, file))) {
+            return file.getName() + " is already uploaded.";
+        }
+        try {
+            if (Files.size(file.toPath()) > MAX_UPLOAD_BYTES) {
+                return file.getName() + " exceeds the 5 MB upload limit.";
+            }
+        } catch (IOException e) {
+            return "Unable to check the selected file size.";
+        }
+        return null;
+    }
+
+    private boolean sameFile(File first, File second) {
+        return first.toPath().toAbsolutePath().normalize()
+                .equals(second.toPath().toAbsolutePath().normalize());
+    }
+
+    private String fileExtension(String fileName) {
+        int dot = fileName == null ? -1 : fileName.lastIndexOf('.');
+        return dot >= 0 && dot < fileName.length() - 1
+                ? fileName.substring(dot + 1).toLowerCase()
+                : "";
     }
 
     private HBox uploadRow(int index, String fileName) {

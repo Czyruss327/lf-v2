@@ -7,7 +7,7 @@ public final class ReportStatus {
     public static final String FOUND = "FOUND";
     public static final String CLAIMED = "CLAIMED";
     public static final String RESOLVED = "RESOLVED";
-    public static final String UNCLAIMED = LOST;
+    public static final String UNCLAIMED = FOUND;
 
     private static final Set<String> VALID_STATUSES = Set.of(LOST, FOUND, CLAIMED, RESOLVED);
 
@@ -20,7 +20,8 @@ public final class ReportStatus {
         }
 
         return switch (status.trim().toUpperCase()) {
-            case "UNCLAIMED", "PENDING" -> LOST;
+            case "UNCLAIMED" -> FOUND;
+            case "PENDING" -> LOST;
             case "CLAIMED", "APPROVED" -> CLAIMED;
             case "FOUND" -> FOUND;
             case "RESOLVED", "ARCHIVED" -> RESOLVED;

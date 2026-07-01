@@ -13,7 +13,7 @@ BEGIN
             ALTER COLUMN status TYPE report_status
                 USING (
                     CASE status::text
-                        WHEN 'Unclaimed' THEN 'LOST'
+                        WHEN 'Unclaimed' THEN 'FOUND'
                         WHEN 'Pending' THEN 'LOST'
                         WHEN 'Lost' THEN 'LOST'
                         WHEN 'LOST' THEN 'LOST'

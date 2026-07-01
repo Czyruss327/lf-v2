@@ -9,7 +9,7 @@ import javafx.beans.property.*;
 public class Item {
 
     public enum Status {
-        LOST, FOUND, CLAIMED, RESOLVED, UNCLAIMED
+        LOST, FOUND, CLAIMED, RESOLVED
     }
 
     private final IntegerProperty id = new SimpleIntegerProperty();

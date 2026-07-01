@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 
 /**
  * DashboardController
- * Figure 1: admin posts item, then it appears here as lost.
- * Figure 2: student browses, admin searches; after claim, item is removed.
+ * Admins can review LOST, FOUND, CLAIMED, and RESOLVED reports.
+ * Students browse active FOUND inventory only.
  */
 public class DashboardController implements Initializable {
 
@@ -128,7 +128,7 @@ public class DashboardController implements Initializable {
         renderGrid();
     }
 
-    /** Figure 1: opens New Post form so admin can input item details. */
+    /** Opens the report menu so admin can create a lost or found report. */
     @FXML
     private void onAddItem() {
         if (!SessionManager.getInstance().isAdmin()) {

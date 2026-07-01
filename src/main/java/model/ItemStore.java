@@ -4,10 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * ItemStore — singleton shared item list.
- * Figure 1: admin posts item → added here with status LOST.
- * Figure 2: claim confirmed → item removed from here (removed from public
- * dashboard).
+ * ItemStore - singleton shared item list.
+ * FOUND items are active physical inventory; LOST items are owner reports.
+ * A confirmed claim marks the found item CLAIMED and removes it from the
+ * public browse list.
  */
 public class ItemStore {
 
@@ -29,7 +29,7 @@ public class ItemStore {
         return items;
     }
 
-    /** Figure 1: admin inputs item → system saves → posted as LOST. */
+    /** Admin inputs an item report; status is supplied by the report form. */
     public void addItem(Item item) {
         item.setId(nextId++);
         items.add(item);
@@ -39,19 +39,19 @@ public class ItemStore {
                         : "admin");
     }
 
-    /** Figure 2: claim confirmed → system removes post from public dashboard. */
+    /** Claim confirmed: remove the found item from the public dashboard. */
     public void removeItem(Item item) {
         items.remove(item);
     }
 
-    /** Figure 2: update status to CLAIMED in the store. */
+    /** Update status to CLAIMED in the in-memory store. */
     public void markAsClaimed(Item item, String claimantName) {
         item.setStatus(Item.Status.CLAIMED);
         AuditLog.logClaim(item.getName(), claimantName,
                 SessionManager.getInstance().getUsername() != null
                         ? SessionManager.getInstance().getUsername()
                         : "admin");
-        // Figure 2: remove item's post from public dashboard
+        // Remove the claimed found item from public browsing.
         removeItem(item);
     }
 

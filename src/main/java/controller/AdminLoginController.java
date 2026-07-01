@@ -53,8 +53,7 @@ public class AdminLoginController implements Initializable {
     }
 
     /** Figure 3 YES branch — authenticate and grant access. */
-    
-    /*
+
     @FXML
     private void onLogin() {
         errorLabel.setText("");
@@ -85,8 +84,7 @@ public class AdminLoginController implements Initializable {
         navigateToDashboard();
     }
 
-    */
-    
+    /*
      @FXML
     private void onLogin() {
         errorLabel.setText("");
@@ -115,6 +113,7 @@ public class AdminLoginController implements Initializable {
         SessionManager.getInstance().login(SessionManager.Role.ADMIN, user);
         navigateToDashboard();
     }
+    */
 
     /** Figure 3 NO branch — navigate to create account. */
     @FXML

@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 
 /**
  * DashboardController
- * Figure 1: admin posts item → appears here as LOST.
- * Figure 2: student browses, admin searches; after claim → item removed.
+ * Figure 1: admin posts item, then it appears here as lost.
+ * Figure 2: student browses, admin searches; after claim, item is removed.
  */
 public class DashboardController implements Initializable {
 
@@ -127,7 +127,7 @@ public class DashboardController implements Initializable {
         renderGrid();
     }
 
-    /** Figure 1: opens New Post form — admin inputs item details. */
+    /** Figure 1: opens New Post form so admin can input item details. */
     @FXML
     private void onAddItem() {
         if (!SessionManager.getInstance().isAdmin()) {
@@ -148,7 +148,7 @@ public class DashboardController implements Initializable {
         navigateTo("/fxml/Login.fxml", "PUPSRC Lost and Found");
     }
 
-    // ── Grid ─────────────────────────────────────────────────
+    // Grid
 
     public void renderGrid() {
         List<Item> filtered = getFilteredItems();
@@ -192,7 +192,7 @@ public class DashboardController implements Initializable {
             ctrl.setDashboardController(this);
             Stage stage = (Stage) searchField.getScene().getWindow();
             SceneUtil.setScene(stage, root);
-            stage.setTitle(item.getName() + " – Details");
+            stage.setTitle(item.getName() + " - Details");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -210,14 +210,14 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // ── Pagination ───────────────────────────────────────────
+    // Pagination
 
     private void buildPagination(int pages) {
         paginationBox.getChildren().clear();
         if (pages <= 1)
             return;
 
-        Button prev = new Button("‹ Previous");
+        Button prev = new Button("< Previous");
         prev.getStyleClass().add("page-btn");
         prev.setDisable(currentPage == 1);
         prev.setOnAction(e -> goPage(currentPage - 1));
@@ -226,7 +226,7 @@ public class DashboardController implements Initializable {
         for (int p = 1; p <= pages; p++) {
             if (pages > 5 && p > 2 && p < pages - 1 && Math.abs(p - currentPage) > 1) {
                 if (p == 3 || p == pages - 2) {
-                    Label dots = new Label("…");
+                    Label dots = new Label("...");
                     dots.getStyleClass().add("page-btn");
                     paginationBox.getChildren().add(dots);
                 }
@@ -239,7 +239,7 @@ public class DashboardController implements Initializable {
             paginationBox.getChildren().add(btn);
         }
 
-        Button next = new Button("Next ›");
+        Button next = new Button("Next >");
         next.getStyleClass().add("page-btn");
         next.setDisable(currentPage == pages);
         next.setOnAction(e -> goPage(currentPage + 1));

@@ -2,6 +2,7 @@ package com.campuslf.service;
 
 import com.campuslf.dao.ItemReportDAO;
 import com.campuslf.models.ItemReport;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ItemService {
@@ -30,6 +31,14 @@ public class ItemService {
 
         if (report.getReportStatus() == null) {
             report.setReportStatus("Unclaimed");
+        }
+
+        if (report.getDateReported() == null) {
+            report.setDateReported(LocalDate.now());
+        }
+
+        if (report.getDatePosted() == null) {
+            report.setDatePosted(LocalDate.now());
         }
 
         return itemDAO.addItemReport(report);

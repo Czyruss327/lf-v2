@@ -29,8 +29,8 @@ public class ItemReportDAO {
             pstmt.setString(5, report.getLocationFound());
             pstmt.setDate(6, Date.valueOf(report.getDateReported()));
             pstmt.setDate(7, Date.valueOf(report.getDatePosted()));
-            pstmt.setString(8, report.getFinderStudentId());
-            pstmt.setString(9, report.getFinderContactNum());
+            pstmt.setString(8, valueOrEmpty(report.getFinderStudentId()));
+            pstmt.setString(9, valueOrEmpty(report.getFinderContactNum()));
             pstmt.setString(10, report.getImageUrl());
             pstmt.setString(11, report.getReportStatus());
 
@@ -144,12 +144,18 @@ public class ItemReportDAO {
         report.setItemName(rs.getString("name"));
         report.setDescription(rs.getString("description"));
         report.setLocationFound(rs.getString("location_found"));
-        report.setDateReported(rs.getDate("date_reported").toLocalDate());
-        report.setDatePosted(rs.getDate("date_posted").toLocalDate());
+        Date dateReported = rs.getDate("date_reported");
+        Date datePosted = rs.getDate("date_posted");
+        report.setDateReported(dateReported == null ? null : dateReported.toLocalDate());
+        report.setDatePosted(datePosted == null ? null : datePosted.toLocalDate());
         report.setFinderStudentId(rs.getString("finder_student_id"));
         report.setFinderContactNum(rs.getString("finder_contact_num"));
         report.setImageUrl(rs.getString("image_url"));
         report.setReportStatus(rs.getString("status"));
         return report;
+    }
+
+    private String valueOrEmpty(String value) {
+        return value == null ? "" : value;
     }
 }

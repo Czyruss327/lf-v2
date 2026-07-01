@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -216,7 +217,8 @@ public class ClaimVerificationController implements Initializable {
                 "Claimed item: " + item.getName() + " by " + claimantName);
         ItemStore.getInstance().markAsClaimed(item, claimantName);
 
-        showConfirmAndGoBack();
+        boolean claimSlipSaved = saveClaimSlip(claim, claimantName, courseSection, contactNumber, emailField.getText().trim());
+        showConfirmAndGoBack(claimSlipSaved);
     }
 
     private int resolveAdminId() {
@@ -235,7 +237,55 @@ public class ClaimVerificationController implements Initializable {
         return 1;
     }
 
-    private void showConfirmAndGoBack() {
+    private boolean saveClaimSlip(Claim claim, String claimantName, String courseSection,
+                                  String contactNumber, String emailAddress) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save Claim Slip");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+        chooser.setInitialFileName(buildClaimSlipFileName(claimantName, item.getName()));
+        Stage stage = (Stage) claimNameField.getScene().getWindow();
+        File output = chooser.showSaveDialog(stage);
+        if (output == null) {
+            return false;
+        }
+
+        String contactOrEmail = notBlank(emailAddress) ? emailAddress : contactNumber;
+        String adminOfficer = notBlank(SessionManager.getInstance().getUsername())
+                ? SessionManager.getInstance().getUsername()
+                : "Admin Account / Property Officer";
+        try {
+            ClaimSlipPdfGenerator.write(output, ClaimSlipPdfGenerator.data(
+                    claim.getClaimId(),
+                    item.getId(),
+                    claimantName,
+                    courseSection,
+                    contactOrEmail,
+                    item.getName(),
+                    descriptionArea.getText().trim(),
+                    adminOfficer,
+                    LocalDate.now(),
+                    LocalTime.now()
+            ));
+            return true;
+        } catch (IOException e) {
+            showAlert("Claim Slip Error", "The claim was saved, but the claim slip PDF could not be generated.");
+            return false;
+        }
+    }
+
+    private String buildClaimSlipFileName(String claimantName, String itemName) {
+        String safeClaimant = safeFilePart(claimantName);
+        String safeItem = safeFilePart(itemName);
+        return safeClaimant + "-" + safeItem + "-claim-slip.pdf";
+    }
+
+    private String safeFilePart(String value) {
+        String safe = value == null ? "" : value.toLowerCase().replaceAll("[^a-z0-9]+", "-");
+        safe = safe.replaceAll("^-|-$", "");
+        return safe.isBlank() ? "claim" : safe;
+    }
+
+    private void showConfirmAndGoBack(boolean claimSlipSaved) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         String claimedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy h:mm a"));
         alert.setTitle("Claim Confirmed");
@@ -244,6 +294,7 @@ public class ClaimVerificationController implements Initializable {
                 "Claim confirmed!\n\n" +
                         "- Audit log updated\n" +
                         "- Item status set to CLAIMED\n" +
+                        "- Claim slip: " + (claimSlipSaved ? "saved" : "not saved") + "\n" +
                         "- Date/time claimed: " + claimedAt + "\n" +
                         "- Item removed from public dashboard\n\n" +
                         "Please hand over the physical item to the claimant.");
@@ -301,6 +352,14 @@ public class ClaimVerificationController implements Initializable {
                 iv.setImage(new Image(url.toExternalForm(), true));
         } catch (Exception ignored) {
         }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private boolean isValidName(String value) {

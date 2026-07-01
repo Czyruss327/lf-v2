@@ -45,6 +45,10 @@ public class AccountController implements Initializable {
     @FXML
     private ImageView logoImage;
     @FXML
+    private ImageView reportFormIcon;
+    @FXML
+    private ImageView menuBarIcon;
+    @FXML
     private Button menuButton;
     @FXML
     private Button addButton;
@@ -83,6 +87,10 @@ public class AccountController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadImage(logoImage, "/images/logo.png");
+        loadImage(reportFormIcon, "/images/report-form.png");
+        addButton.setText("");
+        loadImage(menuBarIcon, "/images/menu-bar.png");
+        menuButton.setText("");
 
         navbar = new NavbarHelper(() -> (Stage) menuButton.getScene().getWindow());
         reportMenu = new ReportMenuHelper(() -> (Stage) menuButton.getScene().getWindow());
@@ -313,7 +321,7 @@ public class AccountController implements Initializable {
             showAlert("Access Denied", "Only admins can add new admin accounts.");
             return;
         }
-        navigateTo("/fxml/CreateAdminAccount.fxml", "Create Admin – PUPSRC Lost and Found");
+        navigateTo("/fxml/CreateAdminAccount.fxml", "Create Admin - PUPSRC Lost and Found");
     }
 
     @FXML

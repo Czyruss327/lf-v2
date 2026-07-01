@@ -49,6 +49,8 @@ public class FullDetailsController implements Initializable {
     private ComboBox<String> statusCombo;
     @FXML
     private Button claimBtn;
+    @FXML
+    private Button generatePdfBtn;
 
     private Item item;
     private NavbarHelper navbar;

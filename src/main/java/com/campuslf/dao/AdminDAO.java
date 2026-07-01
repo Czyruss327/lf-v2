@@ -19,7 +19,8 @@ public class AdminDAO {
                     admin.setAdminId(rs.getInt("admin_id"));
                     admin.setUsername(rs.getString("username"));
                     admin.setPassword(rs.getString("password")); // hash comparison should happen in service layer
-                    admin.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    Timestamp createdAt = rs.getTimestamp("created_at");
+                    admin.setCreatedAt(createdAt == null ? null : createdAt.toLocalDateTime());
                     return admin;
                 }
             }

@@ -7,7 +7,6 @@ import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -133,9 +132,6 @@ public class AccountController implements Initializable {
         avatarPane.setOnMouseEntered(e -> cameraOverlay.setVisible(true));
         avatarPane.setOnMouseExited(e -> cameraOverlay.setVisible(false));
         cameraOverlay.setVisible(false);
-
-        // Admin-only actions
-        boolean adminVisible = isAdmin;
 
         buildHistory();
     }

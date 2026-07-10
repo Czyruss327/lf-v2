@@ -8,6 +8,8 @@ public class TestConnection {
         System.out.println("Attempting to connect to the database...");
         try (Connection conn = DatabaseConnection.getConnection()) {
             System.out.println("✅ Connection successful! The password is correct.");
+            // Print connection
+            System.out.println("Connected to: " + conn.getMetaData().getDatabaseProductName());
         } catch (SQLException e) {
             System.err.println("❌ Connection failed: " + e.getMessage());
             e.printStackTrace();

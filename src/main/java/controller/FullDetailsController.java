@@ -581,22 +581,6 @@ public class FullDetailsController implements Initializable {
         }
     }
 
-    private void navigateTo(String path, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-            Parent root = loader.load();
-            if ("/fxml/ReportForm.fxml".equals(path)) {
-                ReportFormController ctrl = loader.getController();
-                ctrl.setFoundReportMode();
-            }
-            Stage stage = (Stage) itemNameField.getScene().getWindow();
-            SceneUtil.setScene(stage, root);
-            stage.setTitle(title + " - PUPSRC Lost and Found");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void loadItemImage(String path) {
         if (path == null || path.isBlank())
             return;

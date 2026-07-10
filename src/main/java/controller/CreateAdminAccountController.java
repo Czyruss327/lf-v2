@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -119,18 +118,6 @@ public class CreateAdminAccountController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText("Admin account created. Please log in again.");
         alert.showAndWait();
-    }
-
-    private void navigateToDashboard() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Dashboard.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) usernameField.getScene().getWindow();
-            SceneUtil.setScene(stage, root);
-            stage.setTitle("PUPSRC Lost and Found – Admin");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void navigateTo(String path, String title) {

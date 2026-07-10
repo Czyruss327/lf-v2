@@ -420,22 +420,6 @@ public class ClaimVerificationController implements Initializable {
         }
     }
 
-    private void navigateTo(String path, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-            Parent root = loader.load();
-            if ("/fxml/ReportForm.fxml".equals(path)) {
-                ReportFormController ctrl = loader.getController();
-                ctrl.setFoundReportMode();
-            }
-            Stage stage = (Stage) claimNameField.getScene().getWindow();
-            SceneUtil.setScene(stage, root);
-            stage.setTitle(title + " - PUPSRC Lost and Found");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void loadImage(ImageView iv, String path) {
         try {
             URL url = getClass().getResource(path);

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.LoginController"
+    stylesheets="@../css/styles.css"
+    prefWidth="860" prefHeight="520">
+
+    <StackPane HBox.hgrow="ALWAYS" styleClass="login-left-panel">
+        <ImageView fx:id="bgImage"
+            fitWidth="430" fitHeight="520"
+            preserveRatio="false" />
+
+        <Pane styleClass="login-overlay" />
+
+        <VBox alignment="CENTER" spacing="8">
+            <padding>
+                <Insets bottom="40" left="40" right="40" />
+            </padding>
+            <Label text="WELCOME TO" styleClass="login-welcome-line1" />
+            <Label text="PUPSRC LOST AND FOUND" styleClass="login-welcome-line2" />
+            <Label text="A simple campus hub for reporting and claiming lost items."
+                styleClass="login-welcome-subtitle"
+                wrapText="true"
+                maxWidth="310" />
+        </VBox>
+    </StackPane>
+
+    <VBox alignment="CENTER" spacing="0"
+        styleClass="login-right-panel"
+        prefWidth="320" minWidth="280">
+
+        <VBox alignment="CENTER" spacing="16" styleClass="login-card">
+            <padding>
+                <Insets top="48" bottom="48" left="40" right="40" />
+            </padding>
+
+            <ImageView fx:id="logoImage"
+                fitWidth="200" fitHeight="200"
+                preserveRatio="true" />
+
+            <Region prefHeight="8" />
+
+            <Button fx:id="adminBtn"
+                text="LOGIN"
+                styleClass="login-role-btn"
+                maxWidth="Infinity"
+                onAction="#onAdminLogin" />
+
+        </VBox>
+    </VBox>
+</HBox>

@@ -6,6 +6,7 @@ tmp/
 # --- JavaFX Folder ---
 bin/
 lib/
+legal/
 
 # --- IDE Settings (IntelliJ & VS Code) ---
 .idea/

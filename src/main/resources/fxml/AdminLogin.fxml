@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="controller.AdminLoginController"
+       stylesheets="@../css/styles.css"
+       prefWidth="860" prefHeight="520">
+
+       <StackPane HBox.hgrow="ALWAYS" styleClass="login-left-panel">
+              <ImageView fx:id="bgImage"
+                     fitWidth="430" fitHeight="520"
+                     preserveRatio="false" />
+
+              <Pane styleClass="login-overlay" />
+
+              <VBox alignment="CENTER" spacing="14">
+                     <ImageView fx:id="logoImage"
+                            fitWidth="200" fitHeight="200"
+                            preserveRatio="true" />
+                     <Label text="PUPSRC LOST AND FOUND"
+                            styleClass="login-welcome-line2"
+                            wrapText="true"
+                            alignment="CENTER"
+                            textAlignment="CENTER"
+                            maxWidth="270" />
+                     <Label text="Admin access for reviewing records and managing reports."
+                            styleClass="login-welcome-subtitle"
+                            wrapText="true"
+                            alignment="CENTER"
+                            textAlignment="CENTER"
+                            maxWidth="300" />
+              </VBox>
+       </StackPane>
+
+       <VBox alignment="CENTER"
+              prefWidth="400" minWidth="340"
+              styleClass="admin-login-left">
+
+              <VBox alignment="CENTER" spacing="14" styleClass="admin-login-card">
+                     <padding>
+                            <Insets top="34" bottom="34" left="36" right="36" />
+                     </padding>
+
+                     <Label text="Admin Login"
+                            styleClass="admin-login-title"
+                            alignment="CENTER"
+                            maxWidth="Infinity" />
+
+                     <Label text="Enter your credentials to continue."
+                            styleClass="admin-login-subtitle"
+                            wrapText="true"
+                            alignment="CENTER"
+                            textAlignment="CENTER"
+                            maxWidth="240" />
+
+                     <VBox spacing="5">
+                            <Label text="Username" styleClass="form-label" />
+                            <TextField fx:id="usernameField"
+                                   promptText="Username"
+                                   styleClass="form-input" />
+                     </VBox>
+
+                     <VBox spacing="5">
+                            <Label text="Password" styleClass="form-label" />
+                            <PasswordField fx:id="passwordField"
+                                   promptText="Password"
+                                   styleClass="form-input" />
+                     </VBox>
+
+                     <Label fx:id="errorLabel" styleClass="error-label"
+                            wrapText="true" maxWidth="Infinity" />
+
+                     <Button text="LOG IN"
+                            styleClass="btn-view"
+                            maxWidth="Infinity"
+                            onAction="#onLogin" />
+
+                     <Button text="BACK"
+                            styleClass="btn-outline"
+                            maxWidth="Infinity"
+                            onAction="#onBack" />
+              </VBox>
+       </VBox>
+</HBox>

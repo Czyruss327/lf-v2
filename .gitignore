@@ -15,3 +15,7 @@ legal/
 
 # --- Local Environment ---
 .env
+
+# --- Build Files ---
+*.exe
+*.ico

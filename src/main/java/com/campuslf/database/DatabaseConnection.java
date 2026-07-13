@@ -61,7 +61,8 @@ public class DatabaseConnection {
             } else {
                 PROVIDER = DatabaseProvider.POSTGRESQL;
                 if (isBlank(USER) || isBlank(PASSWORD)) {
-                    throw new IllegalStateException("Supabase credentials are missing. Set DB_URL, DB_USER, and DB_PASSWORD or set DB_PROVIDER=sqlite.");
+                    throw new IllegalStateException(
+                            "Supabase credentials are missing. Set DB_URL, DB_USER, and DB_PASSWORD or set DB_PROVIDER=sqlite.");
                 }
             }
         } catch (Exception e) {
@@ -69,7 +70,8 @@ public class DatabaseConnection {
         }
     }
 
-    private DatabaseConnection() {}
+    private DatabaseConnection() {
+    }
 
     public static Connection getConnection() throws SQLException {
         Connection conn;
@@ -161,24 +163,20 @@ public class DatabaseConnection {
 
     private static Map<String, String> loadDotEnv() {
         Map<String, String> values = new HashMap<>();
-        Path path = Path.of(".env");
+        Path path = resolveEnvPath();
 
-        if (!Files.isRegularFile(path)) {
+        if (path == null || !Files.isRegularFile(path)) {
             return values;
         }
 
         try {
             for (String line : Files.readAllLines(path)) {
                 String trimmed = line.trim();
-                if (trimmed.isEmpty() || trimmed.startsWith("#")) {
+                if (trimmed.isEmpty() || trimmed.startsWith("#"))
                     continue;
-                }
-
                 int separator = trimmed.indexOf('=');
-                if (separator <= 0) {
+                if (separator <= 0)
                     continue;
-                }
-
                 String key = trimmed.substring(0, separator).trim();
                 String value = trimmed.substring(separator + 1).trim();
                 values.put(key, stripQuotes(value));
@@ -188,6 +186,24 @@ public class DatabaseConnection {
         }
 
         return values;
+    }
+
+    private static Path resolveEnvPath() {
+        try {
+            Path codeSource = Path.of(DatabaseConnection.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI());
+            Path appDir = Files.isDirectory(codeSource) ? codeSource : codeSource.getParent();
+            Path candidate = appDir.resolve(".env");
+            if (Files.isRegularFile(candidate))
+                return candidate;
+        } catch (Exception ignored) {
+        }
+
+        Path cwdCandidate = Path.of(".env");
+        if (Files.isRegularFile(cwdCandidate))
+            return cwdCandidate;
+
+        return null;
     }
 
     private static String firstPresent(String... values) {
@@ -225,7 +241,7 @@ public class DatabaseConnection {
     private static String stripQuotes(String value) {
         if (value.length() >= 2
                 && ((value.startsWith("\"") && value.endsWith("\""))
-                || (value.startsWith("'") && value.endsWith("'")))) {
+                        || (value.startsWith("'") && value.endsWith("'")))) {
             return value.substring(1, value.length() - 1);
         }
         return value;
@@ -355,7 +371,8 @@ public class DatabaseConnection {
 
     private static void seedAdmins(Statement stmt) throws SQLException {
         stmt.execute("INSERT OR IGNORE INTO admin (admin_id, username, password) VALUES (1, 'admin', 'admin123')");
-        stmt.execute("INSERT OR IGNORE INTO admin (admin_id, username, password) VALUES (2, 'pupsrc_admin', 'pup2026')");
+        stmt.execute(
+                "INSERT OR IGNORE INTO admin (admin_id, username, password) VALUES (2, 'pupsrc_admin', 'pup2026')");
         stmt.execute("INSERT OR IGNORE INTO admin (admin_id, username, password) VALUES (3, '123', '123')");
     }
 
